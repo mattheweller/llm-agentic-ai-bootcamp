@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 5: Document Loading & Chunking | RAG Fundamentals</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .chunk-preview {
+      max-height: 300px;
+      overflow-y: auto;
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+    .chunk-item {
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: white;
+      border-left: 3px solid #007bff;
+      border-radius: 4px;
+    }
+    .chunk-meta {
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-bottom: 0.5rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .stat-card {
+      padding: 1rem;
+      background: #e7f3ff;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #495057;
+    }
+  </style>
+</head>
+<body data-task-id="task-5">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. API Integration Demo</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Loading & Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Generate Embeddings</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Test Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Build RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Complete Q&A System</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 5</span>
+      <h1>Document Loading & Chunking</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Load and parse text documents from files</li>
+        <li>Understand why chunking is necessary for RAG</li>
+        <li>Learn different chunking strategies</li>
+        <li>Implement recursive character-based text splitting</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Why Chunking Matters</h2>
+      <p>LLMs have <strong>context windows</strong> (token limits). For effective RAG:</p>
+      <ul>
+        <li><strong>Documents are too large</strong> to fit in the context window</li>
+        <li><strong>We need semantic units</strong> that contain complete thoughts</li>
+        <li><strong>Smaller chunks improve retrieval precision</strong> - more focused matches</li>
+        <li><strong>Balance is key</strong> - too small loses context, too large loses specificity</li>
+      </ul>
+
+      <div class="info-box">
+        <p><strong>💡 Key Insight:</strong> Good chunking preserves semantic meaning while staying within token limits. A chunk should contain enough context to be meaningful on its own.</p>
+      </div>
+
+      <h2>Load Restaurant Data</h2>
+      <p>Let's load the Eleven Madison Park restaurant data:</p>
+
+      <div class="demo-container">
+        <button class="demo-button" onclick="loadDocument()">Load Document</button>
+        <div id="docStats" class="stats-grid" style="display:none;">
+          <div class="stat-card">
+            <div class="stat-value" id="totalChars">0</div>
+            <div class="stat-label">Total Characters</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalWords">0</div>
+            <div class="stat-label">Total Words</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="estTokens">0</div>
+            <div class="stat-label">Est. Tokens</div>
+          </div>
+        </div>
+        <div id="docPreview" class="chunk-preview" style="display:none;"></div>
+      </div>
+
+      <h2>Chunking Strategies</h2>
+      <p>Common approaches to split documents:</p>
+
+      <table style="width: 100%; margin: 1rem 0;">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>Pros</th>
+            <th>Cons</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Fixed-size</strong></td>
+            <td>Simple, predictable</td>
+            <td>May break mid-sentence</td>
+          </tr>
+          <tr>
+            <td><strong>Sentence-based</strong></td>
+            <td>Preserves sentences</td>
+            <td>Variable chunk sizes</td>
+          </tr>
+          <tr>
+            <td><strong>Paragraph-based</strong></td>
+            <td>Natural boundaries</td>
+            <td>Can be too large</td>
+          </tr>
+          <tr>
+            <td><strong>Recursive (recommended)</strong></td>
+            <td>Tries paragraphs, then sentences, then characters</td>
+            <td>Slightly more complex</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Interactive Chunking</h2>
+      <p>Try different chunk sizes and see how the document splits:</p>
+
+      <div class="demo-container">
+        <div style="margin-bottom: 1rem;">
+          <label for="chunkSize">Chunk Size (characters): <strong id="chunkSizeValue">500</strong></label>
+          <input type="range" id="chunkSize" min="200" max="1000" value="500" step="50" style="width: 100%;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label for="chunkOverlap">Overlap (characters): <strong id="chunkOverlapValue">50</strong></label>
+          <input type="range" id="chunkOverlap" min="0" max="200" value="50" step="25" style="width: 100%;">
+        </div>
+        <button class="demo-button" onclick="chunkDocument()">Create Chunks</button>
+
+        <div id="chunkStats" style="display:none; margin-top: 1rem;">
+          <div class="stat-card">
+            <div class="stat-value" id="numChunks">0</div>
+            <div class="stat-label">Total Chunks Created</div>
+          </div>
+        </div>
+
+        <div id="chunksOutput" style="display:none; margin-top: 1rem;">
+          <h3>Chunks Preview (first 5):</h3>
+          <div id="chunksList"></div>
+        </div>
+      </div>
+
+      <h2>Code Example: Recursive Text Splitter</h2>
+<pre><code class="language-javascript">// Simple recursive text splitter
+function splitTextRecursive(text, chunkSize, chunkOverlap) {
+  const separators = ['\n\n', '\n', '. ', ' ', ''];
+  return splitBySeparators(text, separators, chunkSize, chunkOverlap);
+}
+
+function splitBySeparators(text, separators, chunkSize, overlap) {
+  if (!text || text.length <= chunkSize) return [text];
+
+  const [sep, ...restSeps] = separators;
+  const chunks = [];
+  const parts = text.split(sep);
+
+  let currentChunk = '';
+
+  for (const part of parts) {
+    if ((currentChunk + sep + part).length <= chunkSize) {
+      currentChunk += (currentChunk ? sep : '') + part;
+    } else {
+      if (currentChunk) chunks.push(currentChunk);
+
+      // If part is still too large, recurse with next separator
+      if (part.length > chunkSize && restSeps.length > 0) {
+        chunks.push(...splitBySeparators(part, restSeps, chunkSize, overlap));
+      } else {
+        currentChunk = part;
+      }
+    }
+  }
+
+  if (currentChunk) chunks.push(currentChunk);
+  return chunks;
+}
+</code></pre>
+
+      <h2>Practice Opportunity</h2>
+      <div class="practice-box">
+        <h3>Try This:</h3>
+        <ol>
+          <li>Load the document and observe the total size</li>
+          <li>Create chunks with size 500, overlap 50</li>
+          <li>Experiment with different chunk sizes - what happens with very small (200) or large (1000)?</li>
+          <li>Notice how overlap helps preserve context across chunk boundaries</li>
+        </ol>
+      </div>
+
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li><strong>Chunking is essential</strong> for fitting documents into LLM context windows</li>
+        <li><strong>Recursive splitting</strong> tries to preserve semantic boundaries (paragraphs → sentences → characters)</li>
+        <li><strong>Overlap prevents information loss</strong> at chunk boundaries</li>
+        <li><strong>Chunk size is a tradeoff</strong> between context and precision</li>
+        <li>These chunks will be embedded in the next task!</li>
+      </ul>
+    </section>
+
+    <footer class="task-navigation">
+      <a href="task-4-api-demo.html" class="nav-btn">← Previous: API Demo</a>
+      <a href="task-6-embeddings.html" class="nav-btn">Next: Generate Embeddings →</a>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+
+  <script>
+    let documentText = '';
+    let chunks = [];
+
+    // Load document from data file
+    async function loadDocument() {
+      try {
+        const response = await fetch('../assets/data/eleven_madison_park_data.txt');
+        documentText = await response.text();
+
+        // Calculate stats
+        const charCount = documentText.length;
+        const wordCount = documentText.split(/\s+/).filter(w => w.length > 0).length;
+        const tokenEst = Math.ceil(charCount / 4); // Rough estimate: ~4 chars per token
+
+        document.getElementById('totalChars').textContent = charCount.toLocaleString();
+        document.getElementById('totalWords').textContent = wordCount.toLocaleString();
+        document.getElementById('estTokens').textContent = tokenEst.toLocaleString();
+        document.getElementById('docStats').style.display = 'grid';
+
+        // Show preview (first 500 chars)
+        const preview = documentText.substring(0, 500) + '...';
+        document.getElementById('docPreview').textContent = preview;
+        document.getElementById('docPreview').style.display = 'block';
+
+      } catch (error) {
+        alert('Error loading document: ' + error.message);
+      }
+    }
+
+    // Update slider values
+    document.getElementById('chunkSize').addEventListener('input', (e) => {
+      document.getElementById('chunkSizeValue').textContent = e.target.value;
+    });
+    document.getElementById('chunkOverlap').addEventListener('input', (e) => {
+      document.getElementById('chunkOverlapValue').textContent = e.target.value;
+    });
+
+    // Chunk document
+    function chunkDocument() {
+      if (!documentText) {
+        alert('Please load the document first');
+        return;
+      }
+
+      const chunkSize = parseInt(document.getElementById('chunkSize').value);
+      const overlap = parseInt(document.getElementById('chunkOverlap').value);
+
+      chunks = splitTextRecursive(documentText, chunkSize, overlap);
+
+      // Store chunks for next task
+      localStorage.setItem('rag-chunks', JSON.stringify(chunks));
+
+      // Display stats
+      document.getElementById('numChunks').textContent = chunks.length;
+      document.getElementById('chunkStats').style.display = 'block';
+
+      // Display first 5 chunks
+      const chunksList = document.getElementById('chunksList');
+      chunksList.innerHTML = chunks.slice(0, 5).map((chunk, i) => `
+        <div class="chunk-item">
+          <div class="chunk-meta">Chunk ${i + 1} | ${chunk.length} characters</div>
+          <div>${chunk.substring(0, 200)}${chunk.length > 200 ? '...' : ''}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('chunksOutput').style.display = 'block';
+    }
+
+    // Recursive text splitter implementation
+    function splitTextRecursive(text, chunkSize, chunkOverlap) {
+      const separators = ['\n\n', '\n', '. ', ' '];
+      return splitBySeparators(text, separators, chunkSize, chunkOverlap, 0);
+    }
+
+    function splitBySeparators(text, separators, chunkSize, overlap, depth) {
+      if (!text || text.length === 0) return [];
+      if (text.length <= chunkSize) return [text];
+
+      if (depth >= separators.length) {
+        // Fallback: split by character
+        return splitByCharacter(text, chunkSize, overlap);
+      }
+
+      const sep = separators[depth];
+      const parts = text.split(sep);
+      const chunks = [];
+      let currentChunk = '';
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        const testChunk = currentChunk + (currentChunk ? sep : '') + part;
+
+        if (testChunk.length <= chunkSize) {
+          currentChunk = testChunk;
+        } else {
+          if (currentChunk) {
+            chunks.push(currentChunk);
+            // Add overlap from end of previous chunk
+            const overlapText = currentChunk.slice(-overlap);
+            currentChunk = overlapText + sep + part;
+          } else {
+            // Part itself is too large, recurse with next separator
+            const subchunks = splitBySeparators(part, separators, chunkSize, overlap, depth + 1);
+            chunks.push(...subchunks);
+            currentChunk = '';
+          }
+        }
+      }
+
+      if (currentChunk && currentChunk.length > 0) {
+        chunks.push(currentChunk);
+      }
+
+      return chunks.filter(c => c.length > 0);
+    }
+
+    function splitByCharacter(text, chunkSize, overlap) {
+      const chunks = [];
+      let start = 0;
+
+      while (start < text.length) {
+        const end = Math.min(start + chunkSize, text.length);
+        chunks.push(text.substring(start, end));
+        start = end - overlap;
+        if (start >= text.length) break;
+      }
+
+      return chunks;
+    }
+
+    // Auto-load document on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadDocument, 500);
+    });
+  </script>
+</body>
+</html>
