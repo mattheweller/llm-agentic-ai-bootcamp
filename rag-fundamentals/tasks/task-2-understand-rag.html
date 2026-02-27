@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 2: Understand RAG | RAG Fundamentals RAG & LangChain</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-task-id="task-2">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-setup-data-loading.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. Setup & Data Loading</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-chunking.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings-vectors.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Embeddings & Vectors</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-testing-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Testing Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-building-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Building RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-gradio-interface.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Gradio Interface</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 2</span>
+      <h1>Understand Retrieval Augmented Generation (RAG)</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand what RAG is and the problems it solves</li>
+        <li>Learn the RAG architecture and workflow</li>
+        <li>Recognize when to use RAG vs. other approaches</li>
+        <li>Understand the benefits and trade-offs of RAG systems</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>What is RAG?</h2>
+
+      <p><strong>Retrieval Augmented Generation (RAG)</strong> is a technique that enhances Large Language Model (LLM) responses by retrieving relevant information from external knowledge sources before generating an answer.</p>
+
+      <p>Think of RAG as giving an LLM access to a library of reference materials. Instead of relying solely on what it learned during training, the LLM can "look up" specific information and use it to generate more accurate, grounded responses.</p>
+
+      <h3>The Problem RAG Solves</h3>
+
+      <p>LLMs have impressive capabilities, but they face several limitations:</p>
+
+      <ol>
+        <li><strong>Knowledge Cutoff:</strong> LLMs are trained on data up to a specific date. They don't know about events, updates, or information after that date.</li>
+        <li><strong>No Domain-Specific Data:</strong> LLMs lack detailed knowledge about your specific business, documents, or proprietary information.</li>
+        <li><strong>Hallucinations:</strong> When uncertain, LLMs may generate plausible-sounding but incorrect information.</li>
+        <li><strong>No Attribution:</strong> Standard LLM responses don't cite sources, making it hard to verify accuracy.</li>
+        <li><strong>Expensive to Update:</strong> Retraining an LLM with new information is costly and impractical for frequent updates.</li>
+      </ol>
+
+      <div class="callout callout-warning">
+        <strong>Example:</strong> Ask GPT-4 "What menu options does Eleven Madison Park offer?" Without RAG, it might provide generic or outdated information. With RAG, it retrieves current menu details from the restaurant's actual data.
+      </div>
+
+      <h2>How RAG Works</h2>
+
+      <div class="diagram-container">
+        <img src="../assets/images/diagrams/rag-overview.svg" alt="RAG Pipeline Diagram" class="diagram">
+        <p class="diagram-caption">The complete RAG pipeline: from user query to final answer with sources</p>
+      </div>
+
+      <h3>The RAG Pipeline (5 Steps)</h3>
+
+      <h4>1. User Query</h4>
+      <p>The process begins when a user asks a question:</p>
+      <p><em>"What dietary accommodations does Eleven Madison Park offer?"</em></p>
+
+      <h4>2. Retrieve Relevant Context</h4>
+      <p>The system searches a document corpus (vector database) to find the most relevant information using <strong>similarity search</strong>. Instead of exact keyword matching, it finds semantically similar content.</p>
+
+      <div class="callout callout-info">
+        <strong>Semantic Search:</strong> Finds documents based on meaning, not just keywords. "dietary accommodations" matches "vegetarian options," "food allergies," and "plant-based menu."
+      </div>
+
+      <h4>3. Retrieved Context</h4>
+      <p>The top matching document chunks are extracted. For example:</p>
+      <ul>
+        <li>"We offer fully plant-based menus for guests with dietary preferences..."</li>
+        <li>"Our culinary team accommodates all food allergies and restrictions..."</li>
+        <li>"Vegetarian and vegan options available upon request..."</li>
+      </ul>
+
+      <h4>4. Augmented Prompt</h4>
+      <p>The user's question and retrieved context are combined into an enhanced prompt:</p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Augmented Prompt Structure</span>
+        </div>
+        <pre><code class="language-python">Context: [Retrieved documents about dietary accommodations]
+
+Question: What dietary accommodations does Eleven Madison Park offer?
+
+Instructions: Answer the question based on the provided context.
+If the context doesn't contain the answer, say so.</code></pre>
+      </div>
+
+      <h4>5. LLM Generates Answer</h4>
+      <p>The LLM receives the augmented prompt and generates a response grounded in the retrieved facts:</p>
+
+      <div class="callout callout-success">
+        <p><strong>Answer:</strong> "Eleven Madison Park offers comprehensive dietary accommodations, including fully plant-based menus, vegetarian and vegan options, and accommodations for all food allergies and restrictions. The culinary team works with each guest to ensure their preferences are met."</p>
+        <p><strong>Sources:</strong> [Links to source documents]</p>
+      </div>
+
+      <h2>Key Benefits of RAG</h2>
+
+      <ul>
+        <li><strong>Accuracy:</strong> Responses are grounded in actual data, reducing hallucinations</li>
+        <li><strong>Current Information:</strong> Update the document corpus without retraining the model</li>
+        <li><strong>Attribution:</strong> Cite sources so users can verify information</li>
+        <li><strong>Domain Expertise:</strong> Add specialized knowledge not in the LLM's training data</li>
+        <li><strong>Cost-Effective:</strong> No expensive model retraining needed</li>
+        <li><strong>Privacy:</strong> Keep sensitive data out of training; query it on-demand</li>
+      </ul>
+
+      <h2>When to Use RAG</h2>
+
+      <p>RAG is ideal for:</p>
+
+      <ul>
+        <li>✅ Customer support chatbots answering from documentation</li>
+        <li>✅ Question-answering over internal knowledge bases</li>
+        <li>✅ Research assistants synthesizing information from papers</li>
+        <li>✅ Domain-specific assistants (legal, medical, technical docs)</li>
+        <li>✅ Applications requiring source citations</li>
+        <li>✅ Systems needing frequently updated information</li>
+      </ul>
+
+      <p>RAG might <strong>not</strong> be necessary for:</p>
+
+      <ul>
+        <li>❌ General creative writing or brainstorming</li>
+        <li>❌ Simple classification tasks</li>
+        <li>❌ Tasks where the LLM's training data is sufficient</li>
+        <li>❌ Real-time applications with strict latency requirements</li>
+      </ul>
+
+      <h2>RAG vs. Other Approaches</h2>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+        <thead>
+          <tr style="background: #f3f4f6;">
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e5e7eb;">Approach</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e5e7eb;">Pros</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e5e7eb;">Cons</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;"><strong>RAG</strong></td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Easy to update, cites sources, domain-specific</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Slightly higher latency, requires vector DB</td>
+          </tr>
+          <tr style="background: #f9fafb;">
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;"><strong>Fine-Tuning</strong></td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Learns patterns, fast inference, no retrieval step</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Expensive, hard to update, no source attribution</td>
+          </tr>
+          <tr>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;"><strong>Prompt Engineering</strong></td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Simple, no infrastructure, flexible</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Limited by context window, no external knowledge</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Key Takeaways</h2>
+
+      <ul>
+        <li>RAG combines <strong>retrieval</strong> (finding relevant information) with <strong>generation</strong> (creating natural language responses)</li>
+        <li>RAG solves LLM limitations: knowledge cutoffs, lack of domain expertise, and hallucinations</li>
+        <li>The pipeline: Query → Retrieve Context → Augment Prompt → Generate Answer</li>
+        <li>RAG enables accurate, up-to-date, source-attributed responses without retraining models</li>
+        <li>Best for applications requiring domain-specific knowledge and verifiable information</li>
+      </ul>
+
+      <div class="callout callout-success">
+        <strong>Next Step:</strong> Now that you understand what RAG is and why it matters, let's explore LangChain - the framework we'll use to build our RAG system efficiently.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-1-overview.html" class="nav-btn">← Previous: Project Overview</a>
+      <a href="task-3-langchain-101.html" class="nav-btn">Next: LangChain 101 →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+</body>
+</html>

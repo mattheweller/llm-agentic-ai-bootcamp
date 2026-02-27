@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 1: Project Overview | RAG Fundamentals RAG & LangChain</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-task-id="task-1">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-setup-data-loading.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. Setup & Data Loading</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-chunking.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings-vectors.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Embeddings & Vectors</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-testing-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Testing Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-building-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Building RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-gradio-interface.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Gradio Interface</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 1</span>
+      <h1>Project Overview</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand the project scope and goals</li>
+        <li>Preview the complete RAG application you'll build</li>
+        <li>Identify the key technologies and components involved</li>
+        <li>Set expectations for the learning journey ahead</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Project: Ask Eleven Madison Park Restaurant</h2>
+
+      <p>In this module, you'll build an intelligent Q&A assistant for <strong>Eleven Madison Park</strong>, a renowned fine dining restaurant in New York City. Your assistant will answer questions about:</p>
+
+      <ul>
+        <li>Menu options and dietary accommodations</li>
+        <li>Reservation policies and procedures</li>
+        <li>Dress code requirements</li>
+        <li>Team members and restaurant philosophy</li>
+        <li>Hours, location, and contact information</li>
+      </ul>
+
+      <h3>The Challenge</h3>
+
+      <p>Traditional chatbots struggle with specific, domain-focused questions because:</p>
+
+      <ul>
+        <li><strong>Limited Knowledge:</strong> LLMs are trained on general data but lack specific, up-to-date information about individual restaurants</li>
+        <li><strong>Hallucinations:</strong> Without grounding in real data, LLMs may make up plausible-sounding but incorrect answers</li>
+        <li><strong>No Sources:</strong> Users can't verify where information comes from</li>
+      </ul>
+
+      <div class="callout callout-warning">
+        <strong>Real Problem:</strong> Asking GPT-4 "What menus does Eleven Madison Park offer?" might produce outdated or generic information. Our RAG system will answer from actual restaurant data.
+      </div>
+
+      <h3>The Solution: RAG (Retrieval Augmented Generation)</h3>
+
+      <p>RAG solves these problems by:</p>
+
+      <ol>
+        <li><strong>Grounding responses in data:</strong> Retrieve relevant information from the restaurant's actual content</li>
+        <li><strong>Providing context:</strong> Give the LLM specific facts to base its answer on</li>
+        <li><strong>Citing sources:</strong> Show users where the information came from</li>
+        <li><strong>Staying current:</strong> Update the data without retraining the model</li>
+      </ol>
+
+      <h3>What You'll Build</h3>
+
+      <p>By the end of this module, you'll have a complete RAG application with:</p>
+
+      <ul>
+        <li>✅ <strong>Document Loading:</strong> Load and process restaurant website content</li>
+        <li>✅ <strong>Intelligent Chunking:</strong> Split documents while preserving context</li>
+        <li>✅ <strong>Vector Database:</strong> Store text embeddings for semantic search</li>
+        <li>✅ <strong>Retrieval System:</strong> Find the most relevant information for any query</li>
+        <li>✅ <strong>LLM Integration:</strong> Generate natural language answers</li>
+        <li>✅ <strong>Web Interface:</strong> Deploy with Gradio for easy interaction</li>
+      </ul>
+
+      <h3>Technologies You'll Use</h3>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h4 style="margin-top: 0; color: #2563eb;">LangChain</h4>
+          <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">Framework for building LLM applications</p>
+        </div>
+
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h4 style="margin-top: 0; color: #2563eb;">OpenAI</h4>
+          <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">Embeddings and language models</p>
+        </div>
+
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h4 style="margin-top: 0; color: #2563eb;">ChromaDB</h4>
+          <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">Vector database for similarity search</p>
+        </div>
+
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h4 style="margin-top: 0; color: #2563eb;">Gradio</h4>
+          <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">Web UI for ML applications</p>
+        </div>
+      </div>
+
+      <h3>Your Learning Path</h3>
+
+      <p>This module follows a progressive, hands-on approach:</p>
+
+      <ol>
+        <li><strong>Understand the Concepts:</strong> Learn what RAG is and why it matters (Tasks 2-3)</li>
+        <li><strong>Build the Foundation:</strong> Load data and prepare it for search (Tasks 4-5)</li>
+        <li><strong>Create the Search System:</strong> Implement embeddings and vector storage (Task 6-7)</li>
+        <li><strong>Integrate Generation:</strong> Combine retrieval with LLM responses (Task 8)</li>
+        <li><strong>Deploy & Test:</strong> Build a user interface and validate your system (Task 9)</li>
+      </ol>
+
+      <div class="callout callout-success">
+        <strong>Hands-On Learning:</strong> Each task includes working code examples and practice opportunities. You'll learn by building, not just reading.
+      </div>
+
+      <h3>What Makes This Project Special</h3>
+
+      <ul>
+        <li><strong>Real Data:</strong> Work with actual restaurant website content</li>
+        <li><strong>Production Patterns:</strong> Learn techniques used in real RAG systems</li>
+        <li><strong>Immediate Results:</strong> See your Q&A assistant improve with each task</li>
+        <li><strong>Reusable Skills:</strong> Apply these patterns to any domain - customer support, documentation, knowledge bases</li>
+      </ul>
+
+      <h2>Ready to Start?</h2>
+
+      <p>In the next task, you'll dive deep into understanding RAG - what it is, how it works, and why it's transforming how we build AI applications.</p>
+
+      <p><strong>Let's begin!</strong> 🚀</p>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="../index.html" class="nav-btn">← Home</a>
+      <a href="task-2-understand-rag.html" class="nav-btn">Next: Understand RAG →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+</body>
+</html>

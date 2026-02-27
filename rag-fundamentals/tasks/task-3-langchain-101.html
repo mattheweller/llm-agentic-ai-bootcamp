@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 3: LangChain 101 | RAG Fundamentals RAG & LangChain</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-task-id="task-3">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-setup-data-loading.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. Setup & Data Loading</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-chunking.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings-vectors.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Embeddings & Vectors</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-testing-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Testing Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-building-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Building RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-gradio-interface.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Gradio Interface</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 3</span>
+      <h1>LangChain 101</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand what LangChain is and why it exists</li>
+        <li>Learn the key components of the LangChain framework</li>
+        <li>Recognize how LangChain simplifies RAG development</li>
+        <li>Preview the LangChain components you'll use in this project</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>What is LangChain?</h2>
+
+      <p><strong>LangChain</strong> is an open-source framework for building applications powered by Large Language Models (LLMs). It provides modular, composable tools that handle the complexity of integrating LLMs with external data sources, APIs, and other components.</p>
+
+      <p>Think of LangChain as a toolkit that gives you pre-built, battle-tested components instead of building everything from scratch.</p>
+
+      <div class="callout callout-info">
+        <strong>Analogy:</strong> Building a RAG system without LangChain is like building a web app without a framework - possible, but requires handling many low-level details. LangChain is like Flask or FastAPI for LLM applications.
+      </div>
+
+      <h3>Why LangChain Matters</h3>
+
+      <p>Building RAG systems involves:</p>
+
+      <ul>
+        <li>Loading documents from various formats (PDF, HTML, text, databases)</li>
+        <li>Splitting text intelligently while preserving context</li>
+        <li>Converting text to embeddings</li>
+        <li>Storing and searching vectors efficiently</li>
+        <li>Managing prompts and LLM calls</li>
+        <li>Orchestrating multiple steps into a pipeline</li>
+        <li>Handling errors and retries</li>
+      </ul>
+
+      <p>LangChain provides production-ready implementations for all of these, letting you focus on your application logic rather than infrastructure.</p>
+
+      <h2>LangChain Components</h2>
+
+      <div class="diagram-container">
+        <img src="../assets/images/diagrams/langchain-components.svg" alt="LangChain Components Diagram" class="diagram">
+        <p class="diagram-caption">Key LangChain components and how they work together</p>
+      </div>
+
+      <h3>1. Document Loaders</h3>
+
+      <p><strong>Purpose:</strong> Load data from various sources into a standard format</p>
+
+      <p>LangChain provides 100+ document loaders for different data sources:</p>
+
+      <ul>
+        <li><code>TextLoader</code> - Plain text files</li>
+        <li><code>PDFLoader</code> - PDF documents</li>
+        <li><code>WebBaseLoader</code> - Websites and HTML</li>
+        <li><code>CSVLoader</code> - CSV files</li>
+        <li><code>NotionLoader</code> - Notion pages</li>
+        <li><code>GoogleDriveLoader</code> - Google Drive documents</li>
+      </ul>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python - Document Loader Example</span>
+          <button class="copy-btn">Copy</button>
+        </div>
+        <pre><code class="language-python">from langchain.document_loaders import TextLoader
+
+# Load a text file - LangChain handles file reading and formatting
+loader = TextLoader("restaurant_data.txt", encoding="utf-8")
+documents = loader.load()
+
+# Returns list of Document objects with content and metadata
+print(f"Loaded {len(documents)} document(s)")</code></pre>
+      </div>
+
+      <h3>2. Text Splitters</h3>
+
+      <p><strong>Purpose:</strong> Break documents into smaller chunks while preserving context</p>
+
+      <p>Large documents need to be split for efficient retrieval. LangChain provides smart splitters that:</p>
+
+      <ul>
+        <li>Split on natural boundaries (paragraphs, sentences)</li>
+        <li>Preserve context with overlapping chunks</li>
+        <li>Maintain metadata (source, page numbers)</li>
+        <li>Handle different document structures</li>
+      </ul>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python - Text Splitter Example</span>
+          <button class="copy-btn">Copy</button>
+        </div>
+        <pre><code class="language-python">from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# Create splitter with specified chunk size and overlap
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,     # Max characters per chunk
+    chunk_overlap=150    # Characters shared between chunks
+)
+
+# Split documents intelligently
+chunks = splitter.split_documents(documents)
+print(f"Created {len(chunks)} chunks")</code></pre>
+      </div>
+
+      <h3>3. Embeddings</h3>
+
+      <p><strong>Purpose:</strong> Convert text into numerical vectors that capture semantic meaning</p>
+
+      <p>LangChain supports multiple embedding providers:</p>
+
+      <ul>
+        <li><code>OpenAIEmbeddings</code> - OpenAI's text-embedding models</li>
+        <li><code>HuggingFaceEmbeddings</code> - Open-source embedding models</li>
+        <li><code>CohereEmbeddings</code> - Cohere's embedding API</li>
+      </ul>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python - Embeddings Example</span>
+          <button class="copy-btn">Copy</button>
+        </div>
+        <pre><code class="language-python">from langchain.embeddings import OpenAIEmbeddings
+
+# Initialize embeddings model
+embeddings = OpenAIEmbeddings()
+
+# Convert text to 1536-dimensional vector
+text = "What menu options are available?"
+vector = embeddings.embed_query(text)
+
+print(f"Embedding dimension: {len(vector)}")
+# Output: Embedding dimension: 1536</code></pre>
+      </div>
+
+      <h3>4. Vector Stores</h3>
+
+      <p><strong>Purpose:</strong> Store embeddings and perform similarity search</p>
+
+      <p>Vector stores are specialized databases optimized for finding similar vectors quickly. LangChain integrates with many vector databases:</p>
+
+      <ul>
+        <li><code>Chroma</code> - Local, lightweight vector database (what we'll use)</li>
+        <li><code>Pinecone</code> - Cloud-hosted vector database</li>
+        <li><code>Weaviate</code> - Open-source vector search engine</li>
+        <li><code>FAISS</code> - Facebook's similarity search library</li>
+      </ul>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python - Vector Store Example</span>
+          <button class="copy-btn">Copy</button>
+        </div>
+        <pre><code class="language-python">from langchain.vectorstores import Chroma
+
+# Create vector store from documents
+# Automatically embeds and stores all chunks
+vectorstore = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings
+)
+
+# Search for similar documents
+results = vectorstore.similarity_search("reservation policy", k=3)
+print(f"Found {len(results)} relevant chunks")</code></pre>
+      </div>
+
+      <h3>5. Retrievers</h3>
+
+      <p><strong>Purpose:</strong> Interface for fetching relevant documents</p>
+
+      <p>Retrievers provide a standard interface for querying vector stores. They handle the complexity of similarity search and return the most relevant documents.</p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python - Retriever Example</span>
+          <button class="copy-btn">Copy</button>
+        </div>
+        <pre><code class="language-python"># Convert vector store to retriever
+retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 3}  # Return top 3 most relevant chunks
+)
+
+# Use retriever in downstream components
+# Retrievers have a standard interface that works with Chains</code></pre>
+      </div>
+
+      <h3>6. Chains</h3>
+
+      <p><strong>Purpose:</strong> Orchestrate multiple components into workflows</p>
+
+      <p>Chains connect components together to build complete applications. Instead of manually calling each component, chains handle the data flow.</p>
+
+      <p>Common chain types:</p>
+
+      <ul>
+        <li><code>RetrievalQA</code> - Question answering with retrieval</li>
+        <li><code>RetrievalQAWithSourcesChain</code> - Q&A with source citations</li>
+        <li><code>ConversationalRetrievalChain</code> - Multi-turn conversations with memory</li>
+      </ul>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python - Chain Example</span>
+          <button class="copy-btn">Copy</button>
+        </div>
+        <pre><code class="language-python">from langchain.chains import RetrievalQAWithSourcesChain
+from langchain.chat_models import ChatOpenAI
+
+# Create a chain that combines retrieval + generation
+chain = RetrievalQAWithSourcesChain.from_chain_type(
+    llm=ChatOpenAI(temperature=0),
+    chain_type="stuff",
+    retriever=retriever,
+    return_source_documents=True
+)
+
+# Ask a question - the chain handles everything
+result = chain({"question": "What is the dress code?"})
+print(result["answer"])
+print(f"Sources: {result['sources']}")</code></pre>
+      </div>
+
+      <h3>7. Language Models</h3>
+
+      <p><strong>Purpose:</strong> Generate text based on prompts</p>
+
+      <p>LangChain provides unified interfaces for multiple LLM providers:</p>
+
+      <ul>
+        <li><code>ChatOpenAI</code> - OpenAI's chat models (GPT-4, GPT-3.5)</li>
+        <li><code>Anthropic</code> - Claude models</li>
+        <li><code>HuggingFaceHub</code> - Open-source models</li>
+        <li><code>Cohere</code> - Cohere's generation models</li>
+      </ul>
+
+      <h2>How Components Work Together</h2>
+
+      <p>In a typical RAG application, components connect like this:</p>
+
+      <ol>
+        <li><strong>Document Loaders</strong> → Load raw data</li>
+        <li><strong>Text Splitters</strong> → Break into chunks</li>
+        <li><strong>Embeddings</strong> → Convert chunks to vectors</li>
+        <li><strong>Vector Stores</strong> → Store and index vectors</li>
+        <li><strong>Retrievers</strong> → Fetch relevant chunks for a query</li>
+        <li><strong>Chains</strong> → Combine retrieval + LLM generation</li>
+        <li><strong>Language Models</strong> → Generate final answers</li>
+      </ol>
+
+      <div class="callout callout-success">
+        <strong>The Power of Abstraction:</strong> LangChain handles the plumbing so you can focus on building your application. Swap components (different LLMs, different vector stores) without rewriting your code.
+      </div>
+
+      <h2>LangChain vs. Building from Scratch</h2>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+        <thead>
+          <tr style="background: #f3f4f6;">
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e5e7eb;">Task</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e5e7eb;">Without LangChain</th>
+            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e5e7eb;">With LangChain</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Load documents</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Write custom parsers for each format</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">1 line: <code>loader.load()</code></td>
+          </tr>
+          <tr style="background: #f9fafb;">
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Split text</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Implement chunking logic, handle edge cases</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Configure splitter, call <code>split_documents()</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Create embeddings</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">API calls, batch processing, error handling</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Handled automatically by vector store</td>
+          </tr>
+          <tr style="background: #f9fafb;">
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Build pipeline</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Manually orchestrate all steps</td>
+            <td style="padding: 0.75rem; border: 1px solid #e5e7eb;">Use pre-built chains</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Key Takeaways</h2>
+
+      <ul>
+        <li>LangChain provides <strong>modular, composable components</strong> for building LLM applications</li>
+        <li>Components cover the full RAG pipeline: loading, splitting, embedding, storing, retrieving, and generating</li>
+        <li>Chains orchestrate components into complete workflows</li>
+        <li>LangChain abstracts complexity, letting you focus on application logic</li>
+        <li>Swap implementations easily (different LLMs, vector stores, etc.)</li>
+      </ul>
+
+      <div class="callout callout-success">
+        <strong>Next Step:</strong> Now that you understand LangChain's architecture, let's start building! In Task 4, you'll set up your environment and load the restaurant data.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-2-understand-rag.html" class="nav-btn">← Previous: Understand RAG</a>
+      <a href="task-4-setup-data-loading.html" class="nav-btn">Next: Setup & Data Loading →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+</body>
+</html>
