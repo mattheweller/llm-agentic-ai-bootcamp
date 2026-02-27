@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4: API Integration Demo | RAG Fundamentals</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .demo-container {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    .demo-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .demo-button {
+      padding: 0.75rem 1.5rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    .demo-button:hover {
+      background: #0056b3;
+    }
+    .demo-button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+    .demo-output {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+      min-height: 60px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    .status-healthy {
+      background: #28a745;
+    }
+    .status-error {
+      background: #dc3545;
+    }
+    .status-unknown {
+      background: #ffc107;
+    }
+    .health-status {
+      padding: 1rem;
+      margin: 1rem 0;
+      background: white;
+      border-radius: 4px;
+      border-left: 4px solid #28a745;
+    }
+    .error-message {
+      color: #dc3545;
+      padding: 1rem;
+      background: #f8d7da;
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body data-task-id="task-4">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. API Integration Demo</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 4</span>
+      <h1>API Integration Demo</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand how to securely connect to LLM APIs through our backend</li>
+        <li>Learn to make chat completion requests</li>
+        <li>Generate embeddings for semantic search</li>
+        <li>Handle errors and check server health</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Server Health Check</h2>
+      <p>Before we can use the LLM APIs, let's verify the backend server is running and all API keys are loaded:</p>
+
+      <div class="demo-container">
+        <button class="demo-button" onclick="checkHealth()">Check Server Health</button>
+        <div id="healthOutput" class="demo-output">Click "Check Server Health" to verify the backend is running...</div>
+      </div>
+
+      <div class="warning-box">
+        <p><strong>⚠️ Important:</strong> Make sure the Express server is running!</p>
+        <pre><code class="language-bash">cd server
+npm run dev</code></pre>
+      </div>
+
+      <h2>Interactive Demo: Chat with OpenAI</h2>
+      <p>Try asking a question. The request will be securely proxied through our backend (your API key never reaches the browser):</p>
+
+      <div class="demo-container">
+        <input
+          type="text"
+          id="chatInput"
+          class="demo-input"
+          placeholder="Ask a question (e.g., 'Explain RAG in one sentence')"
+          value="Explain RAG in one sentence"
+        />
+        <button class="demo-button" onclick="runChat()">Send to OpenAI</button>
+        <button class="demo-button" onclick="runChat('anthropic')">Send to Claude</button>
+        <div id="chatOutput" class="demo-output">Response will appear here...</div>
+      </div>
+
+      <h2>Code Example</h2>
+      <p>Here's how the API client works behind the scenes:</p>
+
+<pre><code class="language-javascript">// Initialize the API client
+const client = new LLMAPIClient('http://localhost:3000');
+
+// Simple chat request
+const response = await client.simpleChat(
+  'Explain RAG in one sentence',
+  'openai',  // or 'anthropic' or 'google'
+  { temperature: 0.7 }
+);
+
+console.log(response);  // AI's response text
+</code></pre>
+
+      <h2>Try It: Generate Embeddings</h2>
+      <p>Embeddings convert text into numerical vectors for semantic search. Try generating an embedding:</p>
+
+      <div class="demo-container">
+        <input
+          type="text"
+          id="embedInput"
+          class="demo-input"
+          placeholder="Enter text to embed"
+          value="Retrieval Augmented Generation"
+        />
+        <button class="demo-button" onclick="runEmbedding()">Generate Embedding</button>
+        <div id="embedOutput" class="demo-output">Embedding vector will appear here...</div>
+      </div>
+
+<pre><code class="language-javascript">// Generate embeddings
+const embedding = await client.embed(
+  'Retrieval Augmented Generation',
+  'openai'
+);
+
+console.log(embedding);  // Array of 1536 numbers
+console.log(embedding.length);  // 1536
+</code></pre>
+
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li><strong>Security First:</strong> API keys are stored server-side in <code>.env</code>, never in the browser</li>
+        <li><strong>Proxy Pattern:</strong> Frontend calls <code>localhost:3000/api/*</code>, backend calls LLM providers</li>
+        <li><strong>Unified Interface:</strong> Same API client works with OpenAI, Anthropic, and Google</li>
+        <li><strong>Error Handling:</strong> Built-in timeout and error handling for robustness</li>
+      </ul>
+    </section>
+
+    <footer class="task-navigation">
+      <a href="task-3-langchain-101.html" class="nav-btn">
+        ← Previous: LangChain 101
+      </a>
+      <a href="task-5-document-chunking.html" class="nav-btn">
+        Next: Document Chunking →
+      </a>
+    </footer>
+  </main>
+
+  <!-- Load dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+  <script src="../assets/js/api-client.js"></script>
+
+  <script>
+    // Initialize API client
+    const apiClient = new LLMAPIClient('http://localhost:3000');
+
+    // Check server health
+    async function checkHealth() {
+      const output = document.getElementById('healthOutput');
+      output.textContent = 'Checking server health...';
+
+      try {
+        const health = await apiClient.checkHealth();
+
+        let statusHTML = `
+<strong>Server Status:</strong> ${health.status}
+<strong>Timestamp:</strong> ${health.timestamp}
+
+<strong>API Keys Loaded:</strong>
+  OpenAI: ${health.apiKeys.openai ? '✅' : '❌'}
+  Anthropic: ${health.apiKeys.anthropic ? '✅' : '❌'}
+  Google: ${health.apiKeys.google ? '✅' : '❌'}
+        `;
+
+        if (health.warnings) {
+          statusHTML += '\n<strong>Warnings:</strong>\n' + health.warnings.join('\n');
+        }
+
+        output.textContent = statusHTML;
+        output.style.background = health.status === 'healthy' ? '#d4edda' : '#fff3cd';
+        output.style.borderLeft = health.status === 'healthy' ? '4px solid #28a745' : '4px solid #ffc107';
+
+      } catch (error) {
+        output.textContent = `❌ Error: ${error.message}\n\nMake sure the server is running:\n  cd server\n  npm run dev`;
+        output.style.background = '#f8d7da';
+        output.style.borderLeft = '4px solid #dc3545';
+      }
+    }
+
+    // Run chat request
+    async function runChat(provider = 'openai') {
+      const input = document.getElementById('chatInput').value;
+      const output = document.getElementById('chatOutput');
+      const button = event.target;
+
+      if (!input.trim()) {
+        output.textContent = 'Please enter a question';
+        return;
+      }
+
+      button.disabled = true;
+      output.textContent = `Sending to ${provider}...`;
+
+      try {
+        const response = await apiClient.simpleChat(input, provider);
+        output.textContent = `✅ ${provider.toUpperCase()} Response:\n\n${response}`;
+        output.style.background = '#d4edda';
+        output.style.borderLeft = '4px solid #28a745';
+      } catch (error) {
+        output.textContent = `❌ Error: ${error.message}`;
+        output.style.background = '#f8d7da';
+        output.style.borderLeft = '4px solid #dc3545';
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // Run embedding generation
+    async function runEmbedding() {
+      const input = document.getElementById('embedInput').value;
+      const output = document.getElementById('embedOutput');
+      const button = event.target;
+
+      if (!input.trim()) {
+        output.textContent = 'Please enter text to embed';
+        return;
+      }
+
+      button.disabled = true;
+      output.textContent = 'Generating embedding...';
+
+      try {
+        const embedding = await apiClient.embed(input, 'openai');
+        output.textContent = `✅ Embedding Generated!\n\nDimensions: ${embedding.length}\nFirst 10 values: [${embedding.slice(0, 10).map(n => n.toFixed(4)).join(', ')}...]\n\nUse Case: This vector can be stored in a vector database and compared with query embeddings for semantic search.`;
+        output.style.background = '#d4edda';
+        output.style.borderLeft = '4px solid #28a745';
+      } catch (error) {
+        output.textContent = `❌ Error: ${error.message}`;
+        output.style.background = '#f8d7da';
+        output.style.borderLeft = '4px solid #dc3545';
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // Auto-check health on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(checkHealth, 500);
+    });
+  </script>
+</body>
+</html>
