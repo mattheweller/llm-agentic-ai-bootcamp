@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 7: Test Retrieval | RAG Fundamentals</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .result-item {
+      padding: 1rem;
+      margin: 0.75rem 0;
+      background: #f8f9fa;
+      border-left: 4px solid #007bff;
+      border-radius: 4px;
+    }
+    .similarity-score {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: #007bff;
+      color: white;
+      border-radius: 3px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body data-task-id="task-7">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. API Integration Demo</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Loading & Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Generate Embeddings</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Test Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Build RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Complete Q&A System</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 7</span>
+      <h1>Test Retrieval</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand cosine similarity for comparing vectors</li>
+        <li>Implement semantic search over embeddings</li>
+        <li>Retrieve the most relevant chunks for a query</li>
+        <li>Evaluate retrieval quality</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>How Semantic Search Works</h2>
+      <p>To find relevant chunks, we:</p>
+      <ol>
+        <li><strong>Embed the query</strong> - convert user question to a vector</li>
+        <li><strong>Calculate similarity</strong> - compare query vector to all chunk vectors</li>
+        <li><strong>Rank by similarity</strong> - highest scores = most relevant</li>
+        <li><strong>Return top-k</strong> - retrieve the k most similar chunks</li>
+      </ol>
+
+      <div class="info-box">
+        <p><strong>💡 Cosine Similarity:</strong> Measures the angle between two vectors. Score of 1.0 = identical, 0.0 = orthogonal, -1.0 = opposite.</p>
+      </div>
+
+      <h2>Load Vector Store</h2>
+      <div class="demo-container">
+        <button class="demo-button" onclick="loadVectorStore()">Load Vector Store</button>
+        <div id="storeInfo" style="display:none; margin-top: 1rem;">
+          <div class="stat-card">
+            <div class="stat-value" id="numVectors">0</div>
+            <div class="stat-label">Vectors Loaded</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box" id="noStoreWarning" style="display:none;">
+        <p><strong>⚠️ No vector store found!</strong> Please complete <a href="task-6-embeddings.html">Task 6</a> first.</p>
+      </div>
+
+      <h2>Try Semantic Search</h2>
+      <p>Ask a question and retrieve the most relevant chunks:</p>
+
+      <div class="demo-container">
+        <input type="text" id="queryInput" class="demo-input" placeholder="Ask a question (e.g., 'What are the hours?')" value="What are the hours?">
+        <div style="margin-bottom: 1rem;">
+          <label>Top K results: <strong id="topKValue">3</strong></label>
+          <input type="range" id="topK" min="1" max="5" value="3" style="width: 100%;">
+        </div>
+        <button class="demo-button" onclick="searchSemantic()">Search</button>
+
+        <div id="searchResults" style="display:none; margin-top: 1rem;"></div>
+      </div>
+
+      <h2>Code Example: Cosine Similarity</h2>
+<pre><code class="language-javascript">// Calculate cosine similarity between two vectors
+function cosineSimilarity(vecA, vecB) {
+  let dotProduct = 0;
+  let magnitudeA = 0;
+  let magnitudeB = 0;
+
+  for (let i = 0; i < vecA.length; i++) {
+    dotProduct += vecA[i] * vecB[i];
+    magnitudeA += vecA[i] * vecA[i];
+    magnitudeB += vecB[i] * vecB[i];
+  }
+
+  return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+}
+
+// Semantic search
+async function search(query, topK = 3) {
+  // 1. Embed the query
+  const queryEmbedding = await apiClient.embed(query, 'openai');
+
+  // 2. Calculate similarity with all chunks
+  const results = vectorStore.map(item => ({
+    ...item,
+    similarity: cosineSimilarity(queryEmbedding, item.embedding)
+  }));
+
+  // 3. Sort by similarity (descending)
+  results.sort((a, b) => b.similarity - a.similarity);
+
+  // 4. Return top-k
+  return results.slice(0, topK);
+}
+</code></pre>
+
+      <h2>Practice Opportunity</h2>
+      <div class="practice-box">
+        <h3>Try These Queries:</h3>
+        <ul>
+          <li>"What are the hours?" - Should retrieve operating hours</li>
+          <li>"How much does it cost?" - Should retrieve pricing info</li>
+          <li>"What's the address?" - Should retrieve location</li>
+          <li>"What type of food?" - Should retrieve cuisine description</li>
+        </ul>
+        <p>Experiment with topK - more results give more context but also more noise.</p>
+      </div>
+
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li><strong>Semantic search finds meaning</strong>, not just keywords</li>
+        <li><strong>Cosine similarity</strong> is the most common metric for vector comparison</li>
+        <li><strong>Top-K retrieval</strong> balances context vs. noise</li>
+        <li>Next: We'll feed these retrieved chunks to an LLM!</li>
+      </ul>
+    </section>
+
+    <footer class="task-navigation">
+      <a href="task-6-embeddings.html" class="nav-btn">← Previous: Embeddings</a>
+      <a href="task-8-rag-chain.html" class="nav-btn">Next: Build RAG Chain →</a>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+  <script src="../assets/js/api-client.js"></script>
+
+  <script>
+    const apiClient = new LLMAPIClient('http://localhost:3000');
+    let vectorStore = [];
+
+    document.getElementById('topK').addEventListener('input', (e) => {
+      document.getElementById('topKValue').textContent = e.target.value;
+    });
+
+    function loadVectorStore() {
+      const stored = localStorage.getItem('rag-vector-store');
+      if (!stored) {
+        document.getElementById('noStoreWarning').style.display = 'block';
+        return;
+      }
+
+      vectorStore = JSON.parse(stored);
+      document.getElementById('numVectors').textContent = vectorStore.length;
+      document.getElementById('storeInfo').style.display = 'block';
+      document.getElementById('noStoreWarning').style.display = 'none';
+    }
+
+    async function searchSemantic() {
+      if (vectorStore.length === 0) {
+        alert('Please load vector store first');
+        return;
+      }
+
+      const query = document.getElementById('queryInput').value;
+      const topK = parseInt(document.getElementById('topK').value);
+
+      if (!query.trim()) {
+        alert('Please enter a query');
+        return;
+      }
+
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Searching...';
+
+      try {
+        // Embed the query
+        const queryEmbedding = await apiClient.embed(query, 'openai');
+
+        // Calculate similarities
+        const results = vectorStore.map(item => ({
+          ...item,
+          similarity: cosineSimilarity(queryEmbedding, item.embedding)
+        }));
+
+        // Sort and get top-k
+        results.sort((a, b) => b.similarity - a.similarity);
+        const topResults = results.slice(0, topK);
+
+        // Display results
+        const output = document.getElementById('searchResults');
+        output.innerHTML = `
+          <h3>Top ${topK} Results for: "${query}"</h3>
+          ${topResults.map((result, i) => `
+            <div class="result-item">
+              <div style="margin-bottom: 0.5rem;">
+                <strong>Rank ${i + 1}</strong>
+                <span class="similarity-score">${(result.similarity * 100).toFixed(1)}% match</span>
+              </div>
+              <div>${result.text.substring(0, 300)}${result.text.length > 300 ? '...' : ''}</div>
+            </div>
+          `).join('')}
+        `;
+        output.style.display = 'block';
+
+      } catch (error) {
+        alert('Error: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Search';
+      }
+    }
+
+    function cosineSimilarity(vecA, vecB) {
+      let dotProduct = 0;
+      let magnitudeA = 0;
+      let magnitudeB = 0;
+
+      for (let i = 0; i < vecA.length; i++) {
+        dotProduct += vecA[i] * vecB[i];
+        magnitudeA += vecA[i] * vecA[i];
+        magnitudeB += vecB[i] * vecB[i];
+      }
+
+      return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadVectorStore, 500);
+    });
+  </script>
+</body>
+</html>

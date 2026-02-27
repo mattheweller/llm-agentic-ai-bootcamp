@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 6: Generate Embeddings | RAG Fundamentals</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    .embedding-viz {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+      gap: 2px;
+      margin: 1rem 0;
+      max-height: 200px;
+      overflow: hidden;
+    }
+    .embedding-cell {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      border-radius: 2px;
+    }
+    .vector-store-item {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      background: #f8f9fa;
+      border-left: 3px solid #28a745;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body data-task-id="task-6">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. API Integration Demo</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Loading & Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Generate Embeddings</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Test Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Build RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Complete Q&A System</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 6</span>
+      <h1>Generate Embeddings</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand what embeddings are and why they're needed</li>
+        <li>Generate embeddings for text chunks using OpenAI</li>
+        <li>Visualize embedding vectors</li>
+        <li>Build an in-memory vector store</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>What Are Embeddings?</h2>
+      <p><strong>Embeddings</strong> are numerical representations of text that capture semantic meaning:</p>
+      <ul>
+        <li><strong>High-dimensional vectors</strong> (e.g., 1536 dimensions for OpenAI's text-embedding-3-small)</li>
+        <li><strong>Similar meanings = similar vectors</strong> in vector space</li>
+        <li><strong>Enable semantic search</strong> - find related content, not just keyword matches</li>
+        <li><strong>Foundation for RAG</strong> - allows retrieving relevant chunks by meaning</li>
+      </ul>
+
+      <div class="info-box">
+        <p><strong>💡 Key Insight:</strong> "dog" and "puppy" have different letters but similar embeddings because they have similar meanings. Traditional keyword search misses this!</p>
+      </div>
+
+      <h2>Load Your Chunks</h2>
+      <p>First, let's load the chunks you created in Task 5:</p>
+
+      <div class="demo-container">
+        <button class="demo-button" onclick="loadChunks()">Load Chunks from Task 5</button>
+        <div id="chunksInfo" style="display:none; margin-top: 1rem;">
+          <div class="stat-card">
+            <div class="stat-value" id="numChunks">0</div>
+            <div class="stat-label">Chunks Loaded</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box" id="noChunksWarning" style="display:none;">
+        <p><strong>⚠️ No chunks found!</strong> Please complete <a href="task-5-document-loading.html">Task 5</a> first to create chunks.</p>
+      </div>
+
+      <h2>Generate Embeddings</h2>
+      <p>Now we'll generate embeddings for each chunk using OpenAI's API:</p>
+
+      <div class="demo-container">
+        <button class="demo-button" id="embedBtn" onclick="generateEmbeddings()">Generate Embeddings</button>
+
+        <div id="progressContainer" style="display:none;">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%;">0%</div>
+          </div>
+          <p id="progressText">Generating embeddings...</p>
+        </div>
+
+        <div id="embeddingStats" style="display:none; margin-top: 1rem;">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalEmbeddings">0</div>
+              <div class="stat-label">Embeddings Created</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="dimensions">1536</div>
+              <div class="stat-label">Dimensions</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="timeTaken">0s</div>
+              <div class="stat-label">Time Taken</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Visualize an Embedding</h2>
+      <p>Let's visualize the first embedding (showing first 100 dimensions as a heatmap):</p>
+
+      <div class="demo-container">
+        <button class="demo-button" onclick="visualizeEmbedding()">Show Embedding Heatmap</button>
+        <div id="embeddingViz" class="embedding-viz" style="display:none;"></div>
+        <p id="vizCaption" style="display:none; font-size: 0.9rem; color: #6c757d;"></p>
+      </div>
+
+      <h2>Vector Store</h2>
+      <p>The embeddings are now stored in memory. Let's preview the vector store:</p>
+
+      <div class="demo-container">
+        <button class="demo-button" onclick="showVectorStore()">Show Vector Store</button>
+        <div id="vectorStoreOutput" style="display:none; margin-top: 1rem;"></div>
+      </div>
+
+      <h2>Code Example: Generate Embeddings</h2>
+<pre><code class="language-javascript">// Generate embeddings for all chunks
+const apiClient = new LLMAPIClient('http://localhost:3000');
+
+const vectorStore = [];
+
+for (let i = 0; i < chunks.length; i++) {
+  const chunk = chunks[i];
+
+  // Generate embedding for this chunk
+  const embedding = await apiClient.embed(chunk, 'openai');
+
+  // Store with metadata
+  vectorStore.push({
+    id: i,
+    text: chunk,
+    embedding: embedding,  // Array of 1536 numbers
+    metadata: {
+      chunkIndex: i,
+      length: chunk.length
+    }
+  });
+
+  console.log(`Embedded chunk ${i + 1}/${chunks.length}`);
+}
+
+console.log('Vector store ready!', vectorStore);
+</code></pre>
+
+      <h2>Understanding the Vector Store</h2>
+      <p>Our simple in-memory vector store contains:</p>
+      <ul>
+        <li><strong>Text:</strong> The original chunk content</li>
+        <li><strong>Embedding:</strong> 1536-dimensional vector representing the chunk's meaning</li>
+        <li><strong>Metadata:</strong> Additional info (index, length, etc.)</li>
+        <li><strong>ID:</strong> Unique identifier for retrieval</li>
+      </ul>
+
+      <div class="info-box">
+        <p><strong>💡 In Production:</strong> You'd use a specialized vector database like Pinecone, Weaviate, or ChromaDB. They're optimized for fast similarity search at scale.</p>
+      </div>
+
+      <h2>Practice Opportunity</h2>
+      <div class="practice-box">
+        <h3>Try This:</h3>
+        <ol>
+          <li>Load chunks from Task 5</li>
+          <li>Generate embeddings for all chunks</li>
+          <li>Observe the progress as embeddings are created</li>
+          <li>Visualize the embedding heatmap - notice positive and negative values</li>
+          <li>Inspect the vector store structure</li>
+        </ol>
+      </div>
+
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li><strong>Embeddings convert text to numbers</strong> that capture semantic meaning</li>
+        <li><strong>Similar text = similar embeddings</strong> in high-dimensional space</li>
+        <li><strong>OpenAI's text-embedding-3-small</strong> creates 1536-dimensional vectors</li>
+        <li><strong>Vector stores</strong> hold embeddings + original text + metadata</li>
+        <li>Next: We'll use these embeddings for semantic search!</li>
+      </ul>
+    </section>
+
+    <footer class="task-navigation">
+      <a href="task-5-document-loading.html" class="nav-btn">← Previous: Document Loading</a>
+      <a href="task-7-retrieval.html" class="nav-btn">Next: Test Retrieval →</a>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+  <script src="../assets/js/api-client.js"></script>
+
+  <script>
+    const apiClient = new LLMAPIClient('http://localhost:3000');
+    let chunks = [];
+    let vectorStore = [];
+
+    // Load chunks from Task 5
+    function loadChunks() {
+      const stored = localStorage.getItem('rag-chunks');
+      if (!stored) {
+        document.getElementById('noChunksWarning').style.display = 'block';
+        return;
+      }
+
+      chunks = JSON.parse(stored);
+      document.getElementById('numChunks').textContent = chunks.length;
+      document.getElementById('chunksInfo').style.display = 'block';
+      document.getElementById('noChunksWarning').style.display = 'none';
+    }
+
+    // Generate embeddings for all chunks
+    async function generateEmbeddings() {
+      if (chunks.length === 0) {
+        alert('Please load chunks first');
+        return;
+      }
+
+      const btn = document.getElementById('embedBtn');
+      btn.disabled = true;
+      document.getElementById('progressContainer').style.display = 'block';
+
+      vectorStore = [];
+      const startTime = Date.now();
+
+      try {
+        for (let i = 0; i < chunks.length; i++) {
+          const chunk = chunks[i];
+
+          // Update progress
+          const progress = Math.round(((i + 1) / chunks.length) * 100);
+          document.getElementById('progressFill').style.width = progress + '%';
+          document.getElementById('progressFill').textContent = progress + '%';
+          document.getElementById('progressText').textContent =
+            `Generating embeddings... (${i + 1}/${chunks.length})`;
+
+          // Generate embedding
+          const embedding = await apiClient.embed(chunk, 'openai');
+
+          // Store in vector store
+          vectorStore.push({
+            id: i,
+            text: chunk,
+            embedding: embedding,
+            metadata: {
+              chunkIndex: i,
+              length: chunk.length,
+              preview: chunk.substring(0, 100)
+            }
+          });
+        }
+
+        const timeTaken = ((Date.now() - startTime) / 1000).toFixed(1);
+
+        // Save to localStorage for next task
+        localStorage.setItem('rag-vector-store', JSON.stringify(vectorStore));
+
+        // Update stats
+        document.getElementById('totalEmbeddings').textContent = vectorStore.length;
+        document.getElementById('timeTaken').textContent = timeTaken + 's';
+        document.getElementById('embeddingStats').style.display = 'block';
+
+        document.getElementById('progressText').textContent = '✅ Embeddings complete!';
+        document.getElementById('progressFill').style.background = '#28a745';
+
+      } catch (error) {
+        alert('Error generating embeddings: ' + error.message);
+        document.getElementById('progressText').textContent = '❌ Error: ' + error.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Visualize first embedding
+    function visualizeEmbedding() {
+      if (vectorStore.length === 0) {
+        alert('Please generate embeddings first');
+        return;
+      }
+
+      const embedding = vectorStore[0].embedding;
+      const firstHundred = embedding.slice(0, 100);
+
+      // Find min/max for normalization
+      const min = Math.min(...firstHundred);
+      const max = Math.max(...firstHundred);
+
+      // Create heatmap
+      const viz = document.getElementById('embeddingViz');
+      viz.innerHTML = firstHundred.map((value, i) => {
+        // Normalize to 0-1 range
+        const normalized = (value - min) / (max - min);
+        // Color based on value (blue for negative, red for positive)
+        const color = value >= 0
+          ? `rgba(220, 53, 69, ${normalized})`
+          : `rgba(0, 123, 255, ${Math.abs(normalized)})`;
+
+        return `<div class="embedding-cell" style="background: ${color};" title="Dim ${i}: ${value.toFixed(4)}">${i}</div>`;
+      }).join('');
+
+      viz.style.display = 'grid';
+
+      document.getElementById('vizCaption').textContent =
+        `First 100 dimensions of 1536 total. Blue = negative values, Red = positive values.`;
+      document.getElementById('vizCaption').style.display = 'block';
+    }
+
+    // Show vector store
+    function showVectorStore() {
+      if (vectorStore.length === 0) {
+        alert('Please generate embeddings first');
+        return;
+      }
+
+      const output = document.getElementById('vectorStoreOutput');
+      output.innerHTML = `
+        <h3>Vector Store (first 3 entries):</h3>
+        ${vectorStore.slice(0, 3).map(item => `
+          <div class="vector-store-item">
+            <strong>ID:</strong> ${item.id}<br>
+            <strong>Text Preview:</strong> ${item.metadata.preview}...<br>
+            <strong>Embedding:</strong> [${item.embedding.slice(0, 5).map(n => n.toFixed(3)).join(', ')}...] (${item.embedding.length} dimensions)<br>
+            <strong>Chunk Length:</strong> ${item.metadata.length} characters
+          </div>
+        `).join('')}
+        <p style="margin-top: 1rem;">Total entries: ${vectorStore.length}</p>
+      `;
+      output.style.display = 'block';
+    }
+
+    // Auto-load chunks on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadChunks, 500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 9: Complete Q&A System | RAG Fundamentals</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .chat-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .chat-header {
+      padding: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 6px 6px 0 0;
+    }
+    .chat-messages {
+      height: 400px;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #f8f9fa;
+    }
+    .message {
+      margin: 0.75rem 0;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 80%;
+    }
+    .message-user {
+      background: #007bff;
+      color: white;
+      margin-left: auto;
+      text-align: right;
+    }
+    .message-assistant {
+      background: white;
+      border: 1px solid #dee2e6;
+    }
+    .message-system {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      font-size: 0.9rem;
+      max-width: 100%;
+    }
+    .chat-input-container {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #dee2e6;
+      background: white;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .chat-send-btn {
+      margin-left: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .chat-send-btn:hover:not(:disabled) {
+      background: #218838;
+    }
+    .chat-send-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+    .example-questions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .example-btn {
+      padding: 0.5rem 1rem;
+      background: #e7f3ff;
+      border: 1px solid #007bff;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #007bff;
+    }
+    .example-btn:hover {
+      background: #007bff;
+      color: white;
+    }
+    .typing-indicator {
+      display: none;
+      padding: 1rem;
+      color: #6c757d;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body data-task-id="task-9">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. API Integration Demo</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Loading & Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Generate Embeddings</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Test Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Build RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Complete Q&A System</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 9</span>
+      <h1>Complete Q&A System</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Build a production-ready RAG Q&A interface</li>
+        <li>Implement conversation history</li>
+        <li>Handle errors gracefully</li>
+        <li>Deploy a complete end-to-end RAG system</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>🎉 Congratulations!</h2>
+      <p>You've built all the components of a RAG system. Now let's put it all together into a polished Q&A interface.</p>
+
+      <h2>Interactive Q&A System</h2>
+      <p>Ask questions about Eleven Madison Park restaurant:</p>
+
+      <div class="chat-container">
+        <div class="chat-header">
+          <h3 style="margin: 0;">🍽️ Eleven Madison Park Q&A</h3>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.9rem;">Powered by RAG</p>
+        </div>
+
+        <div id="chatMessages" class="chat-messages">
+          <div class="message message-system">
+            👋 Welcome! I can answer questions about Eleven Madison Park using RAG.
+            <div style="margin-top: 0.5rem;">Vector store status: <strong id="vectorStatus">Loading...</strong></div>
+          </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+          AI is thinking...
+        </div>
+
+        <div class="chat-input-container">
+          <input
+            type="text"
+            id="chatInput"
+            class="chat-input"
+            placeholder="Ask a question..."
+            onkeypress="if(event.key==='Enter') sendMessage()"
+          >
+          <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+
+      <h3>Example Questions:</h3>
+      <div class="example-questions">
+        <button class="example-btn" onclick="askExample('What are the restaurant hours?')">📅 Hours</button>
+        <button class="example-btn" onclick="askExample('How much is the tasting menu?')">💰 Pricing</button>
+        <button class="example-btn" onclick="askExample('What is the dress code?')">👔 Dress Code</button>
+        <button class="example-btn" onclick="askExample('Where is the restaurant located?')">📍 Location</button>
+        <button class="example-btn" onclick="askExample('What type of cuisine?')">🍽️ Cuisine</button>
+      </div>
+
+      <h2>System Architecture</h2>
+      <p>Your complete RAG system flow:</p>
+      <pre style="background: #f8f9fa; padding: 1rem; border-radius: 4px;"><code>User Question
+      ↓
+[1] Embed Query (OpenAI API)
+      ↓
+[2] Semantic Search (Cosine Similarity)
+      ↓
+[3] Retrieve Top-K Chunks
+      ↓
+[4] Build Prompt (Context + Question)
+      ↓
+[5] Generate Answer (OpenAI API)
+      ↓
+Display to User</code></pre>
+
+      <h2>Key Features Implemented</h2>
+      <ul>
+        <li>✅ Document loading and intelligent chunking</li>
+        <li>✅ Embedding generation with OpenAI</li>
+        <li>✅ In-memory vector store</li>
+        <li>✅ Semantic search with cosine similarity</li>
+        <li>✅ Context-aware prompting</li>
+        <li>✅ Chat interface with conversation history</li>
+        <li>✅ Secure API proxying (keys never in browser)</li>
+      </ul>
+
+      <h2>What You've Learned</h2>
+      <div class="info-box">
+        <p><strong>You can now:</strong></p>
+        <ul>
+          <li>Explain how RAG works and why it's valuable</li>
+          <li>Load and chunk documents for semantic search</li>
+          <li>Generate embeddings and store them in a vector database</li>
+          <li>Implement semantic search with cosine similarity</li>
+          <li>Combine retrieval and generation into a RAG pipeline</li>
+          <li>Build production-ready Q&A systems</li>
+          <li>Securely integrate LLM APIs</li>
+        </ul>
+      </div>
+
+      <h2>Next Steps</h2>
+      <p>To take this further, you could:</p>
+      <ul>
+        <li><strong>Use a real vector database</strong> (Pinecone, Weaviate, ChromaDB)</li>
+        <li><strong>Add re-ranking</strong> to improve retrieval quality</li>
+        <li><strong>Implement conversation memory</strong> for multi-turn dialogue</li>
+        <li><strong>Add source citations</strong> showing which chunks were used</li>
+        <li><strong>Deploy to production</strong> with a backend framework</li>
+        <li><strong>Experiment with different chunking strategies</strong></li>
+        <li><strong>Try other embedding models</strong> (text-embedding-3-large, etc.)</li>
+      </ul>
+
+      <div class="success-box" style="background: #d4edda; border-left: 4px solid #28a745; padding: 1rem; margin: 2rem 0;">
+        <h3 style="color: #155724; margin-top: 0;">🎓 Course Complete!</h3>
+        <p style="color: #155724;">You've successfully built a complete RAG system from scratch. You now understand the fundamentals of Retrieval Augmented Generation and can apply these concepts to build powerful, grounded AI applications.</p>
+      </div>
+    </section>
+
+    <footer class="task-navigation">
+      <a href="task-8-rag-chain.html" class="nav-btn">← Previous: RAG Chain</a>
+      <a href="../index.html" class="nav-btn">🏠 Back to Home</a>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+  <script src="../assets/js/api-client.js"></script>
+
+  <script>
+    const apiClient = new LLMAPIClient('http://localhost:3000');
+    let vectorStore = [];
+    let conversationHistory = [];
+
+    // Load vector store
+    function loadVectorStore() {
+      const stored = localStorage.getItem('rag-vector-store');
+      if (stored) {
+        vectorStore = JSON.parse(stored);
+        document.getElementById('vectorStatus').textContent = `${vectorStore.length} chunks ready ✅`;
+        document.getElementById('vectorStatus').style.color = '#28a745';
+      } else {
+        document.getElementById('vectorStatus').textContent = 'Not loaded ⚠️ Complete tasks 5-6 first';
+        document.getElementById('vectorStatus').style.color = '#dc3545';
+      }
+    }
+
+    function addMessage(text, type) {
+      const messagesDiv = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message message-${type}`;
+      messageDiv.textContent = text;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const question = input.value.trim();
+
+      if (!question || vectorStore.length === 0) {
+        if (!question) return;
+        if (vectorStore.length === 0) {
+          addMessage('Please complete tasks 5-6 to create the vector store first.', 'system');
+          return;
+        }
+      }
+
+      // Add user message
+      addMessage(question, 'user');
+      input.value = '';
+
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = true;
+      document.getElementById('typingIndicator').style.display = 'block';
+
+      try {
+        // Retrieve
+        const queryEmbedding = await apiClient.embed(question, 'openai');
+        const results = vectorStore.map(item => ({
+          ...item,
+          similarity: cosineSimilarity(queryEmbedding, item.embedding)
+        }));
+        results.sort((a, b) => b.similarity - a.similarity);
+        const topChunks = results.slice(0, 3);
+        const context = topChunks.map(r => r.text).join('\n\n');
+
+        // Generate
+        const prompt = `You are a helpful assistant for Eleven Madison Park restaurant.
+
+Use the following context to answer the question. Be concise but informative. If you cannot answer based on the context, say "I don't have enough information to answer that."
+
+Context:
+${context}
+
+Question: ${question}
+
+Answer:`;
+
+        const answer = await apiClient.simpleChat(prompt, 'openai', {
+          temperature: 0.3,
+          max_tokens: 300
+        });
+
+        addMessage(answer, 'assistant');
+
+      } catch (error) {
+        addMessage(`Error: ${error.message}`, 'system');
+      } finally {
+        sendBtn.disabled = false;
+        document.getElementById('typingIndicator').style.display = 'none';
+      }
+    }
+
+    function askExample(question) {
+      document.getElementById('chatInput').value = question;
+      sendMessage();
+    }
+
+    function cosineSimilarity(vecA, vecB) {
+      let dot = 0, magA = 0, magB = 0;
+      for (let i = 0; i < vecA.length; i++) {
+        dot += vecA[i] * vecB[i];
+        magA += vecA[i] * vecA[i];
+        magB += vecB[i] * vecB[i];
+      }
+      return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadVectorStore();
+    });
+  </script>
+</body>
+</html>

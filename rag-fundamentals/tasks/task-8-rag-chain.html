@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 8: Build RAG Chain | RAG Fundamentals</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <style>
+    .rag-output {
+      padding: 1.5rem;
+      background: white;
+      border: 2px solid #28a745;
+      border-radius: 8px;
+      margin: 1rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .context-box {
+      padding: 1rem;
+      background: #f8f9fa;
+      border-left: 4px solid #ffc107;
+      border-radius: 4px;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body data-task-id="task-8">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">RAG Fundamentals</div>
+      <div class="sidebar-subtitle">RAG & LangChain</div>
+    </div>
+
+    <ul class="task-list">
+      <li class="task-list-item">
+        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+          <span class="task-status not-started">○</span>
+          <span>1. Project Overview</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+          <span class="task-status not-started">○</span>
+          <span>2. Understand RAG</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+          <span class="task-status not-started">○</span>
+          <span>3. LangChain 101</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+          <span class="task-status not-started">○</span>
+          <span>4. API Integration Demo</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
+          <span class="task-status not-started">○</span>
+          <span>5. Document Loading & Chunking</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
+          <span class="task-status not-started">○</span>
+          <span>6. Generate Embeddings</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
+          <span class="task-status not-started">○</span>
+          <span>7. Test Retrieval</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
+          <span class="task-status not-started">○</span>
+          <span>8. Build RAG Chain</span>
+        </a>
+      </li>
+      <li class="task-list-item">
+        <a href="task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
+          <span class="task-status not-started">○</span>
+          <span>9. Complete Q&A System</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 8</span>
+      <h1>Build RAG Chain</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Combine retrieval and generation into a RAG pipeline</li>
+        <li>Create effective prompts with context</li>
+        <li>Handle cases when no relevant context is found</li>
+        <li>Test the complete RAG system</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>The RAG Pipeline</h2>
+      <p>RAG combines two steps:</p>
+      <ol>
+        <li><strong>Retrieve:</strong> Find relevant chunks using semantic search</li>
+        <li><strong>Generate:</strong> Feed chunks + query to LLM for answer</li>
+      </ol>
+
+      <div class="info-box">
+        <p><strong>💡 Why RAG Works:</strong> The LLM gets specific, relevant context instead of relying on training data. This reduces hallucinations and provides up-to-date, verifiable answers.</p>
+      </div>
+
+      <h2>Load Vector Store</h2>
+      <div class="demo-container">
+        <button class="demo-button" onclick="loadVectorStore()">Load Vector Store</button>
+        <div id="storeInfo" style="display:none; margin-top: 1rem;">
+          <div class="stat-card">
+            <div class="stat-value" id="numVectors">0</div>
+            <div class="stat-label">Vectors Ready</div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Try the RAG Pipeline</h2>
+      <p>Ask a question and see the full RAG process in action:</p>
+
+      <div class="demo-container">
+        <input type="text" id="questionInput" class="demo-input" placeholder="Ask about Eleven Madison Park..." value="What are the restaurant hours?">
+        <button class="demo-button" onclick="askRAG()">Ask with RAG</button>
+
+        <div id="ragOutput" style="display:none; margin-top: 1rem;">
+          <h3>Retrieved Context:</h3>
+          <div id="contextDisplay" class="context-box"></div>
+
+          <h3>Generated Answer:</h3>
+          <div id="answerDisplay" class="rag-output"></div>
+        </div>
+      </div>
+
+      <h2>Code Example: RAG Chain</h2>
+<pre><code class="language-javascript">async function ragChain(question) {
+  // Step 1: Retrieve relevant chunks
+  const queryEmbedding = await apiClient.embed(question, 'openai');
+
+  const results = vectorStore.map(item => ({
+    ...item,
+    similarity: cosineSimilarity(queryEmbedding, item.embedding)
+  }));
+
+  results.sort((a, b) => b.similarity - a.similarity);
+  const topChunks = results.slice(0, 3);
+
+  // Step 2: Build context from retrieved chunks
+  const context = topChunks.map(r => r.text).join('\n\n');
+
+  // Step 3: Create prompt with context
+  const prompt = `You are a helpful assistant for Eleven Madison Park restaurant.
+
+Use the following context to answer the question. If you cannot answer based on the context, say so.
+
+Context:
+${context}
+
+Question: ${question}
+
+Answer:`;
+
+  // Step 4: Generate answer
+  const answer = await apiClient.simpleChat(prompt, 'openai', {
+    temperature: 0.3,  // Lower temp for factual answers
+    max_tokens: 300
+  });
+
+  return { answer, context, retrievedChunks: topChunks };
+}
+</code></pre>
+
+      <h2>Prompt Engineering Tips</h2>
+      <ul>
+        <li><strong>Clear role:</strong> "You are a helpful assistant for..."</li>
+        <li><strong>Explicit instructions:</strong> "Use the context to answer..."</li>
+        <li><strong>Honesty directive:</strong> "If you cannot answer, say so"</li>
+        <li><strong>Structure:</strong> Context → Question → Answer</li>
+        <li><strong>Lower temperature:</strong> 0.2-0.4 for factual accuracy</li>
+      </ul>
+
+      <h2>Compare: With vs Without RAG</h2>
+      <div class="demo-container">
+        <button class="demo-button" onclick="compareRAG()">Compare Answers</button>
+        <div id="comparisonOutput" style="display:none; margin-top: 1rem;"></div>
+      </div>
+
+      <h2>Practice Opportunity</h2>
+      <div class="practice-box">
+        <h3>Try These Questions:</h3>
+        <ul>
+          <li>"What are the restaurant hours?"</li>
+          <li>"How much is the tasting menu?"</li>
+          <li>"What's the dress code?"</li>
+          <li>"Do they have parking?" (may not be in context - test fallback)</li>
+        </ul>
+        <p>Notice how RAG answers are grounded in the retrieved context!</p>
+      </div>
+
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li><strong>RAG = Retrieval + Generation</strong> working together</li>
+        <li><strong>Context is injected</strong> into the prompt dynamically</li>
+        <li><strong>Lower temperature</strong> improves factual accuracy</li>
+        <li><strong>Prompt engineering</strong> guides the LLM to use context properly</li>
+        <li>Next: Package this into a complete Q&A interface!</li>
+      </ul>
+    </section>
+
+    <footer class="task-navigation">
+      <a href="task-7-retrieval.html" class="nav-btn">← Previous: Retrieval</a>
+      <a href="task-9-complete-system.html" class="nav-btn">Next: Complete System →</a>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/code-interactions.js"></script>
+  <script src="../assets/js/practice-tracker.js"></script>
+  <script src="../assets/js/api-client.js"></script>
+
+  <script>
+    const apiClient = new LLMAPIClient('http://localhost:3000');
+    let vectorStore = [];
+
+    function loadVectorStore() {
+      const stored = localStorage.getItem('rag-vector-store');
+      if (stored) {
+        vectorStore = JSON.parse(stored);
+        document.getElementById('numVectors').textContent = vectorStore.length;
+        document.getElementById('storeInfo').style.display = 'block';
+      } else {
+        alert('Please complete Task 6 first to create embeddings');
+      }
+    }
+
+    async function askRAG() {
+      if (vectorStore.length === 0) {
+        alert('Please load vector store first');
+        return;
+      }
+
+      const question = document.getElementById('questionInput').value;
+      if (!question.trim()) {
+        alert('Please enter a question');
+        return;
+      }
+
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        // Retrieve
+        const queryEmbedding = await apiClient.embed(question, 'openai');
+        const results = vectorStore.map(item => ({
+          ...item,
+          similarity: cosineSimilarity(queryEmbedding, item.embedding)
+        }));
+        results.sort((a, b) => b.similarity - a.similarity);
+        const topChunks = results.slice(0, 3);
+
+        // Build context
+        const context = topChunks.map(r => r.text).join('\n\n---\n\n');
+
+        // Display context
+        document.getElementById('contextDisplay').textContent = context;
+
+        // Generate answer
+        const prompt = `You are a helpful assistant for Eleven Madison Park restaurant.
+
+Use the following context to answer the question. If you cannot answer based on the context, say "I don't have enough information to answer that."
+
+Context:
+${context}
+
+Question: ${question}
+
+Answer:`;
+
+        const answer = await apiClient.simpleChat(prompt, 'openai', {
+          temperature: 0.3,
+          max_tokens: 300
+        });
+
+        document.getElementById('answerDisplay').textContent = answer;
+        document.getElementById('ragOutput').style.display = 'block';
+
+      } catch (error) {
+        alert('Error: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Ask with RAG';
+      }
+    }
+
+    async function compareRAG() {
+      const question = "What are the restaurant hours?";
+      const btn = event.target;
+      btn.disabled = true;
+
+      try {
+        // Without RAG
+        const withoutRAG = await apiClient.simpleChat(question, 'openai', {
+          temperature: 0.7,
+          max_tokens: 150
+        });
+
+        // With RAG (simplified)
+        const queryEmbedding = await apiClient.embed(question, 'openai');
+        const results = vectorStore.map(item => ({
+          ...item,
+          similarity: cosineSimilarity(queryEmbedding, item.embedding)
+        }));
+        results.sort((a, b) => b.similarity - a.similarity);
+        const context = results.slice(0, 3).map(r => r.text).join('\n\n');
+
+        const prompt = `Context: ${context}\n\nQuestion: ${question}\nAnswer:`;
+        const withRAG = await apiClient.simpleChat(prompt, 'openai', {
+          temperature: 0.3,
+          max_tokens: 150
+        });
+
+        document.getElementById('comparisonOutput').innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <h4>❌ Without RAG (No Context)</h4>
+              <div class="context-box">${withoutRAG}</div>
+              <p style="font-size: 0.85rem; color: #dc3545;">May hallucinate or give generic answers</p>
+            </div>
+            <div>
+              <h4>✅ With RAG (Retrieved Context)</h4>
+              <div class="rag-output">${withRAG}</div>
+              <p style="font-size: 0.85rem; color: #28a745;">Grounded in actual restaurant data</p>
+            </div>
+          </div>
+        `;
+        document.getElementById('comparisonOutput').style.display = 'block';
+
+      } catch (error) {
+        alert('Error: ' + error.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function cosineSimilarity(vecA, vecB) {
+      let dot = 0, magA = 0, magB = 0;
+      for (let i = 0; i < vecA.length; i++) {
+        dot += vecA[i] * vecB[i];
+        magA += vecA[i] * vecA[i];
+        magB += vecB[i] * vecB[i];
+      }
+      return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadVectorStore, 500);
+    });
+  </script>
+</body>
+</html>
