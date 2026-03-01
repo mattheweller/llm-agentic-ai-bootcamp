@@ -28,6 +28,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve frontend static files
+const frontendPath = join(__dirname, '..', 'rag-fundamentals');
+app.use(express.static(frontendPath));
+
 // Health check endpoint
 app.use('/health', healthRouter);
 
@@ -35,20 +39,6 @@ app.use('/health', healthRouter);
 app.use('/api/openai', openaiRouter);
 app.use('/api/anthropic', anthropicRouter);
 app.use('/api/google', googleRouter);
-
-// Root endpoint
-app.get('/', (req, res) => {
-  res.json({
-    message: 'LLM Bootcamp API Server',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      openai: '/api/openai',
-      anthropic: '/api/anthropic',
-      google: '/api/google'
-    }
-  });
-});
 
 // 404 handler
 app.use((req, res) => {
@@ -66,7 +56,8 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`\n🚀 LLM Bootcamp API Server running on http://localhost:${PORT}`);
+  console.log(`\n🚀 LLM Bootcamp Server running on http://localhost:${PORT}`);
+  console.log(`🌐 Frontend: http://localhost:${PORT}`);
   console.log(`📋 Health check: http://localhost:${PORT}/health`);
   console.log(`🔑 Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });

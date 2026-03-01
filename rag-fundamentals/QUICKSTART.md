@@ -40,7 +40,8 @@ npm run dev
 
 You should see:
 ```
-🚀 LLM Bootcamp API Server running on http://localhost:3000
+🚀 LLM Bootcamp Server running on http://localhost:3000
+🌐 Frontend: http://localhost:3000
 📋 Health check: http://localhost:3000/health
 ```
 
@@ -48,14 +49,16 @@ You should see:
 
 ### Step 2: Open the Interactive Exercises
 
-Open `rag-fundamentals/index.html` in your browser:
+Navigate to the frontend in your browser:
 
 ```bash
-# From repository root
-open rag-fundamentals/index.html
+# Open in your default browser
+open http://localhost:3000
 
-# Or double-click index.html in your file explorer
+# Or manually navigate to: http://localhost:3000
 ```
+
+The server now serves both the backend API **and** the frontend on the same port - no need to open files directly!
 
 ### Step 3: Try the Interactive Demo
 
@@ -204,4 +207,4 @@ rag-fundamentals/
 
 ---
 
-**Ready to learn RAG?** Start the server and open `index.html`! 🚀
+**Ready to learn RAG?** Start the server and navigate to `http://localhost:3000`! 🚀

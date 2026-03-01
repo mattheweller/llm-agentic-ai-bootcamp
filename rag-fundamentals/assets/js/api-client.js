@@ -6,8 +6,8 @@
  */
 
 class LLMAPIClient {
-  constructor(baseURL = 'http://localhost:3000') {
-    this.baseURL = baseURL;
+  constructor(baseURL = '') {
+    this.baseURL = baseURL; // Empty string = same-origin requests
     this.defaultTimeout = 30000; // 30 seconds
   }
 

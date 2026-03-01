@@ -146,6 +146,7 @@ Build AI agents using the Model Context Protocol and OpenAI Agents SDK for enhan
 ### Prerequisites
 
 - **Python 3.x** (Python 3.10+ recommended)
+- **Node.js 18+** (for backend API server)
 - **Jupyter Notebook** or **Jupyter Lab**
 - **API Keys:** OpenAI API key (required for most modules)
 - **GPU Access:** Google Colab recommended for fine-tuning topic
@@ -182,9 +183,55 @@ Build AI agents using the Model Context Protocol and OpenAI Agents SDK for enhan
    jupyter lab
    ```
 
-5. **For RAG Fundamentals interactive website:**
-   - Open `rag-fundamentals/index.html` directly in your browser
-   - No server required - runs completely client-side
+### Running the Site Locally
+
+The repository includes a unified server that serves both the backend API and the RAG Fundamentals frontend.
+
+#### 1. Start the Server
+
+```bash
+# Navigate to server directory
+cd server
+
+# Install dependencies (first time only)
+npm install
+
+# Start the server
+npm start
+# or for development with auto-reload:
+npm run dev
+```
+
+The server runs on `http://localhost:3000` and serves:
+- **Frontend:** `http://localhost:3000` (RAG Fundamentals interactive site)
+- **API:** `http://localhost:3000/api/*` (OpenAI, Anthropic, Google endpoints)
+- **Health:** `http://localhost:3000/health` (API key status)
+
+**Verify it's running:**
+```bash
+curl http://localhost:3000/health
+```
+
+You should see API key status confirming which providers are configured.
+
+**Note:** The server expects a `.env` file in the repository root with:
+```env
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_API_KEY=...
+```
+
+See [server/README.md](server/README.md) for full API documentation.
+
+#### 2. Access the Frontend
+
+Open your browser to `http://localhost:3000` to access the RAG Fundamentals interactive site.
+
+**Benefits of unified server:**
+- ✅ Single server to start/stop
+- ✅ No CORS issues (same origin)
+- ✅ Simple setup for learners
+- ✅ Production-ready architecture pattern
 
 ### Recommended Learning Path
 

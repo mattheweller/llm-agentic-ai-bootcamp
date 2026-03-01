@@ -1,13 +1,14 @@
-# LLM Bootcamp API Server
+# LLM Bootcamp Server
 
-Secure Express backend that proxies LLM API requests to OpenAI, Anthropic, and Google, keeping API keys server-side.
+Full-stack Express server that serves the RAG Fundamentals frontend and proxies LLM API requests to OpenAI, Anthropic, and Google.
 
 ## Features
 
-- **Secure:** API keys never exposed to browser - all requests proxied through backend
+- **Frontend Serving:** Serves the RAG Fundamentals interactive exercises from root (`/`)
+- **Secure API Proxy:** API keys never exposed to browser - all LLM requests proxied through backend
 - **Multi-provider:** Support for OpenAI, Anthropic (Claude), and Google (Gemini)
 - **Health checks:** Verify API keys are loaded without exposing values
-- **Clean API:** RESTful endpoints for each provider
+- **Single Server:** Both frontend and backend API on same port (3000)
 - **Error handling:** Comprehensive error handling and logging
 
 ## Setup
@@ -44,6 +45,37 @@ npm start
 ```
 
 Server runs on `http://localhost:3000` by default.
+
+## Frontend Serving
+
+The server now serves both the backend API **and** the frontend static files.
+
+### Request Routing
+
+Requests are processed in this order:
+
+1. **API Routes** (checked first for performance):
+   - `/health` - Health check endpoint
+   - `/api/openai/*` - OpenAI routes
+   - `/api/anthropic/*` - Anthropic routes
+   - `/api/google/*` - Google routes
+
+2. **Static Files** (fallback):
+   - `/` → Serves `rag-fundamentals/index.html`
+   - `/tasks/*.html` → Serves task pages
+   - `/assets/**/*` → Serves CSS, JavaScript, images, data files
+
+3. **404 Handler**:
+   - Returns JSON error for unmatched routes
+
+### Frontend Access
+
+After starting the server:
+- **Homepage:** `http://localhost:3000`
+- **Task pages:** `http://localhost:3000/tasks/task-1-overview.html`
+- **Health check:** `http://localhost:3000/health` (JSON response)
+
+**Key benefit:** No CORS issues - frontend and API share the same origin.
 
 ## API Endpoints
 
