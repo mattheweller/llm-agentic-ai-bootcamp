@@ -28,8 +28,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve frontend static files
-const frontendPath = join(__dirname, '..', 'rag-fundamentals');
+// Serve frontend static files from repository root
+const frontendPath = join(__dirname, '..');
 app.use(express.static(frontendPath));
 
 // Health check endpoint

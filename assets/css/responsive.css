@@ -1,0 +1,183 @@
+/* Responsive Styles - Mobile First */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin-left: 0;
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Adjust typography for smaller screens */
+  .task-header h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Task grid - single column */
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Module cards grid - single column */
+  .module-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Code blocks - horizontal scroll */
+  pre[class*="language-"] {
+    font-size: 0.75rem;
+  }
+
+  /* Task navigation - stack on mobile */
+  .task-navigation {
+    flex-direction: column;
+  }
+
+  .nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Course hero */
+  .course-hero h1 {
+    font-size: 2rem;
+  }
+
+  .course-hero .subtitle {
+    font-size: 1.0625rem;
+  }
+
+  .course-stats {
+    gap: var(--space-lg);
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+}
+
+/* Mobile (640px and below) */
+@media (max-width: 640px) {
+  :root {
+    --space-xl: 1.5rem;
+    --space-2xl: 2rem;
+  }
+
+  .content {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .task-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .course-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .course-hero .subtitle {
+    font-size: 1rem;
+  }
+
+  .course-stats {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* Practice zone - smaller padding */
+  .practice-zone {
+    padding: var(--space-md);
+  }
+
+  /* Code blocks - smaller padding */
+  pre[class*="language-"] {
+    padding: var(--space-md);
+  }
+
+  /* Module cards */
+  .module-card {
+    padding: var(--space-lg);
+  }
+
+  .module-card h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Desktop Large (1280px and above) */
+@media (min-width: 1280px) {
+  .content {
+    padding: var(--space-2xl) var(--space-2xl);
+  }
+
+  .module-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .task-list-link,
+  .nav-btn,
+  .copy-btn,
+  .module-toggle {
+    min-height: 44px;
+  }
+
+  .practice-checkbox {
+    width: 24px;
+    height: 24px;
+  }
+
+  .module-card-link {
+    min-height: 44px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  .hamburger,
+  .task-navigation,
+  .copy-btn,
+  .module-card-link {
+    display: none;
+  }
+
+  .content {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  .code-block-container {
+    page-break-inside: avoid;
+  }
+
+  .module-card {
+    page-break-inside: avoid;
+  }
+}

@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAG RAG Fundamentals: RAG & LangChain LangChain Fundamentals</title>
+  <title>Agents - CrewAI | LLM & Agentic AI Bootcamp</title>
+  <meta name="description" content="Build role-based agent teams for data science with custom tools using CrewAI.">
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/homepage.css">
   <link rel="stylesheet" href="/assets/css/responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
 </head>
-<body data-module-id="rag-fundamentals" data-task-id="overview">
+<body data-module-id="agents-crewai" data-task-id="overview">
+  <!-- Mobile Hamburger Menu -->
   <button class="hamburger" aria-label="Toggle menu">
     <span></span>
     <span></span>
     <span></span>
   </button>
 
+  <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">
@@ -211,117 +214,105 @@
     </ul>
   </nav>
 
+  <!-- Main Content -->
   <main class="content">
-    <div class="hero">
-      <h1>RAG Fundamentals: RAG & LangChain Fundamentals</h1>
-      <p>Build a question-answering AI assistant using Retrieval Augmented Generation (RAG) with the LangChain framework</p>
+    <div class="task-header">
+      <div class="task-number">Module 06</div>
+      <h1>Agents - CrewAI</h1>
+      <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: var(--space-xl);">
+        Build role-based agent teams for data science automation with custom tools and task delegation.
+      </p>
     </div>
 
-    <section>
-      <h2>What You'll Learn</h2>
-      <ul>
-        <li><strong>Understand RAG:</strong> Learn how Retrieval Augmented Generation solves the limitations of LLMs by grounding responses in specific, verifiable data</li>
-        <li><strong>Master LangChain:</strong> Use LangChain's modular components to build production-ready RAG applications</li>
-        <li><strong>Document Processing:</strong> Load, chunk, and prepare text data for semantic search</li>
-        <li><strong>Embeddings & Vectors:</strong> Convert text to numerical representations and store them for similarity search</li>
-        <li><strong>Build Complete Pipeline:</strong> Combine retrieval and generation into a working Q&A system</li>
-        <li><strong>Deploy with UI:</strong> Create an interactive web interface using Gradio</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Project Overview</h2>
-      <p>In this module, you'll build a Q&A assistant for <strong>Eleven Madison Park</strong> restaurant. The assistant will answer questions about menus, reservations, dress code, team members, and more - all based on real restaurant data.</p>
+    <section class="task-content">
+      <h2>About This Module</h2>
+      <p>Learn to build production-ready agent teams using CrewAI, a framework for orchestrating role-based AI agents. This module covers custom tool development, agent coordination, and applying AI agents to data science workflows including ML model training.</p>
 
       <div class="callout callout-info">
-        <strong>Real-World Application:</strong> The techniques you learn here apply to any domain-specific Q&A system - customer support, documentation search, knowledge bases, and more.
+        <h3>What You'll Learn</h3>
+        <ul>
+          <li>CrewAI agent architecture and role design</li>
+          <li>Building custom tools with Pydantic validation</li>
+          <li>Agent team coordination and task delegation</li>
+          <li>Data science automation with pandas and scikit-learn</li>
+          <li>Predictive analytics with XGBoost and ML pipelines</li>
+          <li>Production-ready tool patterns (notebookExecutor)</li>
+        </ul>
       </div>
-    </section>
 
-    <section>
-      <h2>Tasks</h2>
+      <h2>Learning Resources</h2>
       <div class="task-grid">
-        <a href="tasks/task-1-overview.html" class="task-card">
-          <div class="task-card-number">Task 1</div>
-          <div class="task-card-title">Project Overview</div>
-          <div class="task-card-desc">Introduction to the module and learning objectives</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📊 Presentations (2 Parts)</div>
+          <h3 class="task-card-title">CrewAI Overview</h3>
+          <p class="task-card-desc">Two comprehensive slide decks covering agent design, custom tools, and data science workflows.</p>
+          <a href="/agents-crewai/presentation-part-a.pptx" download class="nav-btn" style="margin-top: var(--space-md);">Download Part A</a>
+          <a href="/agents-crewai/presentation-part-b.pptx" download class="nav-btn" style="margin-top: var(--space-sm);">Download Part B</a>
+        </div>
 
-        <a href="tasks/task-2-understand-rag.html" class="task-card">
-          <div class="task-card-number">Task 2</div>
-          <div class="task-card-title">Understand RAG</div>
-          <div class="task-card-desc">Learn what RAG is, why it matters, and how it works</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📓 Jupyter Notebooks (2)</div>
+          <h3 class="task-card-title">Data Science Automation</h3>
+          <p class="task-card-desc">Two interactive notebooks covering exploratory data analysis and predictive ML modeling.</p>
+          <a href="/agents-crewai/data-science-automation.ipynb" download class="nav-btn" style="margin-top: var(--space-md);">Download Notebook 1</a>
+          <a href="/agents-crewai/predictive-analytics-ml.ipynb" download class="nav-btn" style="margin-top: var(--space-sm);">Download Notebook 2</a>
+        </div>
 
-        <a href="tasks/task-3-langchain-101.html" class="task-card">
-          <div class="task-card-number">Task 3</div>
-          <div class="task-card-title">LangChain 101</div>
-          <div class="task-card-desc">Introduction to LangChain framework and its components</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">🛠️ Custom Tool</div>
+          <h3 class="task-card-title">Notebook Executor Tool</h3>
+          <p class="task-card-desc">Production-ready custom tool enabling agents to execute Python code with dependency management.</p>
+          <a href="/agents-crewai/tools/notebookExecutor.py" download class="nav-btn" style="margin-top: var(--space-md);">Download Tool</a>
+        </div>
 
-        <a href="tasks/task-4-setup-data-loading.html" class="task-card">
-          <div class="task-card-number">Task 4</div>
-          <div class="task-card-title">Setup & Data Loading</div>
-          <div class="task-card-desc">Configure environment and load restaurant data</div>
-        </a>
-
-        <a href="tasks/task-5-document-chunking.html" class="task-card">
-          <div class="task-card-number">Task 5</div>
-          <div class="task-card-title">Document Chunking</div>
-          <div class="task-card-desc">Split documents into manageable chunks with context</div>
-        </a>
-
-        <a href="tasks/task-6-embeddings-vectors.html" class="task-card">
-          <div class="task-card-number">Task 6</div>
-          <div class="task-card-title">Embeddings & Vector Stores</div>
-          <div class="task-card-desc">Convert text to vectors and store for similarity search</div>
-        </a>
-
-        <a href="tasks/task-7-testing-retrieval.html" class="task-card">
-          <div class="task-card-number">Task 7</div>
-          <div class="task-card-title">Testing Retrieval</div>
-          <div class="task-card-desc">Validate that vector search finds relevant information</div>
-        </a>
-
-        <a href="tasks/task-8-building-rag-chain.html" class="task-card">
-          <div class="task-card-number">Task 8</div>
-          <div class="task-card-title">Building RAG Chain</div>
-          <div class="task-card-desc">Combine retrieval and generation into complete pipeline</div>
-        </a>
-
-        <a href="tasks/task-9-gradio-interface.html" class="task-card">
-          <div class="task-card-number">Task 9</div>
-          <div class="task-card-title">Gradio Interface</div>
-          <div class="task-card-desc">Deploy your RAG system with an interactive web UI</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📁 Sample Data</div>
+          <h3 class="task-card-title">Supplement Sales Dataset</h3>
+          <p class="task-card-desc">Real-world CSV with 4,384 rows for hands-on data analysis and ML training.</p>
+          <a href="/agents-crewai/data/Supplement_Sales_Weekly.csv" download class="nav-btn" style="margin-top: var(--space-md);">Download CSV</a>
+        </div>
       </div>
-    </section>
 
-    <section>
       <h2>Prerequisites</h2>
       <ul>
         <li>Python 3.8 or higher</li>
-        <li>OpenAI API key</li>
-        <li>Basic understanding of Python and APIs</li>
-        <li>Familiarity with command line</li>
+        <li>OpenAI API key (required)</li>
+        <li>Basic understanding of pandas DataFrames</li>
+        <li>Familiarity with data science workflows (helpful)</li>
       </ul>
-    </section>
 
-    <section>
-      <h2>Data File</h2>
-      <p>Download the restaurant data file for this project:</p>
-      <p><a href="assets/data/eleven_madison_park_data.txt" download>📥 eleven_madison_park_data.txt</a></p>
-    </section>
+      <h2>Key Technologies</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-xl);">
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">CrewAI</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">pandas</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">scikit-learn</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">XGBoost</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">Custom Tools</span>
+      </div>
 
-    <section>
       <h2>Getting Started</h2>
-      <p>Ready to begin? Start with <a href="tasks/task-1-overview.html">Task 1: Project Overview</a></p>
+      <ol>
+        <li>Download both notebooks and the custom tool using the buttons above</li>
+        <li>Place <code>notebookExecutor.py</code> in the <code>tools/</code> directory</li>
+        <li>Download the sample CSV to the <code>data/</code> directory</li>
+        <li>Open Notebook 1 (Data Science Automation) in Jupyter or Colab</li>
+        <li>Configure your OpenAI API key in a <code>.env</code> file</li>
+        <li>Install dependencies: <code>pip install crewai pandas numpy scikit-learn xgboost</code></li>
+        <li>Complete Notebook 1, then proceed to Notebook 2 (Predictive Analytics)</li>
+      </ol>
+
+      <div class="callout callout-warning">
+        <h3>Custom Tool Pattern</h3>
+        <p>The <code>notebookExecutor.py</code> tool demonstrates production patterns for CrewAI custom tools including Pydantic validation, namespace management, and automatic dependency installation. Study this tool to learn how to build robust agent capabilities.</p>
+      </div>
     </section>
+
+    <nav class="task-navigation">
+      <a href="/agents-langgraph/" class="nav-btn">← Previous Module</a>
+      <a href="/agents-n8n-workflows/" class="nav-btn">Next Module →</a>
+    </nav>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script src="/assets/js/module-navigator.js"></script>
   <script src="/assets/js/progress-tracker.js"></script>
 </body>

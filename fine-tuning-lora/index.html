@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAG RAG Fundamentals: RAG & LangChain LangChain Fundamentals</title>
+  <title>Fine-Tuning & LoRA | LLM & Agentic AI Bootcamp</title>
+  <meta name="description" content="Master parameter-efficient fine-tuning techniques using LoRA and quantization.">
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/homepage.css">
   <link rel="stylesheet" href="/assets/css/responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
 </head>
-<body data-module-id="rag-fundamentals" data-task-id="overview">
+<body data-module-id="fine-tuning-lora" data-task-id="overview">
+  <!-- Mobile Hamburger Menu -->
   <button class="hamburger" aria-label="Toggle menu">
     <span></span>
     <span></span>
     <span></span>
   </button>
 
+  <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">
@@ -211,117 +214,97 @@
     </ul>
   </nav>
 
+  <!-- Main Content -->
   <main class="content">
-    <div class="hero">
-      <h1>RAG Fundamentals: RAG & LangChain Fundamentals</h1>
-      <p>Build a question-answering AI assistant using Retrieval Augmented Generation (RAG) with the LangChain framework</p>
+    <div class="task-header">
+      <div class="task-number">Module 03</div>
+      <h1>Fine-Tuning & LoRA</h1>
+      <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: var(--space-xl);">
+        Master parameter-efficient fine-tuning techniques using LoRA and quantization to adapt large language models.
+      </p>
     </div>
 
-    <section>
-      <h2>What You'll Learn</h2>
-      <ul>
-        <li><strong>Understand RAG:</strong> Learn how Retrieval Augmented Generation solves the limitations of LLMs by grounding responses in specific, verifiable data</li>
-        <li><strong>Master LangChain:</strong> Use LangChain's modular components to build production-ready RAG applications</li>
-        <li><strong>Document Processing:</strong> Load, chunk, and prepare text data for semantic search</li>
-        <li><strong>Embeddings & Vectors:</strong> Convert text to numerical representations and store them for similarity search</li>
-        <li><strong>Build Complete Pipeline:</strong> Combine retrieval and generation into a working Q&A system</li>
-        <li><strong>Deploy with UI:</strong> Create an interactive web interface using Gradio</li>
-      </ul>
-    </section>
+    <section class="task-content">
+      <h2>About This Module</h2>
+      <p>Learn to fine-tune large language models efficiently using LoRA (Low-Rank Adaptation) and quantization techniques. This module covers parameter-efficient fine-tuning, PEFT strategies, and model optimization for resource-constrained environments.</p>
 
-    <section>
-      <h2>Project Overview</h2>
-      <p>In this module, you'll build a Q&A assistant for <strong>Eleven Madison Park</strong> restaurant. The assistant will answer questions about menus, reservations, dress code, team members, and more - all based on real restaurant data.</p>
+      <div class="callout callout-danger">
+        <h3>GPU Required</h3>
+        <p>This module requires GPU acceleration. Use Google Colab with a T4 or V100 runtime. The free Colab tier provides sufficient resources for this module.</p>
+      </div>
 
       <div class="callout callout-info">
-        <strong>Real-World Application:</strong> The techniques you learn here apply to any domain-specific Q&A system - customer support, documentation search, knowledge bases, and more.
+        <h3>What You'll Learn</h3>
+        <ul>
+          <li>Parameter-efficient fine-tuning (PEFT) fundamentals</li>
+          <li>LoRA architecture and implementation</li>
+          <li>Quantization with bitsandbytes (4-bit, 8-bit)</li>
+          <li>Model optimization and memory management</li>
+          <li>Fine-tuning for sentiment analysis tasks</li>
+        </ul>
       </div>
-    </section>
 
-    <section>
-      <h2>Tasks</h2>
+      <h2>Learning Resources</h2>
       <div class="task-grid">
-        <a href="tasks/task-1-overview.html" class="task-card">
-          <div class="task-card-number">Task 1</div>
-          <div class="task-card-title">Project Overview</div>
-          <div class="task-card-desc">Introduction to the module and learning objectives</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📊 Presentation</div>
+          <h3 class="task-card-title">Fine-Tuning & LoRA Overview</h3>
+          <p class="task-card-desc">Comprehensive slide deck covering PEFT, LoRA theory, and practical optimization strategies.</p>
+          <a href="/fine-tuning-lora/presentation.pptx" download class="nav-btn" style="margin-top: var(--space-md);">Download Slides</a>
+        </div>
 
-        <a href="tasks/task-2-understand-rag.html" class="task-card">
-          <div class="task-card-number">Task 2</div>
-          <div class="task-card-title">Understand RAG</div>
-          <div class="task-card-desc">Learn what RAG is, why it matters, and how it works</div>
-        </a>
-
-        <a href="tasks/task-3-langchain-101.html" class="task-card">
-          <div class="task-card-number">Task 3</div>
-          <div class="task-card-title">LangChain 101</div>
-          <div class="task-card-desc">Introduction to LangChain framework and its components</div>
-        </a>
-
-        <a href="tasks/task-4-setup-data-loading.html" class="task-card">
-          <div class="task-card-number">Task 4</div>
-          <div class="task-card-title">Setup & Data Loading</div>
-          <div class="task-card-desc">Configure environment and load restaurant data</div>
-        </a>
-
-        <a href="tasks/task-5-document-chunking.html" class="task-card">
-          <div class="task-card-number">Task 5</div>
-          <div class="task-card-title">Document Chunking</div>
-          <div class="task-card-desc">Split documents into manageable chunks with context</div>
-        </a>
-
-        <a href="tasks/task-6-embeddings-vectors.html" class="task-card">
-          <div class="task-card-number">Task 6</div>
-          <div class="task-card-title">Embeddings & Vector Stores</div>
-          <div class="task-card-desc">Convert text to vectors and store for similarity search</div>
-        </a>
-
-        <a href="tasks/task-7-testing-retrieval.html" class="task-card">
-          <div class="task-card-number">Task 7</div>
-          <div class="task-card-title">Testing Retrieval</div>
-          <div class="task-card-desc">Validate that vector search finds relevant information</div>
-        </a>
-
-        <a href="tasks/task-8-building-rag-chain.html" class="task-card">
-          <div class="task-card-number">Task 8</div>
-          <div class="task-card-title">Building RAG Chain</div>
-          <div class="task-card-desc">Combine retrieval and generation into complete pipeline</div>
-        </a>
-
-        <a href="tasks/task-9-gradio-interface.html" class="task-card">
-          <div class="task-card-number">Task 9</div>
-          <div class="task-card-title">Gradio Interface</div>
-          <div class="task-card-desc">Deploy your RAG system with an interactive web UI</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📓 Jupyter Notebook</div>
+          <h3 class="task-card-title">PEFT & LoRA Implementation</h3>
+          <p class="task-card-desc">Hands-on notebook covering model loading, LoRA configuration, training, and evaluation.</p>
+          <a href="/fine-tuning-lora/fine-tuning-peft-lora.ipynb" download class="nav-btn" style="margin-top: var(--space-md);">Download Notebook</a>
+          <a href="https://colab.research.google.com/github/yourusername/repo/blob/main/fine-tuning-lora/fine-tuning-peft-lora.ipynb" target="_blank" class="nav-btn" style="margin-top: var(--space-sm); background: var(--accent-warning);">Open in Colab</a>
+        </div>
       </div>
-    </section>
 
-    <section>
       <h2>Prerequisites</h2>
       <ul>
         <li>Python 3.8 or higher</li>
-        <li>OpenAI API key</li>
-        <li>Basic understanding of Python and APIs</li>
-        <li>Familiarity with command line</li>
+        <li>Google Colab account (for GPU access)</li>
+        <li>Basic understanding of PyTorch tensors and models</li>
+        <li>Familiarity with transformer architectures (helpful)</li>
       </ul>
-    </section>
 
-    <section>
-      <h2>Data File</h2>
-      <p>Download the restaurant data file for this project:</p>
-      <p><a href="assets/data/eleven_madison_park_data.txt" download>📥 eleven_madison_park_data.txt</a></p>
-    </section>
+      <h2>Key Technologies</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-xl);">
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">PyTorch</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">Transformers</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">PEFT</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">LoRA</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">bitsandbytes</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">TRL</span>
+      </div>
 
-    <section>
       <h2>Getting Started</h2>
-      <p>Ready to begin? Start with <a href="tasks/task-1-overview.html">Task 1: Project Overview</a></p>
+      <ol>
+        <li>Open the notebook in Google Colab using the button above</li>
+        <li>Select a GPU runtime: Runtime → Change runtime type → T4 GPU</li>
+        <li>Install required libraries (included in first notebook cell)</li>
+        <li>Download the pre-trained model and dataset</li>
+        <li>Follow the notebook tasks sequentially</li>
+      </ol>
+
+      <div class="callout callout-warning">
+        <h3>Important Notes</h3>
+        <ul>
+          <li>Free Colab GPU sessions timeout after 12 hours of inactivity</li>
+          <li>Save checkpoints regularly to Google Drive</li>
+          <li>The notebook includes a pre-trained LoRA adapter (174 MB) to save training time</li>
+        </ul>
+      </div>
     </section>
+
+    <nav class="task-navigation">
+      <a href="/pydantic-ai-assistants/" class="nav-btn">← Previous Module</a>
+      <a href="/agents-autogen/" class="nav-btn">Next Module →</a>
+    </nav>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script src="/assets/js/module-navigator.js"></script>
   <script src="/assets/js/progress-tracker.js"></script>
 </body>
