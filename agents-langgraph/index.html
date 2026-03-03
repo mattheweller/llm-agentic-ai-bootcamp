@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAG RAG Fundamentals: RAG & LangChain LangChain Fundamentals</title>
+  <title>Agents - LangGraph | LLM & Agentic AI Bootcamp</title>
+  <meta name="description" content="Design state-machine workflows for agentic applications using LangGraph.">
   <link rel="stylesheet" href="/assets/css/global.css">
   <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/homepage.css">
   <link rel="stylesheet" href="/assets/css/responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
 </head>
-<body data-module-id="rag-fundamentals" data-task-id="overview">
+<body data-module-id="agents-langgraph" data-task-id="overview">
+  <!-- Mobile Hamburger Menu -->
   <button class="hamburger" aria-label="Toggle menu">
     <span></span>
     <span></span>
     <span></span>
   </button>
 
+  <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">
@@ -211,117 +214,86 @@
     </ul>
   </nav>
 
+  <!-- Main Content -->
   <main class="content">
-    <div class="hero">
-      <h1>RAG Fundamentals: RAG & LangChain Fundamentals</h1>
-      <p>Build a question-answering AI assistant using Retrieval Augmented Generation (RAG) with the LangChain framework</p>
+    <div class="task-header">
+      <div class="task-number">Module 05</div>
+      <h1>Agents - LangGraph</h1>
+      <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: var(--space-xl);">
+        Design state-machine workflows for agentic applications using LangGraph's powerful orchestration framework.
+      </p>
     </div>
 
-    <section>
-      <h2>What You'll Learn</h2>
-      <ul>
-        <li><strong>Understand RAG:</strong> Learn how Retrieval Augmented Generation solves the limitations of LLMs by grounding responses in specific, verifiable data</li>
-        <li><strong>Master LangChain:</strong> Use LangChain's modular components to build production-ready RAG applications</li>
-        <li><strong>Document Processing:</strong> Load, chunk, and prepare text data for semantic search</li>
-        <li><strong>Embeddings & Vectors:</strong> Convert text to numerical representations and store them for similarity search</li>
-        <li><strong>Build Complete Pipeline:</strong> Combine retrieval and generation into a working Q&A system</li>
-        <li><strong>Deploy with UI:</strong> Create an interactive web interface using Gradio</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Project Overview</h2>
-      <p>In this module, you'll build a Q&A assistant for <strong>Eleven Madison Park</strong> restaurant. The assistant will answer questions about menus, reservations, dress code, team members, and more - all based on real restaurant data.</p>
+    <section class="task-content">
+      <h2>About This Module</h2>
+      <p>Learn to build sophisticated agent workflows using LangGraph, a framework for creating stateful, graph-based agent applications. This module covers state management, workflow design, and building production-ready agentic systems.</p>
 
       <div class="callout callout-info">
-        <strong>Real-World Application:</strong> The techniques you learn here apply to any domain-specific Q&A system - customer support, documentation search, knowledge bases, and more.
+        <h3>What You'll Learn</h3>
+        <ul>
+          <li>LangGraph state machine architecture</li>
+          <li>Graph-based workflow design patterns</li>
+          <li>State persistence and memory management</li>
+          <li>Conditional routing and error handling</li>
+          <li>Building a travel agent with multi-step workflows</li>
+        </ul>
       </div>
-    </section>
 
-    <section>
-      <h2>Tasks</h2>
+      <h2>Learning Resources</h2>
       <div class="task-grid">
-        <a href="tasks/task-1-overview.html" class="task-card">
-          <div class="task-card-number">Task 1</div>
-          <div class="task-card-title">Project Overview</div>
-          <div class="task-card-desc">Introduction to the module and learning objectives</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📊 Presentation</div>
+          <h3 class="task-card-title">LangGraph Overview</h3>
+          <p class="task-card-desc">Comprehensive slide deck covering state machines, graph architecture, and workflow patterns.</p>
+          <a href="/agents-langgraph/presentation.pptx" download class="nav-btn" style="margin-top: var(--space-md);">Download Slides</a>
+        </div>
 
-        <a href="tasks/task-2-understand-rag.html" class="task-card">
-          <div class="task-card-number">Task 2</div>
-          <div class="task-card-title">Understand RAG</div>
-          <div class="task-card-desc">Learn what RAG is, why it matters, and how it works</div>
-        </a>
-
-        <a href="tasks/task-3-langchain-101.html" class="task-card">
-          <div class="task-card-number">Task 3</div>
-          <div class="task-card-title">LangChain 101</div>
-          <div class="task-card-desc">Introduction to LangChain framework and its components</div>
-        </a>
-
-        <a href="tasks/task-4-setup-data-loading.html" class="task-card">
-          <div class="task-card-number">Task 4</div>
-          <div class="task-card-title">Setup & Data Loading</div>
-          <div class="task-card-desc">Configure environment and load restaurant data</div>
-        </a>
-
-        <a href="tasks/task-5-document-chunking.html" class="task-card">
-          <div class="task-card-number">Task 5</div>
-          <div class="task-card-title">Document Chunking</div>
-          <div class="task-card-desc">Split documents into manageable chunks with context</div>
-        </a>
-
-        <a href="tasks/task-6-embeddings-vectors.html" class="task-card">
-          <div class="task-card-number">Task 6</div>
-          <div class="task-card-title">Embeddings & Vector Stores</div>
-          <div class="task-card-desc">Convert text to vectors and store for similarity search</div>
-        </a>
-
-        <a href="tasks/task-7-testing-retrieval.html" class="task-card">
-          <div class="task-card-number">Task 7</div>
-          <div class="task-card-title">Testing Retrieval</div>
-          <div class="task-card-desc">Validate that vector search finds relevant information</div>
-        </a>
-
-        <a href="tasks/task-8-building-rag-chain.html" class="task-card">
-          <div class="task-card-number">Task 8</div>
-          <div class="task-card-title">Building RAG Chain</div>
-          <div class="task-card-desc">Combine retrieval and generation into complete pipeline</div>
-        </a>
-
-        <a href="tasks/task-9-gradio-interface.html" class="task-card">
-          <div class="task-card-number">Task 9</div>
-          <div class="task-card-title">Gradio Interface</div>
-          <div class="task-card-desc">Deploy your RAG system with an interactive web UI</div>
-        </a>
+        <div class="task-card">
+          <div class="task-card-number">📓 Jupyter Notebook</div>
+          <h3 class="task-card-title">Agentic Workflows</h3>
+          <p class="task-card-desc">Interactive notebook building a travel agent with graph-based workflows and state management.</p>
+          <a href="/agents-langgraph/agentic-workflows.ipynb" download class="nav-btn" style="margin-top: var(--space-md);">Download Notebook</a>
+          <a href="https://colab.research.google.com/github/yourusername/repo/blob/main/agents-langgraph/agentic-workflows.ipynb" target="_blank" class="nav-btn" style="margin-top: var(--space-sm); background: var(--accent-warning);">Open in Colab</a>
+        </div>
       </div>
-    </section>
 
-    <section>
       <h2>Prerequisites</h2>
       <ul>
         <li>Python 3.8 or higher</li>
-        <li>OpenAI API key</li>
-        <li>Basic understanding of Python and APIs</li>
-        <li>Familiarity with command line</li>
+        <li>OpenAI API key (required)</li>
+        <li>LangChain basics (Module 1 recommended)</li>
+        <li>Understanding of state machines (helpful)</li>
       </ul>
-    </section>
 
-    <section>
-      <h2>Data File</h2>
-      <p>Download the restaurant data file for this project:</p>
-      <p><a href="assets/data/eleven_madison_park_data.txt" download>📥 eleven_madison_park_data.txt</a></p>
-    </section>
+      <h2>Key Technologies</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-xl);">
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">LangGraph</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">LangChain</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">State Machines</span>
+        <span class="tech-tag" style="background: white; border: 1px solid var(--accent-border); color: var(--text-secondary); padding: var(--space-xs) var(--space-sm); border-radius: 4px; font-size: 0.875rem;">OpenAI</span>
+      </div>
 
-    <section>
       <h2>Getting Started</h2>
-      <p>Ready to begin? Start with <a href="tasks/task-1-overview.html">Task 1: Project Overview</a></p>
+      <ol>
+        <li>Download the notebook using the button above</li>
+        <li>Open in Jupyter or Google Colab</li>
+        <li>Configure your OpenAI API key in a <code>.env</code> file</li>
+        <li>Install dependencies: <code>pip install langgraph langchain langchain-openai</code></li>
+        <li>Follow the sequential tasks building the travel agent workflow</li>
+      </ol>
+
+      <div class="callout callout-warning">
+        <h3>Important Note</h3>
+        <p>LangGraph builds on LangChain concepts. If you're new to LangChain, completing Module 1 (RAG Fundamentals) first is recommended for a smoother learning experience.</p>
+      </div>
     </section>
+
+    <nav class="task-navigation">
+      <a href="/agents-autogen/" class="nav-btn">← Previous Module</a>
+      <a href="/agents-crewai/" class="nav-btn">Next Module →</a>
+    </nav>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script src="/assets/js/module-navigator.js"></script>
   <script src="/assets/js/progress-tracker.js"></script>
 </body>

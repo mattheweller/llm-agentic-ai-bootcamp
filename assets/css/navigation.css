@@ -1,0 +1,146 @@
+/* Navigation - Accordion & Task List Styles */
+
+/* Sidebar Header */
+.sidebar-header {
+  margin-bottom: var(--space-xl);
+}
+
+.sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.sidebar-title a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sidebar-title a:hover {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.sidebar-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Module List (Accordion) */
+.module-list {
+  list-style: none;
+}
+
+.module-item {
+  margin-bottom: var(--space-sm);
+}
+
+.module-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s;
+  font-family: var(--font-base);
+  font-size: 0.9375rem;
+  text-align: left;
+  gap: var(--space-sm);
+}
+
+.module-toggle:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.module-toggle.active {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent-primary);
+}
+
+.module-status {
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.module-title {
+  flex: 1;
+  font-weight: 500;
+}
+
+.expand-icon {
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.module-toggle[aria-expanded="true"] .expand-icon {
+  transform: rotate(90deg);
+}
+
+/* Task List (Collapsible) */
+.task-list {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: var(--space-lg);
+}
+
+.task-list.expanded {
+  max-height: 1000px;
+}
+
+.task-list-item {
+  margin-bottom: var(--space-xs);
+}
+
+.task-list-link {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.task-list-link:hover {
+  background: rgba(37, 99, 235, 0.1);
+  text-decoration: none;
+}
+
+.task-list-link.active {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.task-status {
+  margin-right: var(--space-sm);
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.task-status.not-started {
+  opacity: 0.3;
+}
+
+.task-status.visited {
+  color: var(--accent-primary);
+}
+
+.task-list-link.active .task-status.visited {
+  color: white;
+}
+
+.task-status.completed {
+  color: var(--accent-success);
+}

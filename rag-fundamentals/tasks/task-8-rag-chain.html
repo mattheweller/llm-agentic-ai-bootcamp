@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task 8: Build RAG Chain | RAG Fundamentals</title>
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
   <style>
     .rag-output {
@@ -28,7 +29,7 @@
     }
   </style>
 </head>
-<body data-task-id="task-8">
+<body data-module-id="rag-fundamentals" data-task-id="task-8">
   <button class="hamburger" aria-label="Toggle menu">
     <span></span>
     <span></span>
@@ -37,64 +38,195 @@
 
   <nav class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-title">RAG Fundamentals</div>
-      <div class="sidebar-subtitle">RAG & LangChain</div>
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
     </div>
 
-    <ul class="task-list">
-      <li class="task-list-item">
-        <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
-          <span class="task-status not-started">○</span>
-          <span>1. Project Overview</span>
-        </a>
+    <ul class="module-list">
+      <!-- Module 1: RAG Fundamentals -->
+      <li class="module-item" data-module-id="rag-fundamentals">
+        <button class="module-toggle" data-module="rag-fundamentals" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">RAG Fundamentals</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="rag-fundamentals">
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status not-started">○</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status not-started">○</span>
+              <span>2. Understand RAG</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status not-started">○</span>
+              <span>3. LangChain 101</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status not-started">○</span>
+              <span>4. API Demo</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span>
+              <span>5. Document Loading</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span>
+              <span>6. Embeddings</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span>
+              <span>7. Retrieval</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. RAG Chain</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/rag-fundamentals/tasks/task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
+              <span class="task-status not-started">○</span>
+              <span>9. Complete System</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-2-understand-rag.html" class="task-list-link" data-task-id="task-2">
-          <span class="task-status not-started">○</span>
-          <span>2. Understand RAG</span>
-        </a>
+
+      <!-- Module 2: Pydantic AI -->
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-3-langchain-101.html" class="task-list-link" data-task-id="task-3">
-          <span class="task-status not-started">○</span>
-          <span>3. LangChain 101</span>
-        </a>
+
+      <!-- Module 3: Fine-Tuning & LoRA -->
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-4-api-demo.html" class="task-list-link" data-task-id="task-4">
-          <span class="task-status not-started">○</span>
-          <span>4. API Integration Demo</span>
-        </a>
+
+      <!-- Module 4: Agents - AutoGen -->
+      <li class="module-item" data-module-id="agents-autogen">
+        <button class="module-toggle" data-module="agents-autogen" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">Agents - AutoGen</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="agents-autogen">
+          <li class="task-list-item">
+            <a href="/agents-autogen/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-5-document-loading.html" class="task-list-link" data-task-id="task-5">
-          <span class="task-status not-started">○</span>
-          <span>5. Document Loading & Chunking</span>
-        </a>
+
+      <!-- Module 5: Agents - LangGraph -->
+      <li class="module-item" data-module-id="agents-langgraph">
+        <button class="module-toggle" data-module="agents-langgraph" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">Agents - LangGraph</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="agents-langgraph">
+          <li class="task-list-item">
+            <a href="/agents-langgraph/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-6-embeddings.html" class="task-list-link" data-task-id="task-6">
-          <span class="task-status not-started">○</span>
-          <span>6. Generate Embeddings</span>
-        </a>
+
+      <!-- Module 6: Agents - CrewAI -->
+      <li class="module-item" data-module-id="agents-crewai">
+        <button class="module-toggle" data-module="agents-crewai" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">Agents - CrewAI</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="agents-crewai">
+          <li class="task-list-item">
+            <a href="/agents-crewai/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-7-retrieval.html" class="task-list-link" data-task-id="task-7">
-          <span class="task-status not-started">○</span>
-          <span>7. Test Retrieval</span>
-        </a>
+
+      <!-- Module 7: Agents - N8N -->
+      <li class="module-item" data-module-id="agents-n8n-workflows">
+        <button class="module-toggle" data-module="agents-n8n-workflows" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">Agents - N8N</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="agents-n8n-workflows">
+          <li class="task-list-item">
+            <a href="/agents-n8n-workflows/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
-      <li class="task-list-item">
-        <a href="task-8-rag-chain.html" class="task-list-link" data-task-id="task-8">
-          <span class="task-status not-started">○</span>
-          <span>8. Build RAG Chain</span>
-        </a>
-      </li>
-      <li class="task-list-item">
-        <a href="task-9-complete-system.html" class="task-list-link" data-task-id="task-9">
-          <span class="task-status not-started">○</span>
-          <span>9. Complete Q&A System</span>
-        </a>
+
+      <!-- Module 8: MCP Servers -->
+      <li class="module-item" data-module-id="mcp-servers">
+        <button class="module-toggle" data-module="mcp-servers" aria-expanded="false">
+          <span class="module-status">○</span>
+          <span class="module-title">MCP Servers</span>
+          <span class="expand-icon">▶</span>
+        </button>
+        <ul class="task-list" data-module="mcp-servers">
+          <li class="task-list-item">
+            <a href="/mcp-servers/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+        </ul>
       </li>
     </ul>
   </nav>
@@ -237,10 +369,9 @@ Answer:`;
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <script src="../assets/js/navigation.js"></script>
-  <script src="../assets/js/code-interactions.js"></script>
-  <script src="../assets/js/practice-tracker.js"></script>
-  <script src="../assets/js/api-client.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script src="/assets/js/api-client.js"></script>
 
   <script>
     const apiClient = new LLMAPIClient('http://localhost:3000');
