@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 5: Gap Analysis | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-5">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link active" data-task-id="task-5">
+              <span class="task-status in-progress">◐</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 5</span>
+      <h1>Gap Analysis Between Resume & Job Description</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Use LLM to analyze resume vs. job description</li>
+        <li>Structure analysis output with Zod schemas</li>
+        <li>Display results in organized sections</li>
+        <li>Understand prompt engineering for analysis</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>The Gap Analysis Schema</h2>
+      <p>Before calling the LLM, we define the exact structure we want back. This is the Zod schema used by our backend:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Backend Schema (Zod)</div>
+        <pre><code class="language-javascript">const GapAnalysisSchema = z.object({
+  key_requirements: z.array(z.string()),
+  relevant_experience: z.array(z.string()),
+  gaps: z.array(z.string()),
+  potential_strengths: z.array(z.string())
+});</code></pre>
+      </div>
+
+      <p>This schema ensures the LLM returns:</p>
+      <ul>
+        <li><strong>key_requirements:</strong> Main skills/qualifications from the job description</li>
+        <li><strong>relevant_experience:</strong> Matching skills and experience from the resume</li>
+        <li><strong>gaps:</strong> Missing or weak areas in the resume</li>
+        <li><strong>potential_strengths:</strong> Valuable skills not in job description but could strengthen application</li>
+      </ul>
+
+      <h2>Sample Resume & Job Description</h2>
+      <p>We'll use realistic sample data to demonstrate the gap analysis:</p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="resumeText">Resume Text:</label>
+          <textarea id="resumeText" rows="12">**Jessica Brown**
+jessica.brown@email.com | (416) 555-7890
+
+**Summary**
+Marketing professional with 2 years of experience assisting in digital campaigns, content creation, and social media activities.
+
+**Experience**
+**Marketing Assistant | Brewster Coffee Co. | Jan 2022 – Present**
+- Assisted with digital marketing campaigns including email and social media
+- Created blog posts and social media updates to improve audience engagement
+- Managed social media accounts and grew follower numbers
+- Supported coordination of marketing events
+- Conducted market research and competitor analysis
+
+**Skills**
+- Digital Marketing (SEO basics, Email Marketing)
+- Social Media Tools (Hootsuite, Buffer)
+- Microsoft Office Suite, Google Workspace
+- Basic knowledge of Adobe Photoshop
+
+**Education**
+**Bachelor of Commerce, Marketing** | Ryerson University, Toronto, ON | May 2021</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="jobDescText">Job Description:</label>
+          <textarea id="jobDescText" rows="12">**Digital Marketing Specialist**
+BrightWave Digital Agency | Toronto, ON
+
+**Responsibilities:**
+- Assist in planning and executing digital marketing campaigns (SEO, SEM, social media, email)
+- Use Google Analytics to measure performance and prepare basic performance reports
+- Support social media management tasks including content scheduling and community engagement
+- Perform keyword research and assist in optimizing content for SEO
+
+**Qualifications:**
+- Bachelor's degree in Marketing, Communications, or similar
+- 2+ years of digital marketing experience
+- Familiarity with SEO, SEM, Google Analytics, and social media
+- Ability to interpret basic marketing data
+- Good communication and writing skills
+- Knowledge of CRM systems (e.g., HubSpot) helpful
+- Experience with Adobe Creative Suite is beneficial</textarea>
+        </div>
+
+        <button id="analyzeBtn" onclick="analyzeResume()">🔍 Analyze Resume</button>
+        <div id="analysisResults"></div>
+      </div>
+
+      <h2>How It Works</h2>
+      <ol>
+        <li><strong>User Input:</strong> Resume and job description text</li>
+        <li><strong>API Call:</strong> POST to <code>/api/structured/resume-analysis</code></li>
+        <li><strong>Backend:</strong> Converts Zod schema to JSON Schema</li>
+        <li><strong>OpenAI:</strong> GPT-4 generates structured analysis matching the schema</li>
+        <li><strong>Validation:</strong> Zod validates the response before returning</li>
+        <li><strong>Display:</strong> Results rendered in 4 organized sections</li>
+      </ol>
+
+      <div class="callout callout-info">
+        <strong>Behind the Scenes:</strong> The backend uses <code>response_format</code> to guarantee OpenAI returns valid JSON matching our Zod schema. This prevents malformed outputs that would crash the application.
+      </div>
+
+      <h2>The Prompt</h2>
+      <p>Here's the prompt template sent to GPT-4 (simplified):</p>
+
+      <pre><code>Analyze this resume against the job description.
+
+Resume:
+${resume_text}
+
+Job Description:
+${job_description_text}
+
+Return JSON with these exact fields:
+- key_requirements: array of strings (main skills from job)
+- relevant_experience: array of strings (matching skills from resume)
+- gaps: array of strings (missing areas in resume)
+- potential_strengths: array of strings (valuable skills not in job description)</code></pre>
+
+      <div class="practice-opportunity">
+        <h3>Practice Opportunity</h3>
+        <p>Try these experiments:</p>
+        <ul>
+          <li>Replace the job description with a real posting from LinkedIn</li>
+          <li>Update the resume with your own experience</li>
+          <li>Notice how the gaps change based on the job requirements</li>
+          <li>Observe which strengths are identified that aren't in the job description</li>
+        </ul>
+      </div>
+
+      <h2>Expected Output Structure</h2>
+      <p>After clicking "Analyze Resume," you'll see 4 color-coded sections:</p>
+
+      <ul>
+        <li>🎯 <strong>Key Requirements</strong> (blue) - What the job is looking for</li>
+        <li>✅ <strong>Relevant Experience</strong> (blue) - What the resume demonstrates</li>
+        <li>⚠️ <strong>Gaps to Address</strong> (yellow/warning) - What's missing or weak</li>
+        <li>💪 <strong>Potential Strengths</strong> (green/success) - Bonus skills that could help</li>
+      </ul>
+
+      <p>This structured analysis gives job seekers actionable insights on how to improve their resume for the specific role.</p>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-2-validation-intro.html" class="nav-btn">← Previous: Validation Intro</a>
+      <a href="task-8-unified-pipeline.html" class="nav-btn">Next: Unified Pipeline →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script src="/pydantic-ai-assistants/assets/js/resume-client.js"></script>
+  <script src="/pydantic-ai-assistants/assets/js/components.js"></script>
+  <script>
+    const client = new ResumeAPIClient();
+
+    async function analyzeResume() {
+      const resultsDiv = document.getElementById('analysisResults');
+      const btn = document.getElementById('analyzeBtn');
+      const resumeText = document.getElementById('resumeText').value.trim();
+      const jobDescText = document.getElementById('jobDescText').value.trim();
+
+      if (!resumeText || !jobDescText) {
+        resultsDiv.innerHTML = '<div class="demo-output error">Please fill in both resume and job description fields.</div>';
+        return;
+      }
+
+      // Show loading state
+      btn.disabled = true;
+      btn.textContent = '⏳ Analyzing...';
+      resultsDiv.innerHTML = '<div style="padding: 2rem; text-align: center;"><div class="loading-spinner" style="margin: 0 auto;"></div><p style="margin-top: 1rem;">Analyzing resume... This may take 10-15 seconds.</p></div>';
+
+      try {
+        const analysis = await client.analyzeResume(resumeText, jobDescText);
+        resultsDiv.innerHTML = renderGapAnalysis(analysis);
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="demo-output error"><strong>❌ Error:</strong> ${error.message}<br><br><small>Make sure the Express server is running and your OpenAI API key is configured.</small></div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔍 Analyze Resume';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 8: Unified Pipeline | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-8">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status completed">●</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link active" data-task-id="task-8">
+              <span class="task-status in-progress">◐</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 8</span>
+      <h1>Unified Resume Pipeline</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Orchestrate multiple API calls in sequence</li>
+        <li>Handle errors gracefully with user feedback</li>
+        <li>Show progress indicators during long operations</li>
+        <li>Combine all previous tasks into complete workflow</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>The Complete Resume Rocket</h2>
+      <p>This task combines everything you've learned into a single, streamlined workflow:</p>
+
+      <ol>
+        <li><strong>Gap Analysis</strong> - Identify resume vs. job description mismatches</li>
+        <li><strong>Resume Generation</strong> - Create tailored resume addressing gaps</li>
+        <li><strong>Cover Letter</strong> - Generate tone-aware cover letter</li>
+      </ol>
+
+      <p>All three steps execute automatically with a single button click, showing progress as they complete.</p>
+
+      <h2>Input Your Data</h2>
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="pipelineResume">Your Resume:</label>
+          <textarea id="pipelineResume" rows="10">**Jessica Brown**
+jessica.brown@email.com | (416) 555-7890
+
+**Summary**
+Marketing professional with 2 years of experience assisting in digital campaigns, content creation, and social media activities.
+
+**Experience**
+**Marketing Assistant | Brewster Coffee Co. | Jan 2022 – Present**
+- Assisted with digital marketing campaigns including email and social media
+- Created blog posts and social media updates to improve audience engagement
+- Managed social media accounts and grew follower numbers
+- Supported coordination of marketing events
+- Conducted market research and competitor analysis
+
+**Skills**
+- Digital Marketing (SEO basics, Email Marketing)
+- Social Media Tools (Hootsuite, Buffer)
+- Microsoft Office Suite, Google Workspace
+- Basic knowledge of Adobe Photoshop
+
+**Education**
+**Bachelor of Commerce, Marketing** | Ryerson University, Toronto, ON | May 2021</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pipelineJob">Target Job Description:</label>
+          <textarea id="pipelineJob" rows="10">**Digital Marketing Specialist**
+BrightWave Digital Agency | Toronto, ON
+
+**Responsibilities:**
+- Assist in planning and executing digital marketing campaigns (SEO, SEM, social media, email)
+- Use Google Analytics to measure performance and prepare basic performance reports
+- Support social media management tasks including content scheduling and community engagement
+- Perform keyword research and assist in optimizing content for SEO
+
+**Qualifications:**
+- Bachelor's degree in Marketing, Communications, or similar
+- 2+ years of digital marketing experience
+- Familiarity with SEO, SEM, Google Analytics, and social media
+- Ability to interpret basic marketing data
+- Good communication and writing skills
+- Knowledge of CRM systems (e.g., HubSpot) helpful
+- Experience with Adobe Creative Suite is beneficial</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="coverLetterTone">Cover Letter Tone:</label>
+          <select id="coverLetterTone">
+            <option value="professional">Professional (formal and corporate-appropriate)</option>
+            <option value="enthusiastic">Enthusiastic (energetic and passionate)</option>
+            <option value="startup-friendly">Startup-Friendly (informal but polished)</option>
+          </select>
+        </div>
+
+        <button id="runPipelineBtn" onclick="runCompletePipeline()" style="font-size: 1.1rem; padding: 1rem 2rem;">
+          🚀 Run Complete Pipeline
+        </button>
+      </div>
+
+      <div id="progressContainer"></div>
+      <div id="pipelineResults"></div>
+
+      <h2>What Happens Behind the Scenes</h2>
+      <p>The <code>runResumeRocket()</code> function orchestrates three sequential API calls:</p>
+
+      <pre><code class="language-javascript">async runResumeRocket(resumeText, jobDescText, tone = 'professional') {
+  // Step 1: Gap Analysis
+  const gapAnalysis = await this.analyzeResume(resumeText, jobDescText);
+
+  // Step 2: Generate Resume (uses gap analysis results)
+  const resume = await this.generateResume(resumeText, jobDescText, gapAnalysis);
+
+  // Step 3: Generate Cover Letter (uses tailored resume)
+  const coverLetter = await this.generateCoverLetter(
+    resume.updated_resume,
+    jobDescText,
+    tone
+  );
+
+  return { gap_analysis: gapAnalysis, resume, cover_letter: coverLetter };
+}</code></pre>
+
+      <p>Each step depends on the previous one, creating a logical flow from analysis to final documents.</p>
+
+      <div class="callout callout-success">
+        <strong>Production Ready:</strong> This pipeline handles errors gracefully, shows progress updates, and validates all outputs with Zod schemas. You could deploy this as a real resume tailoring service!
+      </div>
+
+      <h2>Expected Timeline</h2>
+      <ul>
+        <li><strong>Step 1 (Analysis):</strong> ~10 seconds</li>
+        <li><strong>Step 2 (Resume):</strong> ~15-20 seconds</li>
+        <li><strong>Step 3 (Cover Letter):</strong> ~10 seconds</li>
+        <li><strong>Total:</strong> ~40-50 seconds for complete pipeline</li>
+      </ul>
+
+      <div class="practice-opportunity">
+        <h3>Practice Opportunity</h3>
+        <p>Experiment with the pipeline:</p>
+        <ul>
+          <li>Try different job descriptions (senior roles, junior roles, different industries)</li>
+          <li>Test all three cover letter tones and compare the results</li>
+          <li>Use your own resume and a real job posting you're interested in</li>
+          <li>Notice how the gap analysis influences the resume rewrite</li>
+          <li>Download the generated resume and cover letter for real applications!</li>
+        </ul>
+      </div>
+
+      <h2>Error Handling</h2>
+      <p>The pipeline includes comprehensive error handling:</p>
+      <ul>
+        <li>Network timeouts (60 second limit per API call)</li>
+        <li>Validation failures (Zod schema mismatches)</li>
+        <li>API errors (OpenAI rate limits, invalid keys)</li>
+        <li>User-friendly error messages with actionable guidance</li>
+      </ul>
+
+      <p>If any step fails, you'll see exactly what went wrong and how to fix it.</p>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-5-gap-analysis.html" class="nav-btn">← Previous: Gap Analysis</a>
+      <a href="/pydantic-ai-assistants/index.html" class="nav-btn">Back to Module Overview →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script src="/pydantic-ai-assistants/assets/js/resume-client.js"></script>
+  <script src="/pydantic-ai-assistants/assets/js/components.js"></script>
+  <script>
+    const client = new ResumeAPIClient();
+    let currentResults = null;
+
+    async function runCompletePipeline() {
+      const resultsDiv = document.getElementById('pipelineResults');
+      const progressDiv = document.getElementById('progressContainer');
+      const btn = document.getElementById('runPipelineBtn');
+      const resumeText = document.getElementById('pipelineResume').value.trim();
+      const jobText = document.getElementById('pipelineJob').value.trim();
+      const tone = document.getElementById('coverLetterTone').value;
+
+      if (!resumeText || !jobText) {
+        resultsDiv.innerHTML = '<div class="demo-output error">Please fill in both resume and job description fields.</div>';
+        return;
+      }
+
+      // Reset state
+      btn.disabled = true;
+      btn.textContent = '⏳ Processing...';
+      resultsDiv.innerHTML = '';
+      currentResults = null;
+
+      try {
+        // Run pipeline with progress callback
+        const results = await client.runResumeRocket(resumeText, jobText, tone, (stepIndex, stepName) => {
+          progressDiv.innerHTML = createProgressStepper(stepIndex);
+        });
+
+        currentResults = results;
+
+        // Display all results with tabs
+        resultsDiv.innerHTML = `
+          <h2 style="margin-top: 2rem;">✅ Pipeline Complete!</h2>
+          <div class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('analysis')">Gap Analysis</button>
+            <button class="tab-button" onclick="showTab('resume')">Updated Resume</button>
+            <button class="tab-button" onclick="showTab('diff')">Diff View</button>
+            <button class="tab-button" onclick="showTab('cover')">Cover Letter</button>
+          </div>
+
+          <div id="tab-analysis" class="tab-content active">
+            ${renderGapAnalysis(results.gap_analysis)}
+          </div>
+
+          <div id="tab-resume" class="tab-content">
+            <div style="padding: 2rem; background: white; border: 1px solid #dee2e6; border-radius: 8px; white-space: pre-wrap; font-family: Georgia, serif; line-height: 1.8;">
+              ${escapeHtml(results.resume.updated_resume)}
+            </div>
+            <div style="margin-top: 1rem;">
+              <button onclick="downloadResume()">💾 Download Resume</button>
+            </div>
+          </div>
+
+          <div id="tab-diff" class="tab-content">
+            ${renderDiffView(results.resume.diff_html)}
+          </div>
+
+          <div id="tab-cover" class="tab-content">
+            ${renderCoverLetter(results.cover_letter.cover_letter)}
+          </div>
+        `;
+
+        // Final progress state
+        progressDiv.innerHTML = createProgressStepper(3);
+
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="demo-output error"><strong>❌ Pipeline Error:</strong> ${error.message}<br><br><small>Make sure the Express server is running and your OpenAI API key is configured.</small></div>`;
+        progressDiv.innerHTML = '';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🚀 Run Complete Pipeline';
+      }
+    }
+
+    function showTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected tab
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function downloadResume() {
+      if (!currentResults) return;
+      downloadText('tailored-resume.txt', currentResults.resume.updated_resume);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

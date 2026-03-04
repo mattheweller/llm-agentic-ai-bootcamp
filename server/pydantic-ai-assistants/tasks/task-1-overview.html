@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 1: Project Overview | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-1">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link active" data-task-id="task-1">
+              <span class="task-status in-progress">◐</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status not-started">○</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 1</span>
+      <h1>Project Overview</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand why validation matters for LLM applications</li>
+        <li>Learn the difference between Pydantic (Python) and Zod (JavaScript)</li>
+        <li>Preview the Resume AI Assistant project</li>
+        <li>Set expectations for the hybrid learning approach</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>The Problem: Unreliable LLM Outputs</h2>
+      <p>Large Language Models are powerful, but they have a critical weakness: <strong>unpredictable output formats</strong>.</p>
+
+      <p>When you ask an LLM to return structured data, you might get:</p>
+      <ul>
+        <li>Valid JSON... or malformed JSON with missing brackets</li>
+        <li>The fields you requested... or different field names</li>
+        <li>Arrays of strings... or comma-separated strings</li>
+        <li>Numbers... or numbers formatted as strings</li>
+      </ul>
+
+      <div class="callout callout-warning">
+        <strong>Real-World Impact:</strong> In production systems, unpredictable LLM outputs cause crashes, data corruption, and failed integrations. Your application expects <code>{ "age": 30 }</code> but gets <code>{ "age": "thirty" }</code> - boom, runtime error.
+      </div>
+
+      <h2>The Solution: Schema Validation</h2>
+      <p><strong>Schema validation</strong> ensures LLM outputs match your expected structure. Two popular libraries lead the way:</p>
+
+      <div class="code-comparison">
+        <div class="code-block">
+          <div class="code-block-header python">Python: Pydantic</div>
+          <pre><code>from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+    email: str
+
+# Validates at runtime
+user = User(**llm_output)</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header javascript">JavaScript: Zod</div>
+          <pre><code>import { z } from 'zod';
+
+const UserSchema = z.object({
+  name: z.string(),
+  age: z.number().int(),
+  email: z.string().email()
+});
+
+// Validates at runtime
+const user = UserSchema.parse(llmOutput);</code></pre>
+        </div>
+      </div>
+
+      <p>Both libraries provide:</p>
+      <ul>
+        <li>✅ Runtime type checking</li>
+        <li>✅ Automatic type coercion (when safe)</li>
+        <li>✅ Detailed error messages</li>
+        <li>✅ Schema composition and reuse</li>
+      </ul>
+
+      <h2>Why Both Pydantic and Zod?</h2>
+      <p>This bootcamp teaches Python concepts (Pydantic), but our educational platform runs JavaScript in the browser. So we use a <strong>hybrid approach</strong>:</p>
+
+      <ol>
+        <li><strong>Learn concepts with Pydantic</strong> - You'll see Python code examples showing how Pydantic works</li>
+        <li><strong>Implement with Zod</strong> - You'll write working JavaScript code using Zod's equivalent patterns</li>
+        <li><strong>Understand both</strong> - The syntax differs, but the principles are identical</li>
+      </ol>
+
+      <div class="callout callout-success">
+        <strong>Career Benefit:</strong> Most LLM courses only teach one language. Learning both Pydantic and Zod makes you versatile - you can work in Python ML ecosystems <em>and</em> JavaScript web applications.
+      </div>
+
+      <h2>Project Preview: Resume AI Assistant</h2>
+      <p>Throughout this module, you'll build a complete Resume AI Assistant that:</p>
+
+      <div style="display: grid; gap: 1rem; margin: 2rem 0;">
+        <div class="section">
+          <h3>📊 Gap Analysis</h3>
+          <p>Analyzes resume vs. job description using structured output:</p>
+          <ul>
+            <li>Key requirements from the job posting</li>
+            <li>Relevant experience in the resume</li>
+            <li>Gaps to address</li>
+            <li>Potential strengths to highlight</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h3>📝 Resume Generation</h3>
+          <p>Creates tailored resume with change tracking:</p>
+          <ul>
+            <li>Rewritten sections addressing gaps</li>
+            <li>HTML diff highlighting (green additions, red deletions)</li>
+            <li>ATS-optimized keywords</li>
+            <li>Quantified achievements</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h3>💼 Cover Letter</h3>
+          <p>Generates tone-aware cover letters:</p>
+          <ul>
+            <li>Professional, Enthusiastic, or Startup-friendly tones</li>
+            <li>Highlights key resume achievements</li>
+            <li>Expresses fit for the specific role</li>
+            <li>Copy to clipboard and download options</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>The Technical Stack</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Technology</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Backend</td>
+            <td>Express.js + Zod</td>
+            <td>API routing and schema validation</td>
+          </tr>
+          <tr>
+            <td>LLM Provider</td>
+            <td>OpenAI GPT-4</td>
+            <td>Structured output generation</td>
+          </tr>
+          <tr>
+            <td>Validation</td>
+            <td>Zod schemas</td>
+            <td>Runtime type checking</td>
+          </tr>
+          <tr>
+            <td>Frontend</td>
+            <td>Vanilla JavaScript</td>
+            <td>Interactive UI components</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>OpenAI's Structured Outputs</h2>
+      <p>Modern LLM APIs support <strong>structured outputs</strong> via the <code>response_format</code> parameter:</p>
+
+      <pre><code>const response = await openai.chat.completions.create({
+  model: "gpt-4o",
+  messages: [...],
+  response_format: {
+    type: "json_schema",
+    json_schema: {
+      name: "resume_analysis",
+      strict: true,
+      schema: zodToJsonSchema(GapAnalysisSchema)
+    }
+  }
+});</code></pre>
+
+      <p>This guarantees the LLM returns JSON matching your Zod schema. No more malformed outputs!</p>
+
+      <h2>Module Roadmap</h2>
+      <p>Here's what you'll build across the remaining tasks:</p>
+
+      <ol>
+        <li><strong>Task 2: Validation Intro</strong> - Learn Pydantic/Zod syntax with interactive demos</li>
+        <li><strong>Task 3: Structured Outputs</strong> - Use OpenAI's response_format with JSON Schema</li>
+        <li><strong>Task 4: Resume Inputs</strong> - Build forms to capture resume and job description</li>
+        <li><strong>Task 5: Gap Analysis</strong> - Implement structured analysis comparing resume to job</li>
+        <li><strong>Task 6: Resume Generation</strong> - Generate tailored resume with diff tracking</li>
+        <li><strong>Task 7: Cover Letter</strong> - Create tone-aware cover letters</li>
+        <li><strong>Task 8: Unified Pipeline</strong> - Orchestrate the complete workflow</li>
+        <li><strong>Task 9: Advanced Features</strong> - Add custom validators and error handling</li>
+      </ol>
+
+      <div class="callout callout-info">
+        <strong>Prototype Note:</strong> This demo includes Tasks 1, 2, 5, and 8 to showcase the core workflow. The complete module will include all 9 tasks.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="/pydantic-ai-assistants/index.html" class="nav-btn">← Module Overview</a>
+      <a href="task-2-validation-intro.html" class="nav-btn">Next: Validation Intro →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+</body>
+</html>

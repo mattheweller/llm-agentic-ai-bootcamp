@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 2: Validation Intro | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-2">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link active" data-task-id="task-2">
+              <span class="task-status in-progress">◐</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 2</span>
+      <h1>Introduction to Validation Libraries</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand Pydantic's role in Python ecosystems</li>
+        <li>Learn Zod as the JavaScript equivalent</li>
+        <li>Compare syntax between Pydantic BaseModel and Zod objects</li>
+        <li>Create and test your first validation schema</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Why Validation Matters</h2>
+      <p>When building LLM applications, you need to ensure outputs match expected structures. Python developers use <strong>Pydantic</strong>, while JavaScript developers use <strong>Zod</strong>. Both provide runtime validation with type safety.</p>
+
+      <div class="callout callout-info">
+        <strong>Learning Approach:</strong> We'll show Pydantic examples as reference, then implement working code with Zod.
+      </div>
+
+      <h2>Pydantic in Python (Reference)</h2>
+      <p>Pydantic uses Python classes with type hints to define data models:</p>
+
+      <div class="code-comparison">
+        <div class="code-block">
+          <div class="code-block-header python">Python + Pydantic</div>
+          <pre><code class="language-python">from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+    email: str
+
+# Valid data - creates User instance
+user = User(
+    name="Mira",
+    age=30,
+    email="mira@gmail.com"
+)
+print(user.model_dump())
+# {'name': 'Mira', 'age': 30, 'email': 'mira@gmail.com'}
+
+# Invalid data - raises ValidationError
+user = User(
+    name="Mira",
+    age="not-a-number",  # ❌ Wrong type
+    email="mira@gmail.com"
+)
+# pydantic.ValidationError: 1 validation error for User
+# age: Input should be a valid integer</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header javascript">JavaScript + Zod</div>
+          <pre><code class="language-javascript">import { z } from 'zod';
+
+const UserSchema = z.object({
+  name: z.string(),
+  age: z.number().int(),
+  email: z.string().email()
+});
+
+// Valid data - returns validated object
+const user = UserSchema.parse({
+  name: "Mira",
+  age: 30,
+  email: "mira@gmail.com"
+});
+console.log(user);
+// { name: 'Mira', age: 30, email: 'mira@gmail.com' }
+
+// Invalid data - throws ZodError
+const user = UserSchema.parse({
+  name: "Mira",
+  age: "not-a-number",  // ❌ Wrong type
+  email: "mira@gmail.com"
+});
+// ZodError: Expected number, received string</code></pre>
+        </div>
+      </div>
+
+      <h2>Interactive Demo: Validate User Data</h2>
+      <p>Try creating a user with valid and invalid data. The demo uses Zod to validate inputs in real-time:</p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="userName">Name:</label>
+          <input type="text" id="userName" value="Mira" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+          <label for="userAge">Age:</label>
+          <input type="text" id="userAge" value="30" placeholder="Enter age">
+        </div>
+        <div class="form-group">
+          <label for="userEmail">Email:</label>
+          <input type="email" id="userEmail" value="mira@gmail.com" placeholder="Enter email">
+        </div>
+        <button onclick="validateUser()">✓ Validate with Zod</button>
+        <button onclick="loadInvalidData()">✗ Try Invalid Data</button>
+        <div id="validationOutput" class="demo-output">Click "Validate" to test...</div>
+      </div>
+
+      <h2>Key Syntax Differences</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Pydantic (Python)</th>
+            <th>Zod (JavaScript)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Define Schema</td>
+            <td><code>class User(BaseModel)</code></td>
+            <td><code>z.object({ ... })</code></td>
+          </tr>
+          <tr>
+            <td>String Type</td>
+            <td><code>name: str</code></td>
+            <td><code>name: z.string()</code></td>
+          </tr>
+          <tr>
+            <td>Number Type</td>
+            <td><code>age: int</code></td>
+            <td><code>age: z.number().int()</code></td>
+          </tr>
+          <tr>
+            <td>Email Validation</td>
+            <td><code>from pydantic import EmailStr<br>email: EmailStr</code></td>
+            <td><code>email: z.string().email()</code></td>
+          </tr>
+          <tr>
+            <td>Array Type</td>
+            <td><code>items: list[str]</code></td>
+            <td><code>items: z.array(z.string())</code></td>
+          </tr>
+          <tr>
+            <td>Validate Data</td>
+            <td><code>User(**data)</code></td>
+            <td><code>UserSchema.parse(data)</code></td>
+          </tr>
+          <tr>
+            <td>Optional Field</td>
+            <td><code>nickname: str | None</code></td>
+            <td><code>nickname: z.string().optional()</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Common Validation Patterns</h2>
+      <p>Both libraries support rich validation beyond basic types:</p>
+
+      <div class="code-comparison">
+        <div class="code-block">
+          <div class="code-block-header python">Python + Pydantic</div>
+          <pre><code class="language-python">from pydantic import BaseModel, Field
+
+class Product(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    price: float = Field(gt=0)  # Greater than 0
+    in_stock: bool
+    tags: list[str] = []  # Default empty list</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header javascript">JavaScript + Zod</div>
+          <pre><code class="language-javascript">const ProductSchema = z.object({
+  name: z.string().min(1).max(100),
+  price: z.number().positive(),  // Greater than 0
+  in_stock: z.boolean(),
+  tags: z.array(z.string()).default([])  // Default empty
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="practice-opportunity">
+        <h3>Practice Opportunity</h3>
+        <p>Create a <code>ProductSchema</code> using Zod with the following fields:</p>
+        <ul>
+          <li><code>name</code> - string (required)</li>
+          <li><code>price</code> - number (must be positive)</li>
+          <li><code>in_stock</code> - boolean (required)</li>
+        </ul>
+        <p><strong>Test it with:</strong></p>
+        <ul>
+          <li>Valid data: <code>{ name: "Wireless Mouse", price: 29.99, in_stock: true }</code></li>
+          <li>Invalid data: <code>{ name: "Wireless Mouse", price: "ten dollars", in_stock: true }</code></li>
+        </ul>
+      </div>
+
+      <div class="demo-container">
+        <h4>Your Code:</h4>
+        <textarea id="practiceCode" rows="12" style="font-family: monospace; width: 100%; padding: 0.75rem;">// Define your ProductSchema here
+const ProductSchema = z.object({
+  // Your code here
+  name: z.string(),
+  price: z.number().positive(),
+  in_stock: z.boolean()
+});
+
+// Test with valid data
+const product = ProductSchema.parse({
+  name: "Wireless Mouse",
+  price: 29.99,
+  in_stock: true
+});
+
+console.log("Valid product:", product);</textarea>
+        <button onclick="runPractice()">▶ Run Code</button>
+        <div id="practiceOutput" class="demo-output">Output will appear here...</div>
+      </div>
+
+      <h2>Why This Matters for LLMs</h2>
+      <p>When you ask an LLM to return structured data, validation ensures you get exactly what you expect:</p>
+
+      <ul>
+        <li>✅ <strong>Type Safety:</strong> Numbers are numbers, strings are strings</li>
+        <li>✅ <strong>Required Fields:</strong> No missing data that crashes your app</li>
+        <li>✅ <strong>Format Validation:</strong> Emails are valid, URLs are well-formed</li>
+        <li>✅ <strong>Clear Errors:</strong> Know exactly what's wrong when validation fails</li>
+      </ul>
+
+      <p>In the next tasks, you'll use these schemas with OpenAI's structured outputs to build the Resume AI Assistant.</p>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-1-overview.html" class="nav-btn">← Previous: Overview</a>
+      <a href="task-5-gap-analysis.html" class="nav-btn">Next: Gap Analysis →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script type="module">
+    import { z } from 'https://cdn.jsdelivr.net/npm/zod@3.23.8/+esm';
+
+    // Make Zod globally available for demos
+    window.z = z;
+
+    // Demo 1: Validate User
+    window.validateUser = function() {
+      const output = document.getElementById('validationOutput');
+      try {
+        const UserSchema = z.object({
+          name: z.string(),
+          age: z.number().int(),
+          email: z.string().email()
+        });
+
+        const data = {
+          name: document.getElementById('userName').value,
+          age: parseInt(document.getElementById('userAge').value) || document.getElementById('userAge').value,
+          email: document.getElementById('userEmail').value
+        };
+
+        const user = UserSchema.parse(data);
+        output.className = 'demo-output success';
+        output.textContent = `✅ Validation Passed!\n\n${JSON.stringify(user, null, 2)}`;
+      } catch (error) {
+        output.className = 'demo-output error';
+        if (error instanceof z.ZodError) {
+          output.textContent = `❌ Validation Failed!\n\n${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join('\n')}`;
+        } else {
+          output.textContent = `❌ Error: ${error.message}`;
+        }
+      }
+    };
+
+    window.loadInvalidData = function() {
+      document.getElementById('userName').value = 'Mira';
+      document.getElementById('userAge').value = 'not-a-number';
+      document.getElementById('userEmail').value = 'mira@gmail.com';
+    };
+
+    // Demo 2: Practice Code Runner
+    window.runPractice = function() {
+      const output = document.getElementById('practiceOutput');
+      const code = document.getElementById('practiceCode').value;
+      
+      try {
+        // Create a safe execution context
+        const logs = [];
+        const customConsole = {
+          log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : a).join(' '))
+        };
+        
+        // Execute code with custom console
+        const fn = new Function('z', 'console', code);
+        fn(z, customConsole);
+        
+        output.className = 'demo-output success';
+        output.textContent = logs.length > 0 ? logs.join('\n') : '✅ Code executed successfully (no output)';
+      } catch (error) {
+        output.className = 'demo-output error';
+        if (error instanceof z.ZodError) {
+          output.textContent = `❌ Validation Error:\n\n${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join('\n')}`;
+        } else {
+          output.textContent = `❌ Runtime Error:\n\n${error.message}`;
+        }
+      }
+    };
+  </script>
+</body>
+</html>

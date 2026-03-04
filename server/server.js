@@ -9,6 +9,7 @@ import healthRouter from './routes/health.js';
 import openaiRouter from './routes/openai.js';
 import anthropicRouter from './routes/anthropic.js';
 import googleRouter from './routes/google.js';
+import structuredRouter from './routes/structured.js';
 
 // Load environment variables from parent directory
 const __filename = fileURLToPath(import.meta.url);
@@ -39,6 +40,7 @@ app.use('/health', healthRouter);
 app.use('/api/openai', openaiRouter);
 app.use('/api/anthropic', anthropicRouter);
 app.use('/api/google', googleRouter);
+app.use('/api/structured', structuredRouter);
 
 // 404 handler
 app.use((req, res) => {
