@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 6: Resume Generation | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-6">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-3-structured-outputs.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span>
+              <span>3. Structured Outputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-4-resume-inputs.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status completed">●</span>
+              <span>4. Resume Inputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status completed">●</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-6-resume-generation.html" class="task-list-link active" data-task-id="task-6">
+              <span class="task-status in-progress">◐</span>
+              <span>6. Resume Generation</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-7-cover-letter.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span>
+              <span>7. Cover Letter</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-9-advanced.html" class="task-list-link" data-task-id="task-9">
+              <span class="task-status not-started">○</span>
+              <span>9. Advanced Features</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 6</span>
+      <h1>Generate Tailored Resume with Diff Highlighting</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Generate an improved resume tailored to job requirements</li>
+        <li>Use structured outputs to return both resume text and diff HTML</li>
+        <li>Display changes with color-coded highlighting (additions in green, deletions in red)</li>
+        <li>Understand how to chain LLM outputs through multi-step workflows</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Resume Generation Schema</h2>
+      <p>The LLM returns both the updated resume and an HTML diff showing changes:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Backend Schema</div>
+        <pre><code class="language-javascript">const ResumeOutputSchema = z.object({
+  updated_resume: z.string().min(100),
+  diff_html: z.string()
+});
+
+// Example response structure:
+{
+  updated_resume: "**Alex Chen**\n...",  // Full new resume text
+  diff_html: "<p><span style='color:green'>Added text</span>...</p>"
+}</code></pre>
+      </div>
+
+      <h2>Generate Improved Resume</h2>
+      <p>This demo uses the resume and job description from Task 4, plus gap analysis from Task 5:</p>
+
+      <div class="demo-container">
+        <div id="inputCheck" class="callout callout-warning" style="display: none;">
+          <strong>Missing Inputs:</strong> Please complete Task 4 (Resume Inputs) and Task 5 (Gap Analysis) first.
+        </div>
+
+        <button onclick="generateResume()" id="generateBtn" class="primary-btn">✨ Generate Tailored Resume</button>
+
+        <div id="loadingStatus" style="display: none; margin-top: 1rem;">
+          <div class="loading-spinner"></div>
+          <p>Generating your improved resume...</p>
+        </div>
+
+        <div id="resumeOutput" class="demo-output" style="display: none;">
+          <div class="result-tabs">
+            <button onclick="showTab('updated')" id="updatedTab" class="tab-btn active">📄 Updated Resume</button>
+            <button onclick="showTab('diff')" id="diffTab" class="tab-btn">🔍 Changes (Diff)</button>
+          </div>
+
+          <div id="updatedContent" class="tab-content active">
+            <div class="button-group" style="margin-bottom: 1rem;">
+              <button onclick="copyResume()" class="secondary-btn">📋 Copy to Clipboard</button>
+              <button onclick="downloadResume()" class="secondary-btn">💾 Download as Text</button>
+            </div>
+            <div id="updatedResumeText" style="white-space: pre-wrap; font-family: monospace; background: #f5f5f5; padding: 1.5rem; border-radius: 8px; line-height: 1.6;"></div>
+          </div>
+
+          <div id="diffContent" class="tab-content" style="display: none;">
+            <div class="callout callout-info" style="margin-bottom: 1rem;">
+              <strong>Legend:</strong> <span style="color: green; font-weight: bold;">Green text</span> = additions/improvements | <span style="color: red; font-weight: bold; text-decoration: line-through;">Red strikethrough</span> = removed content
+            </div>
+            <div id="diffHtml" style="background: #f5f5f5; padding: 1.5rem; border-radius: 8px; line-height: 1.8;"></div>
+          </div>
+        </div>
+      </div>
+
+      <h2>How It Works</h2>
+      <p>The resume generation follows a three-step process:</p>
+
+      <ol>
+        <li><strong>Load Context:</strong> Retrieve resume, job description, and gap analysis from localStorage</li>
+        <li><strong>Call LLM:</strong> Send all context to OpenAI with structured output schema</li>
+        <li><strong>Display Results:</strong> Show updated resume and visual diff side-by-side</li>
+      </ol>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Frontend Implementation</div>
+        <pre><code class="language-javascript">async function generateResume() {
+  // Load context from previous tasks
+  const resume = localStorage.getItem('pydantic_resume');
+  const jobDesc = localStorage.getItem('pydantic_jobdesc');
+  const gapAnalysis = JSON.parse(
+    localStorage.getItem('pydantic_gap_analysis')
+  );
+
+  // Call backend endpoint
+  const response = await fetch('/api/structured/generate-resume', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      resume_text: resume,
+      job_description_text: jobDesc,
+      gap_analysis: gapAnalysis
+    })
+  });
+
+  const result = await response.json();
+  // result.updated_resume - new resume text
+  // result.diff_html - color-coded changes
+
+  displayResume(result);
+}</code></pre>
+      </div>
+
+      <h2>LLM Prompt Strategy</h2>
+      <p>The backend sends detailed instructions to ensure high-quality output:</p>
+
+      <div class="callout callout-info">
+        <strong>Prompt Guidelines:</strong>
+        <ul>
+          <li>Rewrite resume to match job description keywords (ATS optimization)</li>
+          <li>Address gaps identified in the analysis</li>
+          <li>Quantify achievements with metrics where possible</li>
+          <li>Use strong action verbs (developed, implemented, optimized)</li>
+          <li>Generate inline HTML diff for visual comparison</li>
+        </ul>
+      </div>
+
+      <h2>Key Features</h2>
+      <ul>
+        <li>✅ <strong>ATS-Optimized:</strong> Keywords from job description integrated naturally</li>
+        <li>✅ <strong>Gap Awareness:</strong> Addresses weaknesses identified in Task 5</li>
+        <li>✅ <strong>Visual Diff:</strong> See exactly what changed with color highlighting</li>
+        <li>✅ <strong>Copy/Download:</strong> Export updated resume for immediate use</li>
+      </ul>
+
+      <div class="practice-opportunity">
+        <h3>Try It Yourself</h3>
+        <ol>
+          <li>Ensure you've completed Task 4 (Resume Inputs) and Task 5 (Gap Analysis)</li>
+          <li>Click "Generate Tailored Resume" to process your inputs</li>
+          <li>Review the updated resume in the "Updated Resume" tab</li>
+          <li>Switch to "Changes (Diff)" to see what was modified</li>
+          <li>Copy or download the result for your job application</li>
+        </ol>
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-5-gap-analysis.html" class="nav-btn">← Previous: Gap Analysis</a>
+      <a href="task-7-cover-letter.html" class="nav-btn">Next: Cover Letter →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    let currentResume = null;
+
+    window.addEventListener('DOMContentLoaded', checkInputs);
+
+    function checkInputs() {
+      const resume = localStorage.getItem('pydantic_resume');
+      const jobDesc = localStorage.getItem('pydantic_jobdesc');
+      const gapAnalysis = localStorage.getItem('pydantic_gap_analysis');
+
+      if (!resume || !jobDesc || !gapAnalysis) {
+        document.getElementById('inputCheck').style.display = 'block';
+      }
+    }
+
+    async function generateResume() {
+      const resume = localStorage.getItem('pydantic_resume');
+      const jobDesc = localStorage.getItem('pydantic_jobdesc');
+      const gapAnalysisStr = localStorage.getItem('pydantic_gap_analysis');
+
+      if (!resume || !jobDesc || !gapAnalysisStr) {
+        alert('Please complete Task 4 (Resume Inputs) and Task 5 (Gap Analysis) first.');
+        return;
+      }
+
+      const gapAnalysis = JSON.parse(gapAnalysisStr);
+      const btn = document.getElementById('generateBtn');
+      const loading = document.getElementById('loadingStatus');
+      const output = document.getElementById('resumeOutput');
+
+      btn.disabled = true;
+      loading.style.display = 'block';
+      output.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/structured/generate-resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            resume_text: resume,
+            job_description_text: jobDesc,
+            gap_analysis: gapAnalysis
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to generate resume');
+        }
+
+        const result = await response.json();
+        currentResume = result;
+
+        // Display results
+        document.getElementById('updatedResumeText').textContent = result.updated_resume;
+        document.getElementById('diffHtml').innerHTML = result.diff_html;
+
+        // Save for next task
+        localStorage.setItem('pydantic_updated_resume', result.updated_resume);
+
+        output.style.display = 'block';
+        showTab('updated');
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    }
+
+    function showTab(tab) {
+      // Update tab buttons
+      document.getElementById('updatedTab').classList.toggle('active', tab === 'updated');
+      document.getElementById('diffTab').classList.toggle('active', tab === 'diff');
+
+      // Update content visibility
+      document.getElementById('updatedContent').style.display = tab === 'updated' ? 'block' : 'none';
+      document.getElementById('diffContent').style.display = tab === 'diff' ? 'block' : 'none';
+    }
+
+    function copyResume() {
+      if (!currentResume) return;
+
+      navigator.clipboard.writeText(currentResume.updated_resume)
+        .then(() => alert('✅ Resume copied to clipboard!'))
+        .catch(() => alert('❌ Failed to copy. Try selecting and copying manually.'));
+    }
+
+    function downloadResume() {
+      if (!currentResume) return;
+
+      const blob = new Blob([currentResume.updated_resume], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tailored_resume.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+  <style>
+    .result-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #333;
+      background: #f5f5f5;
+    }
+
+    .tab-btn.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+      font-weight: 600;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</body>
+</html>

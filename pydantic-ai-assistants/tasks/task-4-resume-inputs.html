@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4: Resume Inputs | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-4">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-3-structured-outputs.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span>
+              <span>3. Structured Outputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-4-resume-inputs.html" class="task-list-link active" data-task-id="task-4">
+              <span class="task-status in-progress">◐</span>
+              <span>4. Resume Inputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-6-resume-generation.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span>
+              <span>6. Resume Generation</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-7-cover-letter.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span>
+              <span>7. Cover Letter</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-9-advanced.html" class="task-list-link" data-task-id="task-9">
+              <span class="task-status not-started">○</span>
+              <span>9. Advanced Features</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 4</span>
+      <h1>Resume and Job Description Input Forms</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Design input forms for resume and job description data</li>
+        <li>Provide realistic sample data for testing</li>
+        <li>Store inputs in browser localStorage for persistence</li>
+        <li>Prepare data for LLM processing in subsequent tasks</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Resume AI Assistant Inputs</h2>
+      <p>Before we can analyze or generate resumes, we need two key pieces of information:</p>
+
+      <ol>
+        <li><strong>Current Resume:</strong> The user's existing resume text</li>
+        <li><strong>Target Job Description:</strong> The job posting they're applying to</li>
+      </ol>
+
+      <p>This task sets up input forms with sample data you can use or replace with your own.</p>
+
+      <h2>Input Form</h2>
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="resumeInput">Your Resume:</label>
+          <textarea id="resumeInput" rows="14" placeholder="Paste your resume here..."></textarea>
+          <small>Include your summary, experience, skills, and education</small>
+        </div>
+
+        <div class="form-group">
+          <label for="jobDescInput">Target Job Description:</label>
+          <textarea id="jobDescInput" rows="14" placeholder="Paste the job description here..."></textarea>
+          <small>Include responsibilities, qualifications, and requirements</small>
+        </div>
+
+        <div class="button-group">
+          <button onclick="loadSampleData()" class="secondary-btn">📝 Load Sample Data</button>
+          <button onclick="saveInputs()" class="primary-btn">💾 Save Inputs</button>
+          <button onclick="clearInputs()" class="secondary-btn">🗑️ Clear All</button>
+        </div>
+
+        <div id="saveStatus" class="demo-output" style="display: none;"></div>
+      </div>
+
+      <h2>Sample Data Preview</h2>
+      <p>Click "Load Sample Data" to populate the forms with a realistic example. This data represents a junior software developer applying to a full-stack position:</p>
+
+      <div class="callout callout-info">
+        <strong>Sample Profile:</strong> Alex Chen - Junior developer with 1.5 years of experience in frontend development, applying to a full-stack role requiring React, Node.js, and databases.
+      </div>
+
+      <h2>Data Persistence</h2>
+      <p>When you click "Save Inputs," your data is stored in browser localStorage. This means:</p>
+
+      <ul>
+        <li>✅ Data persists across page refreshes</li>
+        <li>✅ Inputs carry forward to gap analysis and resume generation tasks</li>
+        <li>✅ No server-side storage - your data stays private in your browser</li>
+        <li>⚠️ Clearing browser data will delete stored inputs</li>
+      </ul>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">LocalStorage Implementation</div>
+        <pre><code class="language-javascript">// Save to localStorage
+function saveInputs() {
+  const resume = document.getElementById('resumeInput').value;
+  const jobDesc = document.getElementById('jobDescInput').value;
+
+  localStorage.setItem('pydantic_resume', resume);
+  localStorage.setItem('pydantic_jobdesc', jobDesc);
+
+  showStatus('✅ Saved successfully!', 'success');
+}
+
+// Load from localStorage on page load
+function loadSavedInputs() {
+  const resume = localStorage.getItem('pydantic_resume');
+  const jobDesc = localStorage.getItem('pydantic_jobdesc');
+
+  if (resume) document.getElementById('resumeInput').value = resume;
+  if (jobDesc) document.getElementById('jobDescInput').value = jobDesc;
+}</code></pre>
+      </div>
+
+      <h2>Next Steps</h2>
+      <p>Once you've saved your inputs, you can proceed to:</p>
+
+      <ul>
+        <li><strong>Task 5:</strong> Analyze gaps between resume and job description</li>
+        <li><strong>Task 6:</strong> Generate an improved resume tailored to the job</li>
+        <li><strong>Task 7:</strong> Create a compelling cover letter</li>
+      </ul>
+
+      <div class="practice-opportunity">
+        <h3>Try It Yourself</h3>
+        <ol>
+          <li>Click "Load Sample Data" to see the example</li>
+          <li>Read through the sample resume and job description</li>
+          <li>Replace with your own resume and target job (or keep the sample)</li>
+          <li>Click "Save Inputs" to persist the data</li>
+          <li>Continue to Task 5 to analyze the gap</li>
+        </ol>
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-3-structured-outputs.html" class="nav-btn">← Previous: Structured Outputs</a>
+      <a href="task-5-gap-analysis.html" class="nav-btn">Next: Gap Analysis →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    const SAMPLE_RESUME = `**Alex Chen**
+alex.chen@email.com | (555) 123-4567 | github.com/alexchen
+
+**Summary**
+Junior Frontend Developer with 1.5 years of experience building responsive web applications using React and JavaScript. Passionate about clean code and user experience.
+
+**Experience**
+
+**Frontend Developer | TechStart Inc. | June 2023 – Present**
+- Developed responsive React components for customer-facing web application
+- Implemented user authentication flow using JWT tokens
+- Collaborated with designers to translate Figma mockups into functional UI
+- Wrote unit tests using Jest, achieving 80% code coverage
+- Participated in code reviews and sprint planning meetings
+
+**Junior Developer Intern | WebFlow Solutions | Jan 2023 – May 2023**
+- Built landing pages with HTML, CSS, and vanilla JavaScript
+- Fixed bugs and improved page load performance
+- Learned Git workflow and agile development practices
+
+**Skills**
+- **Languages:** JavaScript (ES6+), HTML5, CSS3, SQL (basic)
+- **Frameworks:** React, Next.js, TailwindCSS
+- **Tools:** Git, GitHub, VS Code, Figma, npm
+- **Other:** RESTful APIs, Responsive Design, Chrome DevTools
+
+**Education**
+**Bachelor of Science, Computer Science** | State University | May 2022
+GPA: 3.6/4.0`;
+
+    const SAMPLE_JOB_DESC = `**Full-Stack Developer**
+InnovateTech Solutions | San Francisco, CA (Remote OK)
+
+**About the Role:**
+We're looking for a mid-level Full-Stack Developer to join our engineering team. You'll work on building and maintaining web applications that serve thousands of users daily.
+
+**Responsibilities:**
+- Design and implement features across the full stack (React frontend, Node.js backend)
+- Build and maintain RESTful APIs and integrate with third-party services
+- Write and optimize SQL queries for PostgreSQL database
+- Implement automated testing (unit, integration, end-to-end)
+- Collaborate with product and design teams on new features
+- Participate in code reviews and contribute to technical documentation
+- Debug and resolve production issues
+
+**Required Qualifications:**
+- 2+ years of professional software development experience
+- Strong proficiency in JavaScript/TypeScript
+- Experience with React and modern frontend development
+- Backend experience with Node.js and Express
+- Working knowledge of relational databases (PostgreSQL, MySQL)
+- Understanding of RESTful API design
+- Proficiency with Git and version control workflows
+- Strong problem-solving and communication skills
+
+**Preferred Qualifications:**
+- Experience with TypeScript
+- Familiarity with Docker and containerization
+- Knowledge of CI/CD pipelines and automated testing
+- Experience with cloud platforms (AWS, GCP, Azure)
+- Contributions to open-source projects
+
+**Tech Stack:**
+React, TypeScript, Node.js, Express, PostgreSQL, Docker, AWS, Jest, Cypress`;
+
+    function loadSampleData() {
+      document.getElementById('resumeInput').value = SAMPLE_RESUME;
+      document.getElementById('jobDescInput').value = SAMPLE_JOB_DESC;
+      showStatus('📝 Sample data loaded! You can edit or save as-is.', 'info');
+    }
+
+    function saveInputs() {
+      const resume = document.getElementById('resumeInput').value.trim();
+      const jobDesc = document.getElementById('jobDescInput').value.trim();
+
+      if (!resume || !jobDesc) {
+        showStatus('❌ Both resume and job description are required', 'error');
+        return;
+      }
+
+      localStorage.setItem('pydantic_resume', resume);
+      localStorage.setItem('pydantic_jobdesc', jobDesc);
+
+      showStatus('✅ Saved successfully! Your inputs will be available in the next tasks.', 'success');
+    }
+
+    function clearInputs() {
+      if (confirm('Clear all inputs and saved data?')) {
+        document.getElementById('resumeInput').value = '';
+        document.getElementById('jobDescInput').value = '';
+        localStorage.removeItem('pydantic_resume');
+        localStorage.removeItem('pydantic_jobdesc');
+        showStatus('🗑️ All data cleared', 'info');
+      }
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById('saveStatus');
+      status.textContent = message;
+      status.className = `demo-output ${type}`;
+      status.style.display = 'block';
+
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 4000);
+    }
+
+    // Load saved inputs on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const resume = localStorage.getItem('pydantic_resume');
+      const jobDesc = localStorage.getItem('pydantic_jobdesc');
+
+      if (resume) document.getElementById('resumeInput').value = resume;
+      if (jobDesc) document.getElementById('jobDescInput').value = jobDesc;
+
+      if (resume && jobDesc) {
+        showStatus('ℹ️ Previously saved inputs loaded', 'info');
+      }
+    });
+  </script>
+</body>
+</html>

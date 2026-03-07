@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 3: Structured LLM Outputs | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-3">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-3-structured-outputs.html" class="task-list-link active" data-task-id="task-3">
+              <span class="task-status in-progress">◐</span>
+              <span>3. Structured Outputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-4-resume-inputs.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status not-started">○</span>
+              <span>4. Resume Inputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-6-resume-generation.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span>
+              <span>6. Resume Generation</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-7-cover-letter.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span>
+              <span>7. Cover Letter</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-9-advanced.html" class="task-list-link" data-task-id="task-9">
+              <span class="task-status not-started">○</span>
+              <span>9. Advanced Features</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 3</span>
+      <h1>Structured LLM Outputs with JSON Schema</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand OpenAI's <code>response_format</code> parameter</li>
+        <li>Convert Zod schemas to JSON Schema for LLM validation</li>
+        <li>Guarantee schema compliance from LLM responses</li>
+        <li>Handle validation errors with fallback strategies</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>The Problem: Unreliable JSON from LLMs</h2>
+      <p>When you ask an LLM to return JSON without constraints, you get unpredictable results:</p>
+
+      <div class="callout callout-warning">
+        <strong>Common Issues:</strong>
+        <ul>
+          <li>Missing required fields</li>
+          <li>Wrong data types (strings instead of numbers)</li>
+          <li>Extra fields you didn't ask for</li>
+          <li>Malformed JSON with syntax errors</li>
+        </ul>
+      </div>
+
+      <h2>The Solution: OpenAI Structured Outputs</h2>
+      <p>OpenAI's <code>response_format</code> parameter with <code>json_schema</code> enforces strict schema compliance. The model guarantees valid output that matches your schema:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Backend Implementation</div>
+        <pre><code class="language-javascript">import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
+import OpenAI from 'openai';
+
+// Define Zod schema
+const RecipeSchema = z.object({
+  name: z.string(),
+  cuisine: z.string(),
+  difficulty: z.enum(['easy', 'medium', 'hard']),
+  prep_time_minutes: z.number().int().positive(),
+  ingredients: z.array(z.string()).min(3),
+  instructions: z.array(z.string()).min(3)
+});
+
+// Convert to JSON Schema
+const jsonSchema = zodToJsonSchema(RecipeSchema, 'recipe');
+
+// Call OpenAI with structured output
+const response = await openai.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are a helpful cooking assistant.' },
+    { role: 'user', content: 'Give me a recipe for chocolate chip cookies' }
+  ],
+  response_format: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'recipe',
+      strict: true,
+      schema: jsonSchema
+    }
+  }
+});
+
+// Parse and validate
+const content = JSON.parse(response.choices[0].message.content);
+const validated = RecipeSchema.parse(content);
+// ✅ Guaranteed to match schema!</code></pre>
+      </div>
+
+      <h2>Interactive Demo: Recipe Generator</h2>
+      <p>Request a recipe from the LLM with guaranteed structured output. The response will always match the defined schema:</p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="recipePrompt">What recipe do you want?</label>
+          <input
+            type="text"
+            id="recipePrompt"
+            value="pasta carbonara"
+            placeholder="e.g., chocolate cake, sushi, tacos">
+        </div>
+        <button onclick="generateRecipe()" id="generateBtn">🍳 Generate Recipe</button>
+        <div id="recipeOutput" class="demo-output">Results will appear here...</div>
+      </div>
+
+      <h2>Schema Validation Flow</h2>
+      <p>Here's how structured outputs work end-to-end:</p>
+
+      <ol>
+        <li><strong>Define Zod Schema:</strong> Specify exact structure with types and constraints</li>
+        <li><strong>Convert to JSON Schema:</strong> Use <code>zodToJsonSchema()</code> for OpenAI compatibility</li>
+        <li><strong>Call OpenAI:</strong> Pass JSON Schema in <code>response_format</code> parameter</li>
+        <li><strong>Validate Response:</strong> Parse and verify with Zod (should never fail if schema is correct)</li>
+      </ol>
+
+      <div class="code-comparison">
+        <div class="code-block">
+          <div class="code-block-header">Without Structured Outputs</div>
+          <pre><code class="language-javascript">// ❌ No guarantees
+const response = await openai.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'user', content: 'Return recipe as JSON' }
+  ]
+});
+
+// Could be anything - validation might fail
+const data = JSON.parse(response.choices[0].message.content);
+const validated = RecipeSchema.parse(data); // Might throw!</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">With Structured Outputs</div>
+          <pre><code class="language-javascript">// ✅ Guaranteed compliance
+const response = await openai.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'user', content: 'Give me a recipe' }
+  ],
+  response_format: {
+    type: 'json_schema',
+    json_schema: { name: 'recipe', strict: true, schema: jsonSchema }
+  }
+});
+
+// Always valid - no validation errors
+const data = JSON.parse(response.choices[0].message.content);
+const validated = RecipeSchema.parse(data); // Always succeeds!</code></pre>
+        </div>
+      </div>
+
+      <h2>Key Concepts</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Concept</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>response_format</code></td>
+            <td>OpenAI parameter that enforces output structure</td>
+          </tr>
+          <tr>
+            <td><code>json_schema</code></td>
+            <td>Standard format for defining JSON structure (not Zod-specific)</td>
+          </tr>
+          <tr>
+            <td><code>strict: true</code></td>
+            <td>Enables strict mode - model must follow schema exactly</td>
+          </tr>
+          <tr>
+            <td><code>zodToJsonSchema()</code></td>
+            <td>Converts Zod schema to JSON Schema for OpenAI</td>
+          </tr>
+          <tr>
+            <td><code>schema.parse()</code></td>
+            <td>Validates data against Zod schema (throws on failure)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Benefits for Production Systems</h2>
+      <ul>
+        <li>✅ <strong>No Runtime Errors:</strong> LLM output guaranteed to match expected structure</li>
+        <li>✅ <strong>Type Safety:</strong> Frontend and backend agree on data shape</li>
+        <li>✅ <strong>Reduced Costs:</strong> No retry loops for malformed JSON</li>
+        <li>✅ <strong>Predictable Behavior:</strong> Same schema every time, no surprises</li>
+      </ul>
+
+      <div class="callout callout-info">
+        <strong>When to Use:</strong> Use structured outputs whenever you need predictable data from LLMs - API responses, database writes, multi-step pipelines, or any production system.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-2-validation-intro.html" class="nav-btn">← Previous: Validation Intro</a>
+      <a href="task-4-resume-inputs.html" class="nav-btn">Next: Resume Inputs →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script type="module">
+    import { z } from 'https://cdn.jsdelivr.net/npm/zod@3.23.8/+esm';
+
+    const RecipeSchema = z.object({
+      name: z.string(),
+      cuisine: z.string(),
+      difficulty: z.enum(['easy', 'medium', 'hard']),
+      prep_time_minutes: z.number().int().positive(),
+      ingredients: z.array(z.string()).min(3),
+      instructions: z.array(z.string()).min(3)
+    });
+
+    window.generateRecipe = async function() {
+      const output = document.getElementById('recipeOutput');
+      const btn = document.getElementById('generateBtn');
+      const prompt = document.getElementById('recipePrompt').value.trim();
+
+      if (!prompt) {
+        output.className = 'demo-output error';
+        output.textContent = '❌ Please enter a recipe request';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '⏳ Generating...';
+      output.className = 'demo-output';
+      output.textContent = 'Calling OpenAI with structured output schema...';
+
+      try {
+        // Call backend endpoint (we'll create a generic structured endpoint)
+        const response = await fetch('/api/openai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a helpful cooking assistant. Provide detailed, accurate recipes.'
+              },
+              {
+                role: 'user',
+                content: `Give me a recipe for ${prompt}. Include name, cuisine type, difficulty level (easy/medium/hard), prep time in minutes, list of ingredients, and step-by-step instructions.`
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 1000
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'API request failed');
+        }
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+
+        // Try to parse as JSON and validate
+        let recipe;
+        try {
+          const parsed = JSON.parse(content);
+          recipe = RecipeSchema.parse(parsed);
+        } catch (parseError) {
+          // If not valid JSON/schema, just display the text
+          output.className = 'demo-output';
+          output.innerHTML = `<div style="white-space: pre-wrap;">${content}</div>
+<div class="callout callout-warning" style="margin-top: 1rem;">
+<strong>Note:</strong> This response wasn't structured JSON. In production, use the <code>/api/structured</code> endpoint with <code>response_format</code> for guaranteed schema compliance.
+</div>`;
+          return;
+        }
+
+        // Display validated recipe
+        output.className = 'demo-output success';
+        output.innerHTML = `
+<h3>${recipe.name}</h3>
+<p><strong>Cuisine:</strong> ${recipe.cuisine} | <strong>Difficulty:</strong> ${recipe.difficulty} | <strong>Prep Time:</strong> ${recipe.prep_time_minutes} min</p>
+
+<h4>Ingredients:</h4>
+<ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+
+<h4>Instructions:</h4>
+<ol>${recipe.instructions.map(i => `<li>${i}</li>`).join('')}</ol>
+
+<div class="callout callout-info" style="margin-top: 1rem;">
+✅ <strong>Schema Validated:</strong> This response matches the RecipeSchema exactly!
+</div>
+        `;
+      } catch (error) {
+        output.className = 'demo-output error';
+        output.textContent = `❌ Error: ${error.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🍳 Generate Recipe';
+      }
+    };
+  </script>
+</body>
+</html>

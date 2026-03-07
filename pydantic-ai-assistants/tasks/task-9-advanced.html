@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 9: Advanced Features | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-9">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-3-structured-outputs.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span>
+              <span>3. Structured Outputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-4-resume-inputs.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status completed">●</span>
+              <span>4. Resume Inputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status completed">●</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-6-resume-generation.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status completed">●</span>
+              <span>6. Resume Generation</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-7-cover-letter.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status completed">●</span>
+              <span>7. Cover Letter</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status completed">●</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-9-advanced.html" class="task-list-link active" data-task-id="task-9">
+              <span class="task-status in-progress">◐</span>
+              <span>9. Advanced Features</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 9</span>
+      <h1>Advanced Validation Patterns</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Create custom validators with business logic</li>
+        <li>Implement error handling with user-friendly messages</li>
+        <li>Add retry logic for transient API failures</li>
+        <li>Use safeParse for non-throwing validation</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>1. Custom Validators</h2>
+      <p>Zod allows custom validation logic beyond basic types. Here's how to create validators for complex business rules:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Custom Validators</div>
+        <pre><code class="language-javascript">import { z } from 'zod';
+
+// Custom email domain validator
+const CorporateEmailSchema = z.string()
+  .email()
+  .refine(
+    (email) => email.endsWith('@company.com'),
+    { message: 'Must be a company email (@company.com)' }
+  );
+
+// Password strength validator
+const StrongPasswordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .refine(
+    (pwd) => /[A-Z]/.test(pwd),
+    { message: 'Must contain at least one uppercase letter' }
+  )
+  .refine(
+    (pwd) => /[0-9]/.test(pwd),
+    { message: 'Must contain at least one number' }
+  )
+  .refine(
+    (pwd) => /[!@#$%^&*]/.test(pwd),
+    { message: 'Must contain at least one special character' }
+  );
+
+// Date range validator
+const EventSchema = z.object({
+  start_date: z.string().datetime(),
+  end_date: z.string().datetime()
+}).refine(
+  (data) => new Date(data.end_date) > new Date(data.start_date),
+  { message: 'End date must be after start date', path: ['end_date'] }
+);</code></pre>
+      </div>
+
+      <h2>Interactive Demo: Custom Validators</h2>
+      <p>Test different custom validation rules:</p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="emailInput">Corporate Email:</label>
+          <input type="email" id="emailInput" placeholder="user@company.com">
+          <small>Must end with @company.com</small>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordInput">Strong Password:</label>
+          <input type="password" id="passwordInput" placeholder="Enter password">
+          <small>8+ chars, uppercase, number, special character</small>
+        </div>
+
+        <button onclick="validateCustom()">✓ Validate</button>
+        <div id="customOutput" class="demo-output">Click "Validate" to test...</div>
+      </div>
+
+      <h2>2. Error Handling Patterns</h2>
+      <p>Handle validation errors gracefully with detailed, user-friendly messages:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Error Handling</div>
+        <pre><code class="language-javascript">import { z } from 'zod';
+
+const UserSchema = z.object({
+  username: z.string().min(3).max(20),
+  age: z.number().int().min(18).max(120),
+  email: z.string().email()
+});
+
+function validateUser(data) {
+  try {
+    const validated = UserSchema.parse(data);
+    return { success: true, data: validated };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Transform errors into user-friendly format
+      const friendlyErrors = error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }));
+      return { success: false, errors: friendlyErrors };
+    }
+    // Unexpected error
+    return { success: false, errors: [{ field: 'unknown', message: error.message }] };
+  }
+}
+
+// Usage
+const result = validateUser({ username: 'ab', age: 15, email: 'invalid' });
+if (!result.success) {
+  console.log('Validation failed:');
+  result.errors.forEach(err => {
+    console.log(`  ${err.field}: ${err.message}`);
+  });
+}</code></pre>
+      </div>
+
+      <h2>3. Safe Parsing (Non-Throwing)</h2>
+      <p>Use <code>safeParse</code> when you want to handle validation without try-catch:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">safeParse vs parse</div>
+        <pre><code class="language-javascript">const schema = z.object({ age: z.number() });
+
+// ❌ parse() throws on failure
+try {
+  const data = schema.parse({ age: "not-a-number" });
+} catch (error) {
+  console.log('Validation failed');
+}
+
+// ✅ safeParse() returns result object
+const result = schema.safeParse({ age: "not-a-number" });
+
+if (result.success) {
+  console.log('Valid data:', result.data);
+} else {
+  console.log('Validation errors:', result.error.errors);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h3>Try safeParse:</h3>
+        <div class="form-group">
+          <label for="ageInput">Age (number):</label>
+          <input type="text" id="ageInput" value="25" placeholder="Enter age">
+        </div>
+        <button onclick="testSafeParse()">🧪 Test safeParse</button>
+        <div id="safeParseOutput" class="demo-output">Results will appear here...</div>
+      </div>
+
+      <h2>4. Retry Logic for API Calls</h2>
+      <p>Implement exponential backoff for transient failures:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Retry with Exponential Backoff</div>
+        <pre><code class="language-javascript">async function retryWithBackoff(fn, maxRetries = 3) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      const isLastAttempt = attempt === maxRetries - 1;
+
+      if (isLastAttempt) {
+        throw error;
+      }
+
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = Math.pow(2, attempt) * 1000;
+      console.log(`Attempt ${attempt + 1} failed. Retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
+// Usage with LLM API
+async function generateWithRetry(prompt) {
+  return retryWithBackoff(async () => {
+    const response = await fetch('/api/openai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    return response.json();
+  }, 3);
+}</code></pre>
+      </div>
+
+      <h2>5. Discriminated Unions</h2>
+      <p>Handle multiple response types with type safety:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Discriminated Unions</div>
+        <pre><code class="language-javascript">const ResponseSchema = z.discriminatedUnion('status', [
+  z.object({
+    status: z.literal('success'),
+    data: z.object({ id: z.string(), name: z.string() })
+  }),
+  z.object({
+    status: z.literal('error'),
+    error_code: z.string(),
+    message: z.string()
+  }),
+  z.object({
+    status: z.literal('pending'),
+    retry_after: z.number()
+  })
+]);
+
+// Type-safe handling
+function handleResponse(response) {
+  const result = ResponseSchema.parse(response);
+
+  switch (result.status) {
+    case 'success':
+      console.log('Data:', result.data);
+      break;
+    case 'error':
+      console.error(`Error ${result.error_code}: ${result.message}`);
+      break;
+    case 'pending':
+      console.log(`Retry after ${result.retry_after}s`);
+      break;
+  }
+}</code></pre>
+      </div>
+
+      <h2>6. Transform and Preprocess</h2>
+      <p>Clean and transform data before validation:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Preprocessing</div>
+        <pre><code class="language-javascript">// Trim whitespace and lowercase email
+const CleanedEmailSchema = z.string()
+  .transform(str => str.trim().toLowerCase())
+  .pipe(z.string().email());
+
+// Parse string to number
+const StringNumberSchema = z.string()
+  .transform(str => parseInt(str, 10))
+  .pipe(z.number().int().positive());
+
+// Usage
+const email = CleanedEmailSchema.parse('  USER@EXAMPLE.COM  ');
+// Returns: 'user@example.com'
+
+const age = StringNumberSchema.parse('25');
+// Returns: 25 (number)</code></pre>
+      </div>
+
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li>✅ <strong>Custom Validators:</strong> Use <code>.refine()</code> for business logic beyond basic types</li>
+        <li>✅ <strong>safeParse:</strong> Non-throwing validation for control flow without try-catch</li>
+        <li>✅ <strong>Error Formatting:</strong> Transform ZodError into user-friendly messages</li>
+        <li>✅ <strong>Retry Logic:</strong> Handle transient API failures with exponential backoff</li>
+        <li>✅ <strong>Discriminated Unions:</strong> Type-safe handling of multiple response shapes</li>
+        <li>✅ <strong>Transforms:</strong> Clean and normalize data before validation</li>
+      </ul>
+
+      <div class="practice-opportunity">
+        <h3>Practice Challenge</h3>
+        <p>Create a schema for a job application form with:</p>
+        <ul>
+          <li>Email validation (must be valid email format)</li>
+          <li>Phone number (US format: XXX-XXX-XXXX)</li>
+          <li>Years of experience (0-50, whole numbers only)</li>
+          <li>Resume URL (must start with https://)</li>
+          <li>Custom validator: If years of experience > 10, require LinkedIn URL</li>
+        </ul>
+        <p>Use <code>safeParse</code> and display user-friendly error messages.</p>
+      </div>
+
+      <h2>Production Checklist</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>When to Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>.parse()</code></td>
+            <td>When validation failure is exceptional (throw errors)</td>
+          </tr>
+          <tr>
+            <td><code>.safeParse()</code></td>
+            <td>When validation failure is expected (user input)</td>
+          </tr>
+          <tr>
+            <td><code>.refine()</code></td>
+            <td>Custom business logic that depends on field values</td>
+          </tr>
+          <tr>
+            <td><code>.transform()</code></td>
+            <td>Data cleanup and normalization</td>
+          </tr>
+          <tr>
+            <td>Retry Logic</td>
+            <td>External API calls with transient failures</td>
+          </tr>
+          <tr>
+            <td>Discriminated Unions</td>
+            <td>Multiple response types from same endpoint</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-8-unified-pipeline.html" class="nav-btn">← Previous: Unified Pipeline</a>
+      <a href="/pydantic-ai-assistants/index.html" class="nav-btn">Back to Module Overview</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script type="module">
+    import { z } from 'https://cdn.jsdelivr.net/npm/zod@3.23.8/+esm';
+
+    // Custom validators
+    const CorporateEmailSchema = z.string()
+      .email()
+      .refine(
+        (email) => email.endsWith('@company.com'),
+        { message: 'Must be a company email (@company.com)' }
+      );
+
+    const StrongPasswordSchema = z.string()
+      .min(8, 'Password must be at least 8 characters')
+      .refine((pwd) => /[A-Z]/.test(pwd), { message: 'Must contain uppercase letter' })
+      .refine((pwd) => /[0-9]/.test(pwd), { message: 'Must contain number' })
+      .refine((pwd) => /[!@#$%^&*]/.test(pwd), { message: 'Must contain special character' });
+
+    window.validateCustom = function() {
+      const output = document.getElementById('customOutput');
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+
+      const errors = [];
+
+      // Validate email
+      const emailResult = CorporateEmailSchema.safeParse(email);
+      if (!emailResult.success) {
+        errors.push(...emailResult.error.errors.map(e => `Email: ${e.message}`));
+      }
+
+      // Validate password
+      const passwordResult = StrongPasswordSchema.safeParse(password);
+      if (!passwordResult.success) {
+        errors.push(...passwordResult.error.errors.map(e => `Password: ${e.message}`));
+      }
+
+      if (errors.length > 0) {
+        output.className = 'demo-output error';
+        output.innerHTML = `❌ Validation Failed:<ul style="margin-top: 0.5rem;">${errors.map(e => `<li>${e}</li>`).join('')}</ul>`;
+      } else {
+        output.className = 'demo-output success';
+        output.textContent = '✅ All validations passed!';
+      }
+    };
+
+    window.testSafeParse = function() {
+      const output = document.getElementById('safeParseOutput');
+      const ageInput = document.getElementById('ageInput').value;
+
+      const schema = z.object({
+        age: z.number().int().min(0).max(120)
+      });
+
+      // Try to parse as number first
+      let ageValue = ageInput;
+      if (typeof ageInput === 'string' && !isNaN(ageInput)) {
+        ageValue = parseInt(ageInput, 10);
+      }
+
+      const result = schema.safeParse({ age: ageValue });
+
+      if (result.success) {
+        output.className = 'demo-output success';
+        output.innerHTML = `✅ <strong>Success!</strong><br><br><code>${JSON.stringify(result.data, null, 2)}</code>`;
+      } else {
+        output.className = 'demo-output error';
+        output.innerHTML = `❌ <strong>Validation Failed:</strong><ul style="margin-top: 0.5rem;">${result.error.errors.map(e => `<li>${e.path.join('.')}: ${e.message}</li>`).join('')}</ul>`;
+      }
+    };
+  </script>
+</body>
+</html>

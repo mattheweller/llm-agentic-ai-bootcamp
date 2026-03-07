@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 7: Cover Letter Generation | Pydantic AI Assistants</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/pydantic-ai-assistants/assets/css/resume-assistant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body data-module-id="pydantic-ai-assistants" data-task-id="task-7">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <a href="/index.html">LLM & Agentic AI Bootcamp</a>
+      </div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+
+    <ul class="module-list">
+      <li class="module-item" data-module-id="pydantic-ai-assistants">
+        <button class="module-toggle" data-module="pydantic-ai-assistants" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Pydantic AI</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="pydantic-ai-assistants">
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span>
+              <span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span>
+              <span>1. Project Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-2-validation-intro.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span>
+              <span>2. Validation Intro</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-3-structured-outputs.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span>
+              <span>3. Structured Outputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-4-resume-inputs.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status completed">●</span>
+              <span>4. Resume Inputs</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-5-gap-analysis.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status completed">●</span>
+              <span>5. Gap Analysis</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-6-resume-generation.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status completed">●</span>
+              <span>6. Resume Generation</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-7-cover-letter.html" class="task-list-link active" data-task-id="task-7">
+              <span class="task-status in-progress">◐</span>
+              <span>7. Cover Letter</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-8-unified-pipeline.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span>
+              <span>8. Unified Pipeline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="/pydantic-ai-assistants/tasks/task-9-advanced.html" class="task-list-link" data-task-id="task-9">
+              <span class="task-status not-started">○</span>
+              <span>9. Advanced Features</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 7</span>
+      <h1>Tone-Aware Cover Letter Generation</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Generate cover letters with tone control (professional, enthusiastic, startup-friendly)</li>
+        <li>Use structured outputs to guarantee format compliance</li>
+        <li>Implement copy-to-clipboard and download functionality</li>
+        <li>Understand how tone affects LLM writing style</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Cover Letter Schema</h2>
+      <p>The schema enforces length constraints to ensure concise, focused cover letters:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Backend Schema</div>
+        <pre><code class="language-javascript">const CoverLetterSchema = z.object({
+  cover_letter: z.string().min(200).max(2000)
+});
+
+// Validation guarantees:
+// ✅ At least 200 characters (filters out too-short responses)
+// ✅ Maximum 2000 characters (prevents overly verbose letters)
+// ✅ Returns only the letter text, no metadata</code></pre>
+      </div>
+
+      <h2>Tone Selection</h2>
+      <p>Choose a tone that matches the company culture and role:</p>
+
+      <div class="demo-container">
+        <div id="inputCheck" class="callout callout-warning" style="display: none;">
+          <strong>Missing Inputs:</strong> Please complete Task 4 (Resume Inputs) and Task 6 (Resume Generation) first.
+        </div>
+
+        <div class="form-group">
+          <label>Select Tone:</label>
+          <div class="tone-selector">
+            <label class="tone-option">
+              <input type="radio" name="tone" value="professional" checked>
+              <div class="tone-card">
+                <div class="tone-title">🎩 Professional</div>
+                <div class="tone-desc">Formal and corporate-appropriate, emphasizing qualifications and experience</div>
+                <div class="tone-example"><em>"I am writing to express my strong interest in the Full-Stack Developer position..."</em></div>
+              </div>
+            </label>
+
+            <label class="tone-option">
+              <input type="radio" name="tone" value="enthusiastic">
+              <div class="tone-card">
+                <div class="tone-title">⚡ Enthusiastic</div>
+                <div class="tone-desc">Energetic and passionate while remaining professional, showing genuine interest</div>
+                <div class="tone-example"><em>"I'm thrilled to apply for the Full-Stack Developer role at InnovateTech..."</em></div>
+              </div>
+            </label>
+
+            <label class="tone-option">
+              <input type="radio" name="tone" value="startup-friendly">
+              <div class="tone-card">
+                <div class="tone-title">🚀 Startup-Friendly</div>
+                <div class="tone-desc">Slightly informal but polished, emphasizing adaptability and innovation</div>
+                <div class="tone-example"><em>"Hey there! I saw your posting for a Full-Stack Developer and had to reach out..."</em></div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button onclick="generateCoverLetter()" id="generateBtn" class="primary-btn">✍️ Generate Cover Letter</button>
+
+        <div id="loadingStatus" style="display: none; margin-top: 1rem;">
+          <div class="loading-spinner"></div>
+          <p>Crafting your cover letter...</p>
+        </div>
+
+        <div id="coverLetterOutput" class="demo-output" style="display: none;">
+          <div class="button-group" style="margin-bottom: 1rem;">
+            <button onclick="copyCoverLetter()" class="secondary-btn">📋 Copy to Clipboard</button>
+            <button onclick="downloadCoverLetter()" class="secondary-btn">💾 Download as Text</button>
+            <button onclick="regenerate()" class="secondary-btn">🔄 Regenerate</button>
+          </div>
+          <div id="coverLetterText" style="white-space: pre-wrap; background: #f5f5f5; padding: 2rem; border-radius: 8px; line-height: 1.8; font-family: Georgia, serif;"></div>
+          <div id="charCount" style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;"></div>
+        </div>
+      </div>
+
+      <h2>How Tone Affects Output</h2>
+      <p>The backend maps tone values to specific prompt guidance:</p>
+
+      <div class="code-block">
+        <div class="code-block-header javascript">Tone Guidance Map</div>
+        <pre><code class="language-javascript">const toneGuidance = {
+  professional:
+    'formal and corporate-appropriate, emphasizing qualifications and experience',
+  enthusiastic:
+    'energetic and passionate while remaining professional, showing genuine interest',
+  'startup-friendly':
+    'slightly informal but polished, emphasizing adaptability and innovation'
+};
+
+// Injected into prompt:
+`Tone: ${tone} (${toneGuidance[tone]})`</code></pre>
+      </div>
+
+      <h2>Cover Letter Requirements</h2>
+      <p>All generated cover letters follow these guidelines:</p>
+
+      <ul>
+        <li>✅ Generic greeting (e.g., "Dear Hiring Manager")</li>
+        <li>✅ 3-4 paragraphs maximum</li>
+        <li>✅ Highlights key achievements from updated resume</li>
+        <li>✅ Aligns with job description requirements</li>
+        <li>✅ Expresses enthusiasm and fit for the role</li>
+        <li>✅ Confident and polite closing statement</li>
+        <li>✅ Matches selected tone throughout</li>
+      </ul>
+
+      <h2>Typical Cover Letter Structure</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Opening Paragraph</strong></td>
+            <td>State the position, express interest, mention where you found the job</td>
+          </tr>
+          <tr>
+            <td><strong>Body Paragraph 1</strong></td>
+            <td>Highlight relevant experience and key achievements from resume</td>
+          </tr>
+          <tr>
+            <td><strong>Body Paragraph 2</strong></td>
+            <td>Explain why you're a great fit and what you bring to the role</td>
+          </tr>
+          <tr>
+            <td><strong>Closing Paragraph</strong></td>
+            <td>Express enthusiasm, mention next steps, thank the reader</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-info">
+        <strong>Pro Tip:</strong> Try generating with different tones to see which matches the company culture. Startups often respond better to enthusiastic or startup-friendly tones, while enterprises prefer professional.
+      </div>
+
+      <div class="practice-opportunity">
+        <h3>Try It Yourself</h3>
+        <ol>
+          <li>Ensure you've completed Task 4 (Resume Inputs) and Task 6 (Resume Generation)</li>
+          <li>Select a tone that matches your target company's culture</li>
+          <li>Click "Generate Cover Letter" to create your letter</li>
+          <li>Review the output and regenerate with a different tone if needed</li>
+          <li>Copy or download the final version for your application</li>
+        </ol>
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-6-resume-generation.html" class="nav-btn">← Previous: Resume Generation</a>
+      <a href="task-8-unified-pipeline.html" class="nav-btn">Next: Unified Pipeline →</a>
+    </nav>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    let currentCoverLetter = null;
+
+    window.addEventListener('DOMContentLoaded', checkInputs);
+
+    function checkInputs() {
+      const resume = localStorage.getItem('pydantic_updated_resume');
+      const jobDesc = localStorage.getItem('pydantic_jobdesc');
+
+      if (!resume || !jobDesc) {
+        document.getElementById('inputCheck').style.display = 'block';
+      }
+    }
+
+    async function generateCoverLetter() {
+      const resume = localStorage.getItem('pydantic_updated_resume');
+      const jobDesc = localStorage.getItem('pydantic_jobdesc');
+
+      if (!resume || !jobDesc) {
+        alert('Please complete Task 4 (Resume Inputs) and Task 6 (Resume Generation) first.');
+        return;
+      }
+
+      const tone = document.querySelector('input[name="tone"]:checked').value;
+      const btn = document.getElementById('generateBtn');
+      const loading = document.getElementById('loadingStatus');
+      const output = document.getElementById('coverLetterOutput');
+
+      btn.disabled = true;
+      loading.style.display = 'block';
+      output.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/structured/generate-cover-letter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            updated_resume: resume,
+            job_description_text: jobDesc,
+            tone: tone
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to generate cover letter');
+        }
+
+        const result = await response.json();
+        currentCoverLetter = result.cover_letter;
+
+        // Display result
+        document.getElementById('coverLetterText').textContent = currentCoverLetter;
+        document.getElementById('charCount').textContent =
+          `${currentCoverLetter.length} characters | Tone: ${tone}`;
+
+        output.style.display = 'block';
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    }
+
+    function copyCoverLetter() {
+      if (!currentCoverLetter) return;
+
+      navigator.clipboard.writeText(currentCoverLetter)
+        .then(() => alert('✅ Cover letter copied to clipboard!'))
+        .catch(() => alert('❌ Failed to copy. Try selecting and copying manually.'));
+    }
+
+    function downloadCoverLetter() {
+      if (!currentCoverLetter) return;
+
+      const blob = new Blob([currentCoverLetter], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cover_letter.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function regenerate() {
+      const currentTone = document.querySelector('input[name="tone"]:checked').value;
+      if (confirm(`Regenerate cover letter with "${currentTone}" tone?`)) {
+        generateCoverLetter();
+      }
+    }
+  </script>
+
+  <style>
+    .tone-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tone-option {
+      cursor: pointer;
+      display: block;
+    }
+
+    .tone-option input[type="radio"] {
+      display: none;
+    }
+
+    .tone-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .tone-option input[type="radio"]:checked + .tone-card {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .tone-card:hover {
+      border-color: #2563eb;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .tone-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .tone-desc {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .tone-example {
+      font-size: 0.85rem;
+      color: #888;
+      font-style: italic;
+      padding-top: 0.5rem;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</body>
+</html>
