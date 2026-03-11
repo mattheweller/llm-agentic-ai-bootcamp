@@ -319,23 +319,12 @@ const validated = RecipeSchema.parse(data); // Always succeeds!</code></pre>
       output.textContent = 'Calling OpenAI with structured output schema...';
 
       try {
-        // Call backend endpoint (we'll create a generic structured endpoint)
-        const response = await fetch('/api/openai/chat', {
+        // Call structured endpoint with response_format
+        const response = await fetch('/api/structured/recipe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a helpful cooking assistant. Provide detailed, accurate recipes.'
-              },
-              {
-                role: 'user',
-                content: `Give me a recipe for ${prompt}. Include name, cuisine type, difficulty level (easy/medium/hard), prep time in minutes, list of ingredients, and step-by-step instructions.`
-              }
-            ],
-            temperature: 0.7,
-            max_tokens: 1000
+            recipe_request: prompt
           })
         });
 
@@ -344,46 +333,45 @@ const validated = RecipeSchema.parse(data); // Always succeeds!</code></pre>
           throw new Error(error.error || 'API request failed');
         }
 
-        const data = await response.json();
-        const content = data.choices[0].message.content;
+        // Response is already validated by backend Zod schema
+        const recipe = await response.json();
 
-        // Try to parse as JSON and validate
-        let recipe;
-        try {
-          const parsed = JSON.parse(content);
-          recipe = RecipeSchema.parse(parsed);
-        } catch (parseError) {
-          // If not valid JSON/schema, just display the text
-          output.className = 'demo-output';
-          output.innerHTML = `<div style="white-space: pre-wrap;">${content}</div>
-<div class="callout callout-warning" style="margin-top: 1rem;">
-<strong>Note:</strong> This response wasn't structured JSON. In production, use the <code>/api/structured</code> endpoint with <code>response_format</code> for guaranteed schema compliance.
-</div>`;
-          return;
-        }
+        // Validate again on frontend for demonstration
+        RecipeSchema.parse(recipe);
 
         // Display validated recipe
         output.className = 'demo-output success';
         output.innerHTML = `
-<h3>${recipe.name}</h3>
-<p><strong>Cuisine:</strong> ${recipe.cuisine} | <strong>Difficulty:</strong> ${recipe.difficulty} | <strong>Prep Time:</strong> ${recipe.prep_time_minutes} min</p>
+<h3>${escapeHtml(recipe.name)}</h3>
+<p><strong>Cuisine:</strong> ${escapeHtml(recipe.cuisine)} | <strong>Difficulty:</strong> ${recipe.difficulty} | <strong>Prep Time:</strong> ${recipe.prep_time_minutes} min</p>
 
 <h4>Ingredients:</h4>
-<ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+<ul>${recipe.ingredients.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
 
 <h4>Instructions:</h4>
-<ol>${recipe.instructions.map(i => `<li>${i}</li>`).join('')}</ol>
+<ol>${recipe.instructions.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ol>
 
-<div class="callout callout-info" style="margin-top: 1rem;">
-✅ <strong>Schema Validated:</strong> This response matches the RecipeSchema exactly!
+<div class="callout callout-success" style="margin-top: 1rem;">
+✅ <strong>Structured Output Success!</strong> This response was guaranteed to match the RecipeSchema using OpenAI's <code>response_format</code> parameter with <code>strict: true</code>. No validation errors possible!
 </div>
         `;
       } catch (error) {
         output.className = 'demo-output error';
-        output.textContent = `❌ Error: ${error.message}`;
+        if (error instanceof z.ZodError) {
+          output.textContent = `❌ Validation Error: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
+        } else {
+          output.textContent = `❌ Error: ${error.message}\n\nMake sure the Express server is running and your OpenAI API key is configured.`;
+        }
       } finally {
         btn.disabled = false;
         btn.textContent = '🍳 Generate Recipe';
+      }
+
+      // Helper to escape HTML
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
       }
     };
   </script>

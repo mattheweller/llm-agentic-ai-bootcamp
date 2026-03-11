@@ -279,6 +279,10 @@ Return JSON with these exact fields:
 
       try {
         const analysis = await client.analyzeResume(resumeText, jobDescText);
+
+        // Save gap analysis for use in next tasks
+        localStorage.setItem('pydantic_gap_analysis', JSON.stringify(analysis));
+
         resultsDiv.innerHTML = renderGapAnalysis(analysis);
       } catch (error) {
         resultsDiv.innerHTML = `<div class="demo-output error"><strong>❌ Error:</strong> ${error.message}<br><br><small>Make sure the Express server is running and your OpenAI API key is configured.</small></div>`;

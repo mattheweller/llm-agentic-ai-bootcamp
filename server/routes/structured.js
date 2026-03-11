@@ -70,7 +70,8 @@ Return JSON with these exact fields:
 - gaps: array of strings (missing or weak areas in resume compared to job requirements)
 - potential_strengths: array of strings (valuable skills in resume not explicitly in job description but could strengthen application)`;
 
-    const jsonSchema = zodToJsonSchema(GapAnalysisSchema, 'gap_analysis');
+    const jsonSchemaRaw = zodToJsonSchema(GapAnalysisSchema, 'gap_analysis');
+    const jsonSchema = jsonSchemaRaw.definitions?.gap_analysis || jsonSchemaRaw;
 
     const response = await client.chat.completions.create({
       model: 'gpt-4o',
@@ -161,7 +162,8 @@ Return JSON with:
 
 Make the diff_html readable by preserving line breaks and formatting.`;
 
-    const jsonSchema = zodToJsonSchema(ResumeOutputSchema, 'resume_output');
+    const jsonSchemaRaw = zodToJsonSchema(ResumeOutputSchema, 'resume_output');
+    const jsonSchema = jsonSchemaRaw.definitions?.resume_output || jsonSchemaRaw;
 
     const response = await client.chat.completions.create({
       model: 'gpt-4o',
@@ -250,7 +252,8 @@ Requirements:
 Return JSON with:
 - cover_letter: Complete cover letter text`;
 
-    const jsonSchema = zodToJsonSchema(CoverLetterSchema, 'cover_letter');
+    const jsonSchemaRaw = zodToJsonSchema(CoverLetterSchema, 'cover_letter');
+    const jsonSchema = jsonSchemaRaw.definitions?.cover_letter || jsonSchemaRaw;
 
     const response = await client.chat.completions.create({
       model: 'gpt-4o',
@@ -275,6 +278,79 @@ Return JSON with:
 
     const content = JSON.parse(response.choices[0].message.content);
     const validated = CoverLetterSchema.parse(content);
+
+    res.json(validated);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(422).json({
+        error: 'Validation failed',
+        details: error.errors
+      });
+    }
+    next(error);
+  }
+});
+
+/**
+ * POST /api/structured/recipe
+ * Generate a recipe with guaranteed structured output
+ *
+ * Request body:
+ * {
+ *   "recipe_request": "chocolate chip cookies"
+ * }
+ */
+router.post('/recipe', async (req, res, next) => {
+  try {
+    const { recipe_request } = req.body;
+
+    if (!recipe_request) {
+      return res.status(400).json({
+        error: 'recipe_request is required'
+      });
+    }
+
+    const client = getOpenAIClient();
+
+    const RecipeSchema = z.object({
+      name: z.string(),
+      cuisine: z.string(),
+      difficulty: z.enum(['easy', 'medium', 'hard']),
+      prep_time_minutes: z.number().int().positive(),
+      ingredients: z.array(z.string()).min(3),
+      instructions: z.array(z.string()).min(3)
+    });
+
+    // Convert Zod schema to JSON Schema - extract from definitions if wrapped
+    const jsonSchemaRaw = zodToJsonSchema(RecipeSchema, 'recipe');
+    const jsonSchema = jsonSchemaRaw.definitions?.recipe || jsonSchemaRaw;
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful cooking assistant. Provide detailed, accurate recipes with clear instructions.'
+        },
+        {
+          role: 'user',
+          content: `Give me a recipe for ${recipe_request}. Include the recipe name, cuisine type, difficulty level (easy/medium/hard), prep time in minutes, list of ingredients, and step-by-step instructions.`
+        }
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'recipe',
+          strict: true,
+          schema: jsonSchema
+        }
+      },
+      temperature: 0.7,
+      max_tokens: 1000
+    });
+
+    const content = JSON.parse(response.choices[0].message.content);
+    const validated = RecipeSchema.parse(content);
 
     res.json(validated);
   } catch (error) {
