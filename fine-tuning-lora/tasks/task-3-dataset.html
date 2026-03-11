@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 3: Dataset Exploration | Fine-Tuning & LoRA</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/fine-tuning-lora/assets/css/fine-tuning.css">
+</head>
+<body data-module-id="fine-tuning-lora" data-task-id="task-3">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><a href="/index.html">LLM & Agentic AI Bootcamp</a></div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+    <ul class="module-list">
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span><span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span><span>1. Problem Statement</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-2-setup.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span><span>2. Libraries & GPU Setup</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-3-dataset.html" class="task-list-link active" data-task-id="task-3">
+              <span class="task-status in-progress">◐</span><span>3. Dataset Exploration</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-4-formatting.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status not-started">○</span><span>4. SFT Data Formatting</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-5-metrics.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span><span>5. Evaluation Metrics</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-6-baseline.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span><span>6. Zero-Shot Baseline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-7-lora-training.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span><span>7. Fine-Tuning with LoRA</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-8-evaluation.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span><span>8. Evaluate Results</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 3</span>
+      <h1>Load & Explore the Dataset</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Load a dataset from Hugging Face Hub using the <code>datasets</code> library</li>
+        <li>Inspect dataset structure, features, and label distribution</li>
+        <li>Understand why class imbalance matters for classification metrics</li>
+        <li>Create a reproducible train/test split</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>The Dataset</h2>
+      <p>
+        We use the <strong>Daniel-ML/sentiment-analysis-for-financial-news-v2</strong> dataset
+        from Hugging Face Hub. It contains 4,847 labelled financial news sentences — real
+        headlines and article fragments tagged by financial analysts.
+      </p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Load Dataset</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>from datasets import load_dataset
+
+dataset_id = "Daniel-ML/sentiment-analysis-for-financial-news-v2"
+labeled_dataset = load_dataset(dataset_id, split="train")
+
+print(labeled_dataset)
+# Dataset({
+#     features: ['text', 'sentiment'],
+#     num_rows: 4847
+# })</code></pre>
+      </div>
+
+      <h2>Interactive Dataset Browser</h2>
+      <p>Browse samples from the actual dataset below. Each example shows the headline and its labelled sentiment:</p>
+
+      <div class="sample-browser">
+        <div class="sample-browser-header">
+          <span id="sampleCounter">Sample 1 of 12</span>
+          <div class="sample-nav-btns">
+            <button class="sample-nav-btn" onclick="prevSample()">← Prev</button>
+            <button class="sample-nav-btn" onclick="nextSample()">Next →</button>
+            <button class="sample-nav-btn" onclick="randomSample()">Random</button>
+          </div>
+        </div>
+        <div class="sample-body">
+          <p class="sample-text" id="sampleText"></p>
+          <div class="sample-meta">
+            <span>Label:</span>
+            <span id="sampleLabel"></span>
+            <span id="sampleIndex" style="margin-left: auto; font-size: 0.75rem; color: #999;"></span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Class Distribution</h2>
+      <p>
+        Financial news datasets are typically <strong>imbalanced</strong> — most headlines
+        are factual/neutral statements. Understanding this distribution before training is critical.
+      </p>
+
+      <div class="distribution-chart" id="distChart"></div>
+
+      <div class="callout callout-warning">
+        <strong>Class Imbalance Matters:</strong> A naive model could achieve ~60% accuracy
+        by predicting "neutral" for everything. This is why we use <strong>F1-score</strong>
+        (which penalises poor minority-class performance) rather than raw accuracy as our
+        primary metric.
+      </div>
+
+      <h2>Splitting the Data</h2>
+      <p>
+        We use a 90/10 train/test split with a fixed seed for reproducibility. The
+        <code>datasets</code> library handles this natively:
+      </p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Train/Test Split</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>split_dataset = labeled_dataset.train_test_split(
+    test_size=0.10,
+    seed=42,
+    shuffle=True,
+)
+train_dataset = split_dataset["train"]   # 4,362 samples
+test_dataset  = split_dataset["test"]    #   485 samples
+
+print(f"Training: {len(train_dataset)} samples")
+print(f"Testing:  {len(test_dataset)} samples")</code></pre>
+      </div>
+
+      <h2>What Does a Sample Look Like?</h2>
+      <p>Each row has exactly two fields:</p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Inspect a Sample</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>print(train_dataset[0])
+# {
+#   'text': 'Operating profit rose to EUR 13.1 mn from EUR 8.7 mn in the same period year earlier .',
+#   'sentiment': 'positive'
+# }
+
+# View as a DataFrame
+train_dataset.select(range(5)).to_pandas()[["text", "sentiment"]]</code></pre>
+      </div>
+
+      <div class="callout callout-success">
+        <strong>Practice Opportunity:</strong> After loading the dataset, plot the class
+        distribution using <code>seaborn.countplot(labeled_dataset["sentiment"])</code>.
+        Does the imbalance match what you see in the chart above? How might you address
+        severe imbalance if one class had only 5% of samples?
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-2-setup.html" class="nav-btn">← Previous: Libraries & GPU Setup</a>
+      <a href="task-4-formatting.html" class="nav-btn">Next: SFT Data Formatting →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block-container').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    const SAMPLES = [
+      { text: "Operating profit rose to EUR 13.1 mn from EUR 8.7 mn in the same period year earlier.", sentiment: "positive" },
+      { text: "Fitch Ratings has affirmed Stora Enso's Long-term Issuer Default Rating at 'BB+' with a stable outlook.", sentiment: "neutral" },
+      { text: "The company reported a net loss of EUR 2.3 mn, compared to a net profit of EUR 4.1 mn a year ago.", sentiment: "negative" },
+      { text: "According to Gran Tierra Energy's preliminary production figures for December, production averaged about 10,290 BOE/D.", sentiment: "neutral" },
+      { text: "Finnish-listed consumer goods company Raisio said its operating profit improved significantly in January-March 2010.", sentiment: "positive" },
+      { text: "The global economic slowdown has led to a sharp decline in export volumes and increased competitive pressure.", sentiment: "negative" },
+      { text: "The Board of Directors proposes a dividend of EUR 0.20 per share for the financial year 2009.", sentiment: "neutral" },
+      { text: "With the new production capacity, the company expects to increase revenue by approximately 30% in the next fiscal year.", sentiment: "positive" },
+      { text: "Net sales fell by 5% from EUR 2.37 bn to EUR 2.25 bn as demand weakened across all major markets.", sentiment: "negative" },
+      { text: "The merger is expected to create the world's third-largest steel producer and has received regulatory approval.", sentiment: "neutral" },
+      { text: "The company has signed a EUR 47 mn contract to supply industrial components to a major European manufacturer.", sentiment: "positive" },
+      { text: "Production at the Helsinki facility will be suspended for three weeks due to scheduled maintenance work.", sentiment: "neutral" },
+    ];
+
+    let currentIndex = 0;
+
+    function renderSample() {
+      const s = SAMPLES[currentIndex];
+      document.getElementById('sampleText').textContent = s.text;
+      const labelEl = document.getElementById('sampleLabel');
+      labelEl.innerHTML = `<span class="sentiment-badge ${s.sentiment}">${s.sentiment}</span>`;
+      document.getElementById('sampleCounter').textContent =
+        `Sample ${currentIndex + 1} of ${SAMPLES.length}`;
+      document.getElementById('sampleIndex').textContent = `idx: ${currentIndex}`;
+    }
+
+    function nextSample() {
+      currentIndex = (currentIndex + 1) % SAMPLES.length;
+      renderSample();
+    }
+
+    function prevSample() {
+      currentIndex = (currentIndex - 1 + SAMPLES.length) % SAMPLES.length;
+      renderSample();
+    }
+
+    function randomSample() {
+      currentIndex = Math.floor(Math.random() * SAMPLES.length);
+      renderSample();
+    }
+
+    renderSample();
+
+    // Class distribution chart
+    const DIST = [
+      { label: "neutral",  count: 2879, pct: 59.4 },
+      { label: "positive", count: 1363, pct: 28.1 },
+      { label: "negative", count:  605, pct: 12.5 },
+    ];
+
+    const chart = document.getElementById('distChart');
+    DIST.forEach(d => {
+      chart.innerHTML += `
+        <div class="dist-row">
+          <div class="dist-label">
+            <span class="sentiment-badge ${d.label}">${d.label}</span>
+          </div>
+          <div class="dist-bar-wrap">
+            <div class="dist-bar ${d.label}" style="width: ${d.pct}%">
+              <span>${d.pct}%</span>
+            </div>
+          </div>
+          <div class="dist-count">${d.count.toLocaleString()} samples</div>
+        </div>`;
+    });
+  </script>
+</body>
+</html>

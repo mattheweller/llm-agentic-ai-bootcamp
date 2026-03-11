@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 1: Problem Statement | Fine-Tuning & LoRA</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/fine-tuning-lora/assets/css/fine-tuning.css">
+</head>
+<body data-module-id="fine-tuning-lora" data-task-id="task-1">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><a href="/index.html">LLM & Agentic AI Bootcamp</a></div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+    <ul class="module-list">
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span><span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-1-overview.html" class="task-list-link active" data-task-id="task-1">
+              <span class="task-status in-progress">◐</span><span>1. Problem Statement</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-2-setup.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status not-started">○</span><span>2. Libraries & GPU Setup</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-3-dataset.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status not-started">○</span><span>3. Dataset Exploration</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-4-formatting.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status not-started">○</span><span>4. SFT Data Formatting</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-5-metrics.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span><span>5. Evaluation Metrics</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-6-baseline.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span><span>6. Zero-Shot Baseline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-7-lora-training.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span><span>7. Fine-Tuning with LoRA</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-8-evaluation.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span><span>8. Evaluate Results</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 1</span>
+      <h1>Problem Statement & Business Case</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand what fine-tuning is and when it's the right choice</li>
+        <li>Compare fine-tuning against prompting and RAG</li>
+        <li>Learn why open-source models are often preferred in production</li>
+        <li>Frame the financial news sentiment classification task</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>What Is Fine-Tuning?</h2>
+      <p>
+        <strong>Fine-tuning</strong> means continuing the training process of a pre-trained model on
+        your own labelled dataset. The model already understands language — you're teaching it
+        the specific patterns, vocabulary, and output format for your task.
+      </p>
+      <p>
+        Think of it like hiring an experienced lawyer and sending them through a one-week onboarding
+        for your firm's specific legal practice areas. They don't need to learn what a contract is —
+        they need to learn <em>your</em> contracts.
+      </p>
+
+      <div class="callout callout-info">
+        <strong>Key Insight:</strong> Fine-tuning doesn't change <em>what</em> the model knows about
+        language. It changes the distribution of outputs it produces — steering responses towards
+        the task-specific format and vocabulary you need.
+      </div>
+
+      <h2>When to Fine-Tune vs. Other Approaches</h2>
+      <p>Before reaching for fine-tuning, ask yourself whether a simpler approach covers the use case:</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>Best For</th>
+            <th>Limitations</th>
+            <th>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Prompting</strong></td>
+            <td>General tasks, rapid prototyping, varied queries</td>
+            <td>Inconsistent format, token-heavy, no task-specific adaptation</td>
+            <td>Low setup, higher per-call cost</td>
+          </tr>
+          <tr>
+            <td><strong>RAG</strong></td>
+            <td>Grounding answers in a private knowledge base</td>
+            <td>Doesn't change model behaviour or output style</td>
+            <td>Medium — needs a vector store</td>
+          </tr>
+          <tr>
+            <td><strong>Fine-Tuning</strong></td>
+            <td>Consistent format, domain-specific style, classification tasks</td>
+            <td>Requires labelled data; training compute; periodic retraining</td>
+            <td>Higher upfront, low inference cost</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warning">
+        <strong>Rule of Thumb:</strong> Try prompting first. If you're seeing consistent format
+        failures, hallucinated labels, or unacceptable latency from long system prompts,
+        fine-tuning is the right next step.
+      </div>
+
+      <h2>Why Open-Source Models?</h2>
+      <p>
+        Proprietary API models (GPT-4, Claude, Gemini) are excellent for general tasks, but
+        production fine-tuning often uses open-source models. Here's why:
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+        <div class="section">
+          <h3>Data Privacy</h3>
+          <p>Financial data, medical records, and proprietary business data can't leave your
+          infrastructure. Open-source models run entirely on your hardware.</p>
+        </div>
+        <div class="section">
+          <h3>Cost at Scale</h3>
+          <p>Once trained, inference on a small fine-tuned model costs a fraction of a
+          GPT-4 API call — critical when processing millions of documents.</p>
+        </div>
+        <div class="section">
+          <h3>Full Control</h3>
+          <p>You choose the model version, quantization level, and serving infrastructure.
+          No vendor lock-in, no surprise deprecations.</p>
+        </div>
+        <div class="section">
+          <h3>Specialization</h3>
+          <p>A fine-tuned 1B model often outperforms a general 70B model on a narrow task —
+          smaller, faster, and more accurate where it matters.</p>
+        </div>
+      </div>
+
+      <h2>The Project: Financial News Sentiment Classification</h2>
+      <p>
+        Throughout this module, you'll fine-tune <strong>Google Gemma 3 1B</strong> to classify
+        financial news headlines into three sentiment categories:
+      </p>
+
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0;">
+        <span class="sentiment-badge positive">positive</span>
+        <span class="sentiment-badge negative">negative</span>
+        <span class="sentiment-badge neutral">neutral</span>
+      </div>
+
+      <p>Example inputs and expected outputs:</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>News Headline</th>
+            <th>Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"Company reports record quarterly earnings, beating analyst expectations by 15%"</td>
+            <td><span class="sentiment-badge positive">positive</span></td>
+          </tr>
+          <tr>
+            <td>"Supply chain disruptions expected to impact margins through Q3"</td>
+            <td><span class="sentiment-badge negative">negative</span></td>
+          </tr>
+          <tr>
+            <td>"Board of directors approves share buyback programme of up to €500m"</td>
+            <td><span class="sentiment-badge neutral">neutral</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Why This Task Benefits from Fine-Tuning</h2>
+      <p>
+        General-purpose models struggle with financial sentiment because the domain has
+        <strong>non-obvious language patterns</strong>:
+      </p>
+      <ul>
+        <li>
+          "The company will acquire its competitor" — neutral to a general model,
+          but <em>market-moving</em> in finance
+        </li>
+        <li>
+          "Operating costs rose 8% year-over-year" — sounds negative, but may be
+          <em>expected and priced in</em>
+        </li>
+        <li>
+          Short, terse headlines with no explicit sentiment cues require domain context
+        </li>
+      </ul>
+      <p>
+        A fine-tuned model learns these domain-specific patterns from labelled examples,
+        achieving <strong>~88% accuracy</strong> vs. ~44% for zero-shot prompting.
+      </p>
+
+      <div class="callout callout-success">
+        <strong>What You'll Build:</strong> A sentiment classification pipeline that loads
+        financial news from Hugging Face, formats it for supervised fine-tuning, trains
+        Gemma 3 1B with LoRA adapters, and evaluates the improvement quantitatively.
+      </div>
+
+      <h2>Module Roadmap</h2>
+      <div class="pipeline-steps">
+        <div class="pipeline-step">
+          <div class="step-icon">2</div>
+          <div class="step-content">
+            <h4>Libraries & GPU Setup</h4>
+            <p>Install the Hugging Face ecosystem: transformers, PEFT, TRL, bitsandbytes, datasets.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">3</div>
+          <div class="step-content">
+            <h4>Dataset Exploration</h4>
+            <p>Load and analyse 4,800+ labelled financial headlines from Hugging Face Hub.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">4</div>
+          <div class="step-content">
+            <h4>SFT Data Formatting</h4>
+            <p>Format samples into Gemma's chat template structure for the SFT Trainer.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">5</div>
+          <div class="step-content">
+            <h4>Evaluation Metrics</h4>
+            <p>Learn precision, recall, F1-score, and confusion matrices for classification.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">6</div>
+          <div class="step-content">
+            <h4>Zero-Shot Baseline</h4>
+            <p>Measure base model accuracy before any fine-tuning — this is your benchmark.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">7</div>
+          <div class="step-content">
+            <h4>Fine-Tuning with LoRA</h4>
+            <p>Configure LoRA adapters and run the SFTTrainer on your formatted dataset.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">8</div>
+          <div class="step-content">
+            <h4>Evaluate Results</h4>
+            <p>Compare before/after confusion matrices and quantify the improvement.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="/fine-tuning-lora/index.html" class="nav-btn">← Module Overview</a>
+      <a href="task-2-setup.html" class="nav-btn">Next: Libraries & GPU Setup →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+</body>
+</html>

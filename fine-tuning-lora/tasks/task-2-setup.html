@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 2: Libraries & GPU Setup | Fine-Tuning & LoRA</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/fine-tuning-lora/assets/css/fine-tuning.css">
+</head>
+<body data-module-id="fine-tuning-lora" data-task-id="task-2">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><a href="/index.html">LLM & Agentic AI Bootcamp</a></div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+    <ul class="module-list">
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span><span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span><span>1. Problem Statement</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-2-setup.html" class="task-list-link active" data-task-id="task-2">
+              <span class="task-status in-progress">◐</span><span>2. Libraries & GPU Setup</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-3-dataset.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status not-started">○</span><span>3. Dataset Exploration</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-4-formatting.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status not-started">○</span><span>4. SFT Data Formatting</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-5-metrics.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span><span>5. Evaluation Metrics</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-6-baseline.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span><span>6. Zero-Shot Baseline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-7-lora-training.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span><span>7. Fine-Tuning with LoRA</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-8-evaluation.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span><span>8. Evaluate Results</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 2</span>
+      <h1>Libraries & GPU Setup</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand why GPU is required for fine-tuning (and why CPU won't work)</li>
+        <li>Learn the role of each library in the Hugging Face ecosystem</li>
+        <li>Set up Hugging Face Hub authentication for gated models</li>
+        <li>Verify GPU availability before starting training</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <div class="callout callout-danger">
+        <strong>GPU Required — This Won't Run Locally on macOS/Windows</strong><br>
+        The <code>bitsandbytes</code> quantization library requires a CUDA GPU (NVIDIA).
+        Use <a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a>
+        with a T4 or better runtime. Free tier is sufficient.
+      </div>
+
+      <h2>The Hugging Face Ecosystem</h2>
+      <p>
+        Fine-tuning a modern LLM uses five distinct libraries that each handle one layer of
+        the stack. It's worth understanding what each one does before writing code.
+      </p>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-card-name">transformers</div>
+          <div class="tech-card-role">Model architectures, tokenizers, and the base training loop (Trainer API)</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-name">datasets</div>
+          <div class="tech-card-role">Download, cache, and stream datasets from Hugging Face Hub with lazy loading</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-name">peft</div>
+          <div class="tech-card-role">Parameter-Efficient Fine-Tuning — wraps any model with LoRA, QLoRA, adapters</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-name">trl</div>
+          <div class="tech-card-role">SFTTrainer, reward models, RLHF/DPO training — simplifies the fine-tuning loop</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-name">bitsandbytes</div>
+          <div class="tech-card-role">4-bit and 8-bit quantization — loads a 1B model in ~700MB VRAM instead of ~2GB</div>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-name">accelerate</div>
+          <div class="tech-card-role">Device management — automatically places model layers on GPU/CPU as needed</div>
+        </div>
+      </div>
+
+      <h2>Installation</h2>
+      <p>Run this in your Colab notebook cell to install everything:</p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Shell — Colab Cell 1</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>!pip install -q transformers accelerate torch datasets peft trl scikit-learn gradio</code></pre>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>Why not <code>bitsandbytes</code> in the install?</strong> The notebook
+        originally included it, but Colab's T4 runtime already has a compatible version.
+        Installing it separately can cause version conflicts. Leave it out unless you're on
+        a custom machine.
+      </div>
+
+      <h2>Hugging Face Hub Authentication</h2>
+      <p>
+        Gemma 3 is a <strong>gated model</strong> — you must accept Google's terms on the
+        model card before you can download it. Two steps:
+      </p>
+      <ol>
+        <li>
+          Go to the model page on Hugging Face and accept the terms of use
+          (search for <code>google/gemma-3-1b-it</code>)
+        </li>
+        <li>Generate a read token in your HF account settings and authenticate in Colab:</li>
+      </ol>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Cell 2</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>from huggingface_hub import notebook_login
+notebook_login()  # Opens a widget to paste your HF token</code></pre>
+      </div>
+
+      <h2>GPU Detection</h2>
+      <p>
+        Always verify GPU availability before starting. Training silently falls back to CPU
+        if CUDA isn't found, and will appear to run — extremely slowly — until it times out.
+      </p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Cell 3</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>import torch
+
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    gpu_name = torch.cuda.get_device_name(0)
+    vram_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
+    print(f"GPU detected: {gpu_name}")
+    print(f"VRAM: {vram_gb:.1f} GB")
+else:
+    print("No GPU detected — enable GPU runtime before continuing!")
+    print("Runtime > Change runtime type > T4 GPU")</code></pre>
+      </div>
+
+      <h2>Interactive: GPU vs. CPU — Why It Matters</h2>
+      <p>Explore the memory and time difference for loading a 1B parameter model:</p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="precisionSelect">Model Precision:</label>
+          <select id="precisionSelect" onchange="updateMemoryCalc()">
+            <option value="fp32">float32 (full precision)</option>
+            <option value="fp16">float16 (half precision)</option>
+            <option value="int8">int8 (8-bit quantized)</option>
+            <option value="int4" selected>int4 (4-bit quantized — QLoRA)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="paramCount">Model Size (billions of parameters):</label>
+          <input type="range" id="paramCount" min="1" max="13" value="1" step="1" oninput="updateMemoryCalc()">
+          <span id="paramLabel">1B</span>
+        </div>
+        <div id="memoryOutput" class="demo-output"></div>
+      </div>
+
+      <h2>Core Imports</h2>
+      <p>Once setup is complete, here are the imports used throughout this module:</p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Cell 4</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>import torch
+from transformers import (
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    TrainingArguments,
+    BitsAndBytesConfig,
+)
+from datasets import load_dataset
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from trl import SFTTrainer
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import pandas as pd</code></pre>
+      </div>
+
+      <div class="callout callout-warning">
+        <strong>Practice:</strong> After running the GPU check cell, look at your VRAM figure.
+        A T4 has ~15 GB. A 1B parameter model in float32 needs ~4 GB — but with 4-bit
+        quantization it fits in under 1 GB, leaving room for gradients and activations
+        during training. That's why QLoRA exists.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-1-overview.html" class="nav-btn">← Previous: Problem Statement</a>
+      <a href="task-3-dataset.html" class="nav-btn">Next: Dataset Exploration →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block-container').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    function updateMemoryCalc() {
+      const precision = document.getElementById('precisionSelect').value;
+      const params = parseInt(document.getElementById('paramCount').value);
+      document.getElementById('paramLabel').textContent = params + 'B';
+
+      const bytesPerParam = { fp32: 4, fp16: 2, int8: 1, int4: 0.5 };
+      const bytes = params * 1e9 * bytesPerParam[precision];
+      const gb = bytes / 1e9;
+
+      const overhead = 1.4; // activations + optimizer states (inference only)
+      const totalGb = gb * overhead;
+
+      const t4Vram = 15;
+      const fits = totalGb <= t4Vram;
+
+      const precisionLabels = {
+        fp32: 'float32 — 4 bytes per parameter',
+        fp16: 'float16 — 2 bytes per parameter',
+        int8: 'int8 — 1 byte per parameter',
+        int4: 'int4 (QLoRA) — 0.5 bytes per parameter'
+      };
+
+      let trainingNote = '';
+      if (precision === 'int4') {
+        trainingNote = '\nTraining overhead with LoRA: +~0.3 GB (adapter weights only)';
+      } else if (precision === 'fp16') {
+        trainingNote = '\nTraining overhead (gradients + optimizer): 3x model size = ' +
+          (gb * 3).toFixed(1) + ' GB total';
+      }
+
+      const output = document.getElementById('memoryOutput');
+      output.className = 'demo-output ' + (fits ? 'success' : 'error');
+      output.textContent =
+        `Precision: ${precisionLabels[precision]}\n` +
+        `Model size: ${gb.toFixed(2)} GB\n` +
+        `Estimated VRAM needed: ${totalGb.toFixed(2)} GB\n` +
+        `${trainingNote}\n\n` +
+        `Colab T4 VRAM: ${t4Vram} GB\n` +
+        (fits
+          ? `Fits on T4`
+          : `Does NOT fit on T4 — use quantization or a larger GPU`);
+    }
+
+    updateMemoryCalc();
+  </script>
+</body>
+</html>

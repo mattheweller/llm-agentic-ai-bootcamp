@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4: SFT Data Formatting | Fine-Tuning & LoRA</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/fine-tuning-lora/assets/css/fine-tuning.css">
+</head>
+<body data-module-id="fine-tuning-lora" data-task-id="task-4">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><a href="/index.html">LLM & Agentic AI Bootcamp</a></div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+    <ul class="module-list">
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span><span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span><span>1. Problem Statement</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-2-setup.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span><span>2. Libraries & GPU Setup</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-3-dataset.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span><span>3. Dataset Exploration</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-4-formatting.html" class="task-list-link active" data-task-id="task-4">
+              <span class="task-status in-progress">◐</span><span>4. SFT Data Formatting</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-5-metrics.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status not-started">○</span><span>5. Evaluation Metrics</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-6-baseline.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span><span>6. Zero-Shot Baseline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-7-lora-training.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span><span>7. Fine-Tuning with LoRA</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-8-evaluation.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span><span>8. Evaluate Results</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 4</span>
+      <h1>Format Data for Supervised Fine-Tuning</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand why instruction-tuned models need a specific prompt format</li>
+        <li>Learn how <code>apply_chat_template()</code> wraps messages in model-specific tokens</li>
+        <li>See the difference in templates between Gemma and DeepSeek models</li>
+        <li>Format the full dataset using a mapping function for SFTTrainer</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Why Format Matters</h2>
+      <p>
+        Instruction-tuned models (like <code>gemma-3-1b-<strong>it</strong></code>) were trained
+        on conversations structured with special tokens that mark turn boundaries. When you
+        fine-tune, your training examples must match the <em>exact same format</em> the model
+        was pre-trained on — otherwise the model gets confused about when it's the user's turn
+        vs. its own turn to respond.
+      </p>
+
+      <p>
+        The <code>apply_chat_template()</code> tokenizer method handles this automatically.
+        You pass a list of <code>{"role": ..., "content": ...}</code> dicts, and it serialises
+        them into the model's expected string format.
+      </p>
+
+      <h2>Gemma's Chat Template</h2>
+      <p>Gemma uses four special tokens to delineate conversation turns:</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr><th>Token</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>&lt;bos&gt;</code></td><td>Beginning of sequence — tells the model to start reading</td></tr>
+          <tr><td><code>&lt;start_of_turn&gt;user</code></td><td>Start of the human's turn</td></tr>
+          <tr><td><code>&lt;end_of_turn&gt;</code></td><td>End of the current speaker's turn</td></tr>
+          <tr><td><code>&lt;start_of_turn&gt;model</code></td><td>Start of the model's response</td></tr>
+        </tbody>
+      </table>
+
+      <h2>The Formatting Function</h2>
+      <p>
+        Each training example becomes a full conversation: the user provides the instruction
+        + headline, and the model's expected response is the sentiment label.
+      </p>
+
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — format_for_sft_gemma()</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>def format_for_sft_gemma(example, tokenizer):
+    system_prompt = (
+        "Classify the sentiment of the following sentence from Financial News. "
+        "Respond with ONLY ONE of the following labels: positive, negative, neutral."
+    )
+    messages = [
+        {"role": "user",  "content": f"{system_prompt}\n\nSentence: {example['text']}"},
+        {"role": "model", "content": example["sentiment"]},
+    ]
+    # add_generation_prompt=False because we include the answer in training data
+    formatted = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=False
+    )
+    return {"text": formatted}
+
+# Apply to the full dataset
+sft_train_dataset = train_dataset.map(
+    format_for_sft_gemma,
+    fn_kwargs={"tokenizer": base_os_tokenizer},
+    remove_columns=list(train_dataset.features),
+)</code></pre>
+      </div>
+
+      <h2>Interactive Formatter</h2>
+      <p>
+        Type a financial headline and select its label below to see exactly how the
+        Gemma chat template wraps your data:
+      </p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="headlineInput">Financial Headline:</label>
+          <textarea id="headlineInput" rows="3" placeholder="Enter a financial news headline...">Operating profit rose to EUR 13.1 mn from EUR 8.7 mn in the same period year earlier.</textarea>
+        </div>
+        <div class="form-group">
+          <label for="labelSelect">Sentiment Label:</label>
+          <select id="labelSelect">
+            <option value="positive">positive</option>
+            <option value="negative">negative</option>
+            <option value="neutral" selected>neutral</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button onclick="formatExample('gemma')">Format for Gemma</button>
+          <button onclick="formatExample('deepseek')" style="background: #7c3aed;">Format for DeepSeek</button>
+        </div>
+        <div id="formatterOutput" class="template-preview">Click a format button to see the output...</div>
+      </div>
+
+      <h2>What SFTTrainer Does With This</h2>
+      <p>
+        The <code>SFTTrainer</code> uses <strong>causal language modelling</strong>: given
+        the formatted string, it trains the model to predict the next token at every position.
+        But here's the key — by default it only computes loss on the <em>completion</em> tokens
+        (the label), not the prompt tokens. This prevents the model from wasting capacity
+        memorising the instruction.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+        <div class="section">
+          <h3>Input tokens (no loss)</h3>
+          <p style="font-family: monospace; font-size: 0.8rem; margin: 0;">
+            &lt;bos&gt;&lt;start_of_turn&gt;user<br>
+            Classify the sentiment...<br>
+            Sentence: Operating profit...<br>
+            &lt;end_of_turn&gt;<br>
+            &lt;start_of_turn&gt;model<br>
+          </p>
+        </div>
+        <div class="section success">
+          <h3>Completion tokens (loss computed here)</h3>
+          <p style="font-family: monospace; font-size: 0.8rem; margin: 0;">
+            <strong>positive</strong>&lt;end_of_turn&gt;
+          </p>
+          <p style="font-size: 0.85rem; margin-top: 0.75rem;">
+            The model is trained to predict "positive" after seeing the full instruction and headline.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <strong>Practice:</strong> Change the model in the formatter to DeepSeek-R1-Distill.
+        Notice how the special tokens change completely — <code>&lt;｜User｜&gt;</code>,
+        <code>&lt;｜Assistant｜&gt;</code>, etc. Each model family has its own template.
+        This is why you <em>always</em> use <code>apply_chat_template()</code> rather than
+        manually constructing the string.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-3-dataset.html" class="nav-btn">← Previous: Dataset Exploration</a>
+      <a href="task-5-metrics.html" class="nav-btn">Next: Evaluation Metrics →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block-container').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    function formatExample(model) {
+      const text = document.getElementById('headlineInput').value.trim() ||
+        'Operating profit rose to EUR 13.1 mn from EUR 8.7 mn in the same period year earlier.';
+      const label = document.getElementById('labelSelect').value;
+
+      const systemPrompt =
+        'Classify the sentiment of the following sentence from Financial News. ' +
+        'Respond with ONLY ONE of the following labels: positive, negative, neutral.';
+
+      let formatted = '';
+
+      if (model === 'gemma') {
+        formatted =
+          '<bos><start_of_turn>user\n' +
+          systemPrompt + '\n\n' +
+          'Sentence: ' + text + '\n' +
+          '<end_of_turn>\n' +
+          '<start_of_turn>model\n' +
+          label +
+          '<end_of_turn>';
+      } else {
+        // DeepSeek-R1 format
+        formatted =
+          '<｜begin▁of▁sentence｜>' +
+          '<｜User｜>' + systemPrompt + '\n\nSentence: ' + text + '<｜Assistant｜>' +
+          label +
+          '<｜end▁of▁sentence｜>';
+      }
+
+      const output = document.getElementById('formatterOutput');
+      // Highlight tokens
+      const tokenColour = model === 'gemma' ? '#569cd6' : '#d7a2ff';
+      const tokenRegex = model === 'gemma'
+        ? /(<bos>|<start_of_turn>user|<start_of_turn>model|<end_of_turn>)/g
+        : /(<｜begin▁of▁sentence｜>|<｜User｜>|<｜Assistant｜>|<｜end▁of▁sentence｜>)/g;
+
+      const highlighted = formatted
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(
+          model === 'gemma'
+            ? /(&lt;bos&gt;|&lt;start_of_turn&gt;user|&lt;start_of_turn&gt;model|&lt;end_of_turn&gt;)/g
+            : /(&lt;｜begin▁of▁sentence｜&gt;|&lt;｜User｜&gt;|&lt;｜Assistant｜&gt;|&lt;｜end▁of▁sentence｜&gt;)/g,
+          `<span style="color:${tokenColour};font-weight:bold">$1</span>`
+        )
+        .replace(
+          new RegExp('(' + label + ')(?=&lt;)'),
+          '<span style="color:#4ec9b0;font-weight:bold">$1</span>'
+        );
+
+      output.innerHTML = highlighted;
+    }
+
+    // Render initial example
+    formatExample('gemma');
+  </script>
+</body>
+</html>

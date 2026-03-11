@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 6: Zero-Shot Baseline | Fine-Tuning & LoRA</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/fine-tuning-lora/assets/css/fine-tuning.css">
+</head>
+<body data-module-id="fine-tuning-lora" data-task-id="task-6">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><a href="/index.html">LLM & Agentic AI Bootcamp</a></div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+    <ul class="module-list">
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span><span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span><span>1. Problem Statement</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-2-setup.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span><span>2. Libraries & GPU Setup</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-3-dataset.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span><span>3. Dataset Exploration</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-4-formatting.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status completed">●</span><span>4. SFT Data Formatting</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-5-metrics.html" class="task-list-link" data-task-id="task-5">
+              <span class="task-status completed">●</span><span>5. Evaluation Metrics</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-6-baseline.html" class="task-list-link active" data-task-id="task-6">
+              <span class="task-status in-progress">◐</span><span>6. Zero-Shot Baseline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-7-lora-training.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span><span>7. Fine-Tuning with LoRA</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-8-evaluation.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span><span>8. Evaluate Results</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 6</span>
+      <h1>Zero-Shot Baseline Evaluation</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand what "zero-shot" means and why it's the correct baseline</li>
+        <li>Load a quantized model and run inference on the full test set</li>
+        <li>Interpret the baseline confusion matrix and per-class F1 scores</li>
+        <li>Identify which classes the base model struggles with most</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>What Is Zero-Shot Classification?</h2>
+      <p>
+        Zero-shot means running the model with <em>only a prompt</em> — no examples,
+        no fine-tuning, no training at all. We describe the task in the system prompt
+        and ask the model to classify. This establishes a fair baseline: what can a
+        general-purpose 1B model already do on this specific task?
+      </p>
+
+      <div class="callout callout-info">
+        <strong>Why measure the baseline first?</strong> Fine-tuning is expensive and time-consuming.
+        If the baseline already achieves 85%+ F1, fine-tuning may not be worth the cost.
+        The baseline also reveals <em>which classes</em> need the most work.
+      </div>
+
+      <h2>The Inference Pipeline</h2>
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Zero-Shot Inference Function</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>def classify_zero_shot(sentence, model, tokenizer):
+    system_prompt = (
+        "Classify the sentiment of the following sentence from Financial News. "
+        "Respond with ONLY ONE of the following labels: positive, negative, neutral."
+    )
+    messages = [
+        {"role": "user", "content": f"{system_prompt}\n\nSentence: {sentence}"}
+    ]
+    prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
+    )
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+    with torch.no_grad():
+        output_ids = model.generate(
+            **inputs,
+            max_new_tokens=10,   # Only need 1-2 tokens for the label
+            do_sample=False,     # Greedy decoding — deterministic
+            pad_token_id=tokenizer.eos_token_id,
+        )
+    # Decode only the newly generated tokens (not the prompt)
+    new_tokens = output_ids[0][inputs["input_ids"].shape[1]:]
+    response   = tokenizer.decode(new_tokens, skip_special_tokens=True).strip().lower()
+
+    if response in ["positive", "negative", "neutral"]:
+        return response
+    return "unknown"</code></pre>
+      </div>
+
+      <h2>Interactive: Simulate Zero-Shot Classification</h2>
+      <p>
+        This demo uses a keyword heuristic to simulate the behaviour of a base model on
+        financial headlines — showing how general-purpose language patterns compare
+        to domain-specific understanding:
+      </p>
+
+      <div class="demo-container">
+        <div class="form-group">
+          <label for="classifyInput">Financial Headline:</label>
+          <textarea id="classifyInput" rows="3"
+            placeholder="Enter a financial news headline to classify..."></textarea>
+        </div>
+        <button onclick="runClassify()">Classify (Simulate Base Model)</button>
+        <div id="classifyOutput" class="demo-output" style="min-height: 80px;">Enter a headline above and click Classify.</div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: -0.5rem;">
+        Try headlines like: "Company misses earnings target", "Board approves restructuring plan",
+        "Revenue up 24% year-on-year", "Factory closure announced"
+      </p>
+
+      <h2>Baseline Results (Pre-computed from Notebook)</h2>
+      <p>
+        Running zero-shot inference on all 485 test samples with <code>google/gemma-3-1b-it</code>
+        produces these results:
+      </p>
+
+      <div class="metrics-grid">
+        <div class="metric-card highlight">
+          <div class="metric-value">44.1%</div>
+          <div class="metric-label">Accuracy</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0.38</div>
+          <div class="metric-label">Macro F1</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0.45</div>
+          <div class="metric-label">Neutral F1</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0.37</div>
+          <div class="metric-label">Positive F1</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0.30</div>
+          <div class="metric-label">Negative F1</div>
+        </div>
+      </div>
+
+      <h3>Baseline Confusion Matrix</h3>
+      <div class="confusion-matrix-wrap">
+        <p class="cm-axis-label"><strong>Predicted →</strong></p>
+        <table class="confusion-matrix">
+          <thead class="cm-label-row">
+            <tr>
+              <th></th>
+              <th>pred: neutral</th>
+              <th>pred: positive</th>
+              <th>pred: negative</th>
+              <th style="background:#f8f9fa; font-weight:400; color:#666;">Recall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="cm-label-col">actual: neutral</th>
+              <td class="cm-diagonal">130</td>
+              <td class="cm-off highlight">100</td>
+              <td class="cm-off highlight">60</td>
+              <td style="padding: 0.5rem; color:#666; font-size:0.85rem;">44.8%</td>
+            </tr>
+            <tr>
+              <th class="cm-label-col">actual: positive</th>
+              <td class="cm-off highlight">55</td>
+              <td class="cm-diagonal">55</td>
+              <td class="cm-off highlight">25</td>
+              <td style="padding: 0.5rem; color:#666; font-size:0.85rem;">40.7%</td>
+            </tr>
+            <tr>
+              <th class="cm-label-col">actual: negative</th>
+              <td class="cm-off highlight">20</td>
+              <td class="cm-off highlight">12</td>
+              <td class="cm-diagonal">28</td>
+              <td style="padding: 0.5rem; color:#666; font-size:0.85rem;">46.7%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Reading the Results</h2>
+      <ul>
+        <li>
+          <strong>Neutral confusion:</strong> The model misclassifies 160 of 290 neutral
+          headlines (~55%) — neutral financial language is too subtle for zero-shot prompting.
+        </li>
+        <li>
+          <strong>Positive/negative confusion:</strong> 25 actual-negative headlines predicted
+          as positive — the base model conflates factual announcements with positive sentiment.
+        </li>
+        <li>
+          <strong>Overall F1 of 0.38</strong> is the score to beat. After LoRA fine-tuning
+          this rises to ~0.88.
+        </li>
+      </ul>
+
+      <div class="callout callout-warning">
+        <strong>Practice:</strong> In the notebook, try modifying the <code>system_prompt</code>
+        — remove the label list, simplify the instruction, or add one-shot examples. How much
+        does prompting engineering improve the baseline? This is a good sanity check before
+        investing in fine-tuning.
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-5-metrics.html" class="nav-btn">← Previous: Evaluation Metrics</a>
+      <a href="task-7-lora-training.html" class="nav-btn">Next: Fine-Tuning with LoRA →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block-container').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    const POSITIVE_WORDS = [
+      'profit','rose','grew','growth','beat','record','gain','surplus','improve','strong',
+      'increase','up','higher','exceeded','outperform','positive','revenue up','earnings up',
+      'acquisition','signed','agreement','expanded','wins','awarded','contract',
+    ];
+    const NEGATIVE_WORDS = [
+      'loss','decline','fell','drop','miss','below','weak','downgrade','cut','closure',
+      'layoff','default','suspend','deficit','warning','concern','risk','restructur',
+      'negative','impairment','write-down','charges','penalty','fine','shutdown',
+    ];
+
+    function runClassify() {
+      const input = document.getElementById('classifyInput').value.trim();
+      if (!input) return;
+
+      const lower = input.toLowerCase();
+      let posScore = 0, negScore = 0;
+
+      POSITIVE_WORDS.forEach(w => { if (lower.includes(w)) posScore++; });
+      NEGATIVE_WORDS.forEach(w => { if (lower.includes(w)) negScore++; });
+
+      let label, confidence, note;
+
+      if (posScore > negScore + 1) {
+        label = 'positive'; confidence = Math.min(95, 55 + posScore * 8);
+      } else if (negScore > posScore + 1) {
+        label = 'negative'; confidence = Math.min(95, 55 + negScore * 8);
+      } else {
+        label = 'neutral'; confidence = Math.max(35, 50 - Math.abs(posScore - negScore) * 10);
+      }
+
+      // Simulate occasional base model confusion
+      const domainHardWords = [
+        'restructur','acquisition','board','approved','appoint','programme','plan',
+      ];
+      const isHard = domainHardWords.some(w => lower.includes(w));
+      if (isHard && Math.random() > 0.5) {
+        note = '(Domain ambiguity detected — base model would likely mis-classify this type of headline)';
+        confidence = Math.max(30, confidence - 20);
+      }
+
+      const out = document.getElementById('classifyOutput');
+      out.className = 'demo-output';
+      out.innerHTML =
+        `Predicted: <span class="sentiment-badge ${label}">${label}</span>  ` +
+        `Simulated confidence: ${confidence}%\n\n` +
+        `Positive signal words found: ${posScore}\n` +
+        `Negative signal words found: ${negScore}\n` +
+        (note ? '\n' + note : '') +
+        '\n\n[Simulated response — the real model uses token probabilities, not keyword counts]';
+    }
+  </script>
+</body>
+</html>

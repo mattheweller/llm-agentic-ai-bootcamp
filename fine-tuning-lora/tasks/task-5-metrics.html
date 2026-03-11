@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 5: Evaluation Metrics | Fine-Tuning & LoRA</title>
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/navigation.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <link rel="stylesheet" href="/fine-tuning-lora/assets/css/fine-tuning.css">
+</head>
+<body data-module-id="fine-tuning-lora" data-task-id="task-5">
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title"><a href="/index.html">LLM & Agentic AI Bootcamp</a></div>
+      <div class="sidebar-subtitle">8 Interactive Topics</div>
+    </div>
+    <ul class="module-list">
+      <li class="module-item" data-module-id="fine-tuning-lora">
+        <button class="module-toggle" data-module="fine-tuning-lora" aria-expanded="true">
+          <span class="module-status">○</span>
+          <span class="module-title">Fine-Tuning & LoRA</span>
+          <span class="expand-icon">▼</span>
+        </button>
+        <ul class="task-list" data-module="fine-tuning-lora">
+          <li class="task-list-item">
+            <a href="/fine-tuning-lora/index.html" class="task-list-link" data-task-id="overview">
+              <span class="task-status not-started">○</span><span>Module Overview</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-1-overview.html" class="task-list-link" data-task-id="task-1">
+              <span class="task-status completed">●</span><span>1. Problem Statement</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-2-setup.html" class="task-list-link" data-task-id="task-2">
+              <span class="task-status completed">●</span><span>2. Libraries & GPU Setup</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-3-dataset.html" class="task-list-link" data-task-id="task-3">
+              <span class="task-status completed">●</span><span>3. Dataset Exploration</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-4-formatting.html" class="task-list-link" data-task-id="task-4">
+              <span class="task-status completed">●</span><span>4. SFT Data Formatting</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-5-metrics.html" class="task-list-link active" data-task-id="task-5">
+              <span class="task-status in-progress">◐</span><span>5. Evaluation Metrics</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-6-baseline.html" class="task-list-link" data-task-id="task-6">
+              <span class="task-status not-started">○</span><span>6. Zero-Shot Baseline</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-7-lora-training.html" class="task-list-link" data-task-id="task-7">
+              <span class="task-status not-started">○</span><span>7. Fine-Tuning with LoRA</span>
+            </a>
+          </li>
+          <li class="task-list-item">
+            <a href="task-8-evaluation.html" class="task-list-link" data-task-id="task-8">
+              <span class="task-status not-started">○</span><span>8. Evaluate Results</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <header class="task-header">
+      <span class="task-number">Task 5</span>
+      <h1>Confusion Matrix & Classification Metrics</h1>
+    </header>
+
+    <section class="task-objectives">
+      <h2>Learning Objectives</h2>
+      <ul>
+        <li>Understand why accuracy alone is misleading for imbalanced datasets</li>
+        <li>Learn precision, recall, and F1-score with intuitive definitions</li>
+        <li>Read and interpret a multi-class confusion matrix</li>
+        <li>Use an interactive calculator to see how metrics relate to raw counts</li>
+      </ul>
+    </section>
+
+    <section class="task-content">
+      <h2>Why Not Just Use Accuracy?</h2>
+      <p>
+        Our dataset is ~60% neutral. A model that predicts "neutral" for everything achieves
+        <strong>60% accuracy</strong> — but it's completely useless. Accuracy hides this because
+        it treats every sample equally regardless of class.
+      </p>
+
+      <p>
+        We need metrics that separately evaluate performance <em>per class</em> and surface
+        the model's handling of minority classes.
+      </p>
+
+      <h2>The Building Blocks: TP, FP, FN, TN</h2>
+      <p>For each class (e.g., "positive"), every prediction falls into one of four categories:</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Predicted Positive</th>
+            <th>Predicted NOT Positive</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Actually Positive</strong></td>
+            <td style="background: #d1fae5;"><strong>TP</strong> — True Positive (correct!)</td>
+            <td style="background: #fee2e2;"><strong>FN</strong> — False Negative (missed it)</td>
+          </tr>
+          <tr>
+            <td><strong>Actually NOT Positive</strong></td>
+            <td style="background: #fee2e2;"><strong>FP</strong> — False Positive (wrong alarm)</td>
+            <td style="background: #f0fdf4;"><strong>TN</strong> — True Negative (correct!)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Precision, Recall, and F1</h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+        <div class="section">
+          <h3>Precision</h3>
+          <p><code>TP / (TP + FP)</code></p>
+          <p>Of everything the model called "positive", what fraction actually was?
+          Low precision = too many false alarms.</p>
+        </div>
+        <div class="section">
+          <h3>Recall</h3>
+          <p><code>TP / (TP + FN)</code></p>
+          <p>Of all actual "positive" samples, what fraction did the model catch?
+          Low recall = too many misses.</p>
+        </div>
+        <div class="section">
+          <h3>F1-Score</h3>
+          <p><code>2 × (P × R) / (P + R)</code></p>
+          <p>Harmonic mean of precision and recall. Punishes extreme imbalance
+          between the two — the go-to metric for classification.</p>
+        </div>
+      </div>
+
+      <h2>Interactive Confusion Matrix Calculator</h2>
+      <p>
+        Adjust the prediction counts for the <strong>positive</strong> class.
+        Watch precision, recall, and F1 update in real time:
+      </p>
+
+      <div class="demo-container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label>True Positives (TP): <strong id="tpVal">55</strong></label>
+            <input type="range" id="tpSlider" min="0" max="135" value="55" oninput="updateMetrics()">
+          </div>
+          <div class="form-group">
+            <label>False Negatives (FN): <strong id="fnVal">80</strong></label>
+            <input type="range" id="fnSlider" min="0" max="135" value="80" oninput="updateMetrics()">
+          </div>
+          <div class="form-group">
+            <label>False Positives (FP): <strong id="fpVal">62</strong></label>
+            <input type="range" id="fpSlider" min="0" max="200" value="62" oninput="updateMetrics()">
+          </div>
+          <div class="form-group">
+            <label>True Negatives (TN): <strong id="tnVal">288</strong></label>
+            <input type="range" id="tnSlider" min="0" max="400" value="288" oninput="updateMetrics()">
+          </div>
+        </div>
+
+        <div class="metrics-grid" id="metricsOutput">
+          <div class="metric-card highlight">
+            <div class="metric-value" id="precVal">—</div>
+            <div class="metric-label">Precision</div>
+          </div>
+          <div class="metric-card highlight">
+            <div class="metric-value" id="recVal">—</div>
+            <div class="metric-label">Recall</div>
+          </div>
+          <div class="metric-card highlight">
+            <div class="metric-value" id="f1Val">—</div>
+            <div class="metric-label">F1-Score</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="accVal">—</div>
+            <div class="metric-label">Accuracy</div>
+          </div>
+        </div>
+
+        <div id="metricsNote" class="demo-output"></div>
+      </div>
+
+      <h2>Multi-Class Confusion Matrix</h2>
+      <p>
+        For three classes (positive, negative, neutral), the confusion matrix becomes a 3×3 grid.
+        The diagonal cells (green) are correct predictions; off-diagonal cells are errors.
+      </p>
+
+      <div class="callout callout-info">
+        <strong>How to read it:</strong> Each <em>row</em> represents the actual class.
+        Each <em>column</em> represents the predicted class. Row totals = true class counts.
+        The diagonal value / row total = per-class recall.
+      </div>
+
+      <p>Example (baseline zero-shot predictions on 485 test samples):</p>
+
+      <div class="confusion-matrix-wrap">
+        <p class="cm-axis-label"><strong>Predicted →</strong></p>
+        <table class="confusion-matrix">
+          <thead class="cm-label-row">
+            <tr>
+              <th></th>
+              <th>pred: neutral</th>
+              <th>pred: positive</th>
+              <th>pred: negative</th>
+              <th style="background:#f8f9fa; font-weight:400; color:#666;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="cm-label-col">actual: neutral</th>
+              <td class="cm-diagonal">130</td>
+              <td class="cm-off highlight">100</td>
+              <td class="cm-off highlight">60</td>
+              <td style="padding: 0.5rem; color:#666; font-size:0.85rem;">290</td>
+            </tr>
+            <tr>
+              <th class="cm-label-col">actual: positive</th>
+              <td class="cm-off highlight">55</td>
+              <td class="cm-diagonal">55</td>
+              <td class="cm-off highlight">25</td>
+              <td style="padding: 0.5rem; color:#666; font-size:0.85rem;">135</td>
+            </tr>
+            <tr>
+              <th class="cm-label-col">actual: negative</th>
+              <td class="cm-off highlight">20</td>
+              <td class="cm-off highlight">12</td>
+              <td class="cm-diagonal">28</td>
+              <td style="padding: 0.5rem; color:#666; font-size:0.85rem;">60</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Reading the "positive" row: of 135 actual positive samples, the model correctly labelled
+        55 (recall = 41%), misclassified 55 as neutral, and 25 as negative. Poor recall on
+        positive class is typical for zero-shot financial sentiment.
+      </p>
+
+      <h2>The sklearn Code</h2>
+      <div class="code-block-container">
+        <div class="code-header">
+          <span class="code-label">Python — Compute Metrics</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+labels = ["positive", "negative", "neutral"]
+
+accuracy = accuracy_score(true_labels, predictions)
+report   = classification_report(
+    true_labels, predictions,
+    labels=labels, zero_division=0, target_names=labels
+)
+cm = confusion_matrix(true_labels, predictions, labels=labels)
+
+print(f"Accuracy: {accuracy:.4f}")
+print(report)</code></pre>
+      </div>
+    </section>
+
+    <nav class="task-navigation">
+      <a href="task-4-formatting.html" class="nav-btn">← Previous: SFT Data Formatting</a>
+      <a href="task-6-baseline.html" class="nav-btn">Next: Zero-Shot Baseline →</a>
+    </nav>
+  </main>
+
+  <script src="/assets/js/module-navigator.js"></script>
+  <script src="/assets/js/progress-tracker.js"></script>
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-block-container').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    function updateMetrics() {
+      const tp = parseInt(document.getElementById('tpSlider').value);
+      const fn = parseInt(document.getElementById('fnSlider').value);
+      const fp = parseInt(document.getElementById('fpSlider').value);
+      const tn = parseInt(document.getElementById('tnSlider').value);
+
+      document.getElementById('tpVal').textContent = tp;
+      document.getElementById('fnVal').textContent = fn;
+      document.getElementById('fpVal').textContent = fp;
+      document.getElementById('tnVal').textContent = tn;
+
+      const precision = tp + fp > 0 ? tp / (tp + fp) : 0;
+      const recall    = tp + fn > 0 ? tp / (tp + fn) : 0;
+      const f1        = precision + recall > 0
+        ? 2 * precision * recall / (precision + recall) : 0;
+      const total     = tp + fp + fn + tn;
+      const accuracy  = total > 0 ? (tp + tn) / total : 0;
+
+      document.getElementById('precVal').textContent = precision.toFixed(3);
+      document.getElementById('recVal').textContent  = recall.toFixed(3);
+      document.getElementById('f1Val').textContent   = f1.toFixed(3);
+      document.getElementById('accVal').textContent  = accuracy.toFixed(3);
+
+      const note = document.getElementById('metricsNote');
+      if (Math.abs(precision - recall) > 0.3) {
+        note.className = 'demo-output error';
+        note.textContent =
+          'Large gap between precision and recall. F1 penalises this imbalance — ' +
+          'a model with precision=0.9 and recall=0.1 has F1=0.18, much lower than either alone.';
+      } else if (f1 > 0.8) {
+        note.className = 'demo-output success';
+        note.textContent = 'Good F1 score! Both precision and recall are well balanced.';
+      } else {
+        note.className = 'demo-output';
+        note.textContent = `Total samples in this binary slice: ${total}. ` +
+          `Correct: ${tp + tn} (${(accuracy * 100).toFixed(1)}%).`;
+      }
+    }
+
+    updateMetrics();
+  </script>
+</body>
+</html>
